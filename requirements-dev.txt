@@ -1,0 +1,7 @@
+# Dépendances de développement (tests, qualité de code, évaluation) — non embarquées dans l'image
+-r requirements-ingest.txt
+pytest==9.1.1
+httpx2==2.13.1
+ruff==0.17.0
+mlflow==3.17.1
+Faker==40.43.0

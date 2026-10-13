@@ -1,0 +1,12 @@
+# Dépendances d'exécution de l'API (embarquées dans l'image Docker)
+# Torch en version CPU : pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+fastapi==0.143.0
+uvicorn[standard]==0.54.0
+pydantic-settings==2.15.0
+httpx==0.28.1
+mistralai==3.2.0
+# Recherche : base vectorielle, embeddings BGE-M3 et reranker (CPU)
+chromadb==1.5.9
+torch==2.14.1
+sentence-transformers==6.1.0
+transformers==5.19.0

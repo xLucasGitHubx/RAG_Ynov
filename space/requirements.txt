@@ -1,0 +1,4 @@
+# Dépendances du Space Hugging Face (ZeroGPU). gradio et spaces sont fournis par le SDK Gradio.
+torch
+transformers>=5.0
+accelerate

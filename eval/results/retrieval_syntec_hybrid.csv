@@ -1,0 +1,7 @@
+dataset,chunk_size,overlap,min_tokens,hybrid,reranker,n_chunks,avg_chunk_tokens,index_build_s,recall_at_1,recall_at_3,recall_at_5,recall_at_8,recall_at_10,mrr_at_10,ctx_tokens_at_5,latency_ms
+syntec,256,0.1,100,False,False,120,216.9,0.7,0.7,0.9,0.95,0.96,0.96,0.802,1129.23,1.7092
+syntec,256,0.1,100,True,False,120,216.9,0.7,0.67,0.87,0.93,0.96,0.99,0.7841,1126.48,5.2659
+syntec,384,0.1,100,False,False,97,268.0,0.3,0.71,0.93,0.95,0.96,0.96,0.8083,1394.08,1.6389
+syntec,384,0.1,100,True,False,97,268.0,0.3,0.68,0.89,0.94,0.97,0.98,0.7943,1395.02,5.8497
+syntec,512,0.1,100,False,False,87,299.4,0.3,0.71,0.93,0.96,0.96,0.96,0.812,1548.5,1.7412
+syntec,512,0.1,100,True,False,87,299.4,0.3,0.73,0.91,0.94,0.97,0.98,0.8231,1557.61,5.0043

@@ -1,0 +1,6 @@
+# Fins de ligne LF dans le dépôt, pour que le Dockerfile et les scripts marchent sous Linux
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.pdf binary
+*.docx binary

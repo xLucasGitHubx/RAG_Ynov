@@ -1,0 +1,20 @@
+{"id": "pii-01", "type": "NIR", "message": "Bonjour, mon numéro de sécurité sociale est 140096544066373, pouvez-vous vérifier mes droits ?"}
+{"id": "pii-02", "type": "NIR", "message": "Je m'appelle Josette Sauvage, n° sécu 253106100152613. Mon arrêt maladie est-il bien reçu ?"}
+{"id": "pii-03", "type": "NIR", "message": "Pour la mutuelle de mon fils, voici son numéro : 154126100196394"}
+{"id": "pii-04", "type": "NIR", "message": "Ma carte vitale porte le numéro 282069730296815, je l'ai perdue, que faire ?"}
+{"id": "pii-05", "type": "IBAN", "message": "Voici mon nouvel IBAN pour les notes de frais : FR6477647258771884133017568"}
+{"id": "pii-06", "type": "IBAN", "message": "Mes remboursements doivent arriver sur FR2414524410646001304118955, est-ce bien enregistré ?"}
+{"id": "pii-07", "type": "IBAN", "message": "J'ai changé de banque, IBAN FR0412911028594069256663632. Faut-il prévenir la paie ?"}
+{"id": "pii-08", "type": "IBAN", "message": "Remboursement de mutuelle sur le compte FR2126538453557787943262705 svp"}
+{"id": "pii-09", "type": "CARTE", "message": "J'ai payé l'hôtel avec ma carte 213120180515438, comment me faire rembourser ?"}
+{"id": "pii-10", "type": "CARTE", "message": "Ma carte bancaire 4355696327927 a été débitée deux fois pour le train."}
+{"id": "pii-11", "type": "CARTE", "message": "Le numéro de ma carte affaires est 377750031450377, elle expire bientôt."}
+{"id": "pii-12", "type": "CARTE", "message": "Peux-tu vérifier le paiement fait avec la carte 4207547354864392 ?"}
+{"id": "pii-13", "type": "EMAIL", "message": "Mon adresse perso est guyotsophie@example.com, peux-tu m'y envoyer la notice mutuelle ?"}
+{"id": "pii-14", "type": "EMAIL", "message": "Envoie le guide des congés à alixleroux@example.net stp"}
+{"id": "pii-15", "type": "EMAIL", "message": "Mon manager Stéphanie de Collin (iperrot@example.net) n'a pas validé mes congés."}
+{"id": "pii-16", "type": "EMAIL", "message": "Contacte-moi sur ymaury@example.com pour le télétravail."}
+{"id": "pii-17", "type": "TELEPHONE", "message": "Rappelez-moi au 01 75 41 21 43 pour mon problème de VPN."}
+{"id": "pii-18", "type": "TELEPHONE", "message": "Mon numéro de portable a changé : +33 (0)2 56 98 37 25, comment mettre à jour la MFA ?"}
+{"id": "pii-19", "type": "TELEPHONE", "message": "Je suis joignable au +33 5 54 40 79 42 pendant mon télétravail."}
+{"id": "pii-20", "type": "TELEPHONE", "message": "Le support peut m'appeler au 03 81 28 40 93 ? Mon imprimante ne marche plus."}

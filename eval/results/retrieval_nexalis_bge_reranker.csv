@@ -1,0 +1,3 @@
+dataset,chunk_size,overlap,min_tokens,reranker,n_chunks,avg_chunk_tokens,index_build_s,recall_at_1,recall_at_3,recall_at_5,recall_at_8,recall_at_10,mrr_at_10,ctx_tokens_at_5,latency_ms
+nexalis,256,0.1,100,bge-reranker-v2-m3,176,211.5,1.5,0.8448,0.9828,0.9828,0.9828,0.9828,0.9138,1135.1034,12598.1592
+nexalis,512,0.1,100,bge-reranker-v2-m3,139,268.1,0.4,0.8621,0.9828,0.9828,0.9828,0.9828,0.9224,1393.5862,16474.9288

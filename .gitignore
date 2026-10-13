@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Secrets
+.env
+
+# Données générées
+chroma_db/
+mlruns/
+mlflow.db
+mlartifacts/
+*.log
+
+# Éditeurs et OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Cache de parsing Docling (régénéré par l ingestion)
+data/parsed/
+eval/.cache/
+CLAUDE.md
