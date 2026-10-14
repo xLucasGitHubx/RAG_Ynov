@@ -31,6 +31,7 @@ class AnswerResult:
     timings_ms: dict[str, float] = field(default_factory=dict)
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
+    llm_meta: dict | None = None
     refused: bool = False
     llm_called: bool = True
 
@@ -80,6 +81,7 @@ class Assistant:
             timings_ms=timings,
             prompt_tokens=generation.prompt_tokens,
             completion_tokens=generation.completion_tokens,
+            llm_meta=generation.meta,
             refused=refused,
         )
 

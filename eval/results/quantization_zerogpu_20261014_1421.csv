@@ -1,0 +1,4 @@
+accuracy,correct,generation_seconds_p50,llm_seconds_p50,model,questions,tokens_per_second,vram_gb
+1.0,20,1.59,2.5,ministral-3-8b-bf16 (ZeroGPU),20,31.2,17.15
+1.0,20,7.99,9.3,ministral-3-8b-int8 (ZeroGPU),20,6.8,9.99
+1.0,20,2.42,3.5,ministral-3-8b-nf4 (ZeroGPU),20,22.3,6.7

@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+/*
+  Système visuel : DESIGN.md (Vercel, frontend/DESIGN.md) adapté à une application.
+  - Un fond, une encre, un accent (bleu) ; statuts réservés (succès / échec / attention).
+  - Geist + Geist Mono uniquement ; mono réservé aux identifiants techniques.
+  - Surfaces séparées par des paliers de gris et des filets, pas d'ombres au repos,
+    pas de dégradés ni de flou.
+  - Deux thèmes choisis (pas une inversion automatique) : data-theme="light" | "dark".
+*/
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f5f5f5;
+  --surface-3: #ededed;
+  --line: #ebebeb;
+  --line-strong: #d6d6d6;
+  --ink: #171717;
+  --ink-2: #4d4d4d;
+  --ink-3: #6b6b6b;
+  --accent: #0070f3;
+  --accent-ink: #0761d1;
+  --accent-soft: #eaf3ff;
+  --good: #0ca30c;
+  --good-ink: #0a6e0a;
+  --good-soft: #eaf6ea;
+  --bad: #d03b3b;
+  --bad-ink: #b42828;
+  --bad-soft: #fcecec;
+  --warn: #c98500;
+  --warn-ink: #8f5d00;
+  --warn-soft: #fff4dc;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-muted: #c9c9c9;
+  --grid: #ededed;
+  --axis: #a1a1a1;
+  --selection: #171717;
+  --selection-ink: #f2f2f2;
+  --overlay-shadow: 0 1px 1px #00000005, 0 8px 16px -4px #0000000f, 0 24px 32px -8px #00000014;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface-2: #1a1a1a;
+  --surface-3: #242424;
+  --line: #262626;
+  --line-strong: #3a3a3a;
+  --ink: #ededed;
+  --ink-2: #a8a8a8;
+  --ink-3: #8f8f8f;
+  --accent: #3291ff;
+  --accent-ink: #52a8ff;
+  --accent-soft: #0b1f3a;
+  --good: #2bb82b;
+  --good-ink: #5fd35f;
+  --good-soft: #0d230d;
+  --bad: #e5484d;
+  --bad-ink: #ff6b70;
+  --bad-soft: #2a1011;
+  --warn: #f5a623;
+  --warn-ink: #ffc061;
+  --warn-soft: #2a1f08;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-muted: #3d3d3d;
+  --grid: #222222;
+  --axis: #5c5c5c;
+  --selection: #ededed;
+  --selection-ink: #111111;
+  --overlay-shadow: 0 0 0 1px #ffffff14, 0 16px 32px -8px #00000099;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-good-ink: var(--good-ink);
+  --color-good-soft: var(--good-soft);
+  --color-bad: var(--bad);
+  --color-bad-ink: var(--bad-ink);
+  --color-bad-soft: var(--bad-soft);
+  --color-warn: var(--warn);
+  --color-warn-ink: var(--warn-ink);
+  --color-warn-soft: var(--warn-soft);
+  --font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background-color: var(--bg);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    scrollbar-gutter: stable;
+  }
+
+  @media (pointer: fine) {
+    html {
+      overscroll-behavior: none;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    font-feature-settings: "ss01", "ss02";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--selection);
+    color: var(--selection-ink);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  [id] {
+    scroll-margin-top: 80px;
+  }
+
+  select {
+    background-color: var(--surface);
+    color: var(--ink);
+  }
+
+  code,
+  kbd,
+  samp {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+}
+
+@layer components {
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Apparition des contenus : opacité + translation uniquement, désactivée si l'utilisateur
+     a demandé moins d'animations. */
+  .reveal {
+    animation: reveal 520ms var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 50ms);
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .caret::after {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 1.05em;
+    margin-left: 2px;
+    vertical-align: -0.15em;
+    background-color: var(--ink);
+    animation: caret 1s steps(2, start) infinite;
+  }
+
+  @keyframes caret {
+    to {
+      visibility: hidden;
+    }
+  }
+
+  .pulse-dot {
+    animation: pulse-dot 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .caret::after,
+  .pulse-dot {
+    animation: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}

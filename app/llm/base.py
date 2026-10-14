@@ -22,6 +22,8 @@ class Generation:
     text: str
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
+    # Mesures propres au fournisseur (ZeroGPU : durée de génération, tokens/s, VRAM...).
+    meta: dict | None = None
 
 
 class LLMClient(Protocol):

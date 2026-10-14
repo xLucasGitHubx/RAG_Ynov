@@ -66,6 +66,7 @@ def evaluate_question(assistant: Assistant, q: dict) -> dict:
         "retrieved": retrieved,
         "prompt_tokens": result.prompt_tokens,
         "completion_tokens": result.completion_tokens,
+        "llm_meta": result.llm_meta,
         "timings_ms": {k: round(v) for k, v in result.timings_ms.items()},
     }
     if q["type"] == "hors_perimetre":

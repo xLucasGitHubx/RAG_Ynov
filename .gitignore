@@ -26,3 +26,8 @@ Thumbs.db
 data/parsed/
 eval/.cache/
 CLAUDE.md
+
+# Interface web : dépendances et build (npm run build dans frontend/)
+frontend/node_modules/
+app/static/ui/
+.playwright-cli/

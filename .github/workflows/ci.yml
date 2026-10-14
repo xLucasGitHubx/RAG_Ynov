@@ -1,0 +1,57 @@
+name: CI
+
+# Vérifications à chaque push et pull request. Le déploiement (image complète vers Azure
+# Container Apps, Space Hugging Face) viendra dans un workflow séparé à l'itération 5.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API (ruff + pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - name: Dépendances (torch CPU)
+        run: pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements-dev.txt
+      - name: Lint
+        run: ruff check .
+      - name: Tests (sans réseau ni modèle)
+        run: pytest -q
+
+  interface:
+    name: Interface (typecheck + build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+
+  docker-interface:
+    name: Docker (étape interface)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construire l'étape frontend du Dockerfile
+        run: docker build --target frontend -t rag-ui-ci .

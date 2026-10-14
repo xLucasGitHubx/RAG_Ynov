@@ -37,3 +37,8 @@ data/parsed/
 data/raw/*.pdf
 data/raw/*.docx
 data/raw/*.md
+
+# Interface : reconstruite dans l'étape « frontend » du Dockerfile
+frontend/node_modules/
+app/static/ui/
+.playwright-cli/

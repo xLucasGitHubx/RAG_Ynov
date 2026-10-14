@@ -1,0 +1,9 @@
+{
+  "description": "Latence des rerankers sur CPU (i5-1240P, 16 threads) : 5 questions x 20 passages réels de l'index, après échauffement. Mesures de scripts/bench_reranker.py du 13/10/2026.",
+  "command": "python -m scripts.bench_reranker BAAI/bge-reranker-v2-m3 cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+  "results": [
+    {"model": "BAAI/bge-reranker-v2-m3", "params_millions": 568, "max_length": 512, "seconds_per_question": 15.07},
+    {"model": "BAAI/bge-reranker-v2-m3", "params_millions": 568, "max_length": 1024, "seconds_per_question": 15.79},
+    {"model": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1", "params_millions": 118, "max_length": 512, "seconds_per_question": 1.26}
+  ]
+}

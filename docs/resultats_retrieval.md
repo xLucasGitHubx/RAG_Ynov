@@ -71,10 +71,11 @@ Sur Syntec, la recherche hybride coûte 2 points de recall@5 (0,93 contre 0,95) 
 | --- | --- | --- |
 | 0,465 | 8 | 1 |
 | 0,445 | 5 | 0 |
-| **0,425** | **4** | **0** |
+| 0,425 | 4 | 0 |
+| **0,420 (retenu)** | **3** | **0** |
 | 0,405 | 3 | 0 |
 
-Seuil retenu : **0,42** (`RETRIEVAL_MIN_SCORE`) avec une marge de 0,045 sous la question légitime la moins bien notée. Les hors-périmètre restants sont refusés par le LLM (phrase de refus imposée par le prompt). Avec ~40 % des questions hors sujet écartées avant le LLM, autant de minutes ZeroGPU sont économisées.
+Seuil retenu : **0,42** (`RETRIEVAL_MIN_SCORE`), arrondi sous 0,425 pour garder une marge de 0,045 sous la question légitime la moins bien notée. Un hors-périmètre se trouve à 0,424 : avec 0,42, **3 hors-périmètre sur 10** sont écartés sans le LLM (confirmé par l'évaluation de bout en bout). Les autres sont refusés par le LLM (phrase de refus imposée par le prompt). Chaque refus anticipé économise un appel GPU.
 
 ## Configuration retenue
 

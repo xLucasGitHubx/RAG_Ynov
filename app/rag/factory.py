@@ -14,7 +14,7 @@ def open_collection(settings: Settings):
     collection = get_collection(persistent_client(settings.chroma_dir), settings.chroma_collection)
     if collection.count() == 0:
         raise IndexNotReadyError(
-            "L'index des documents est vide : lance « python -m ingestion.ingest »."
+            "L'index des documents est vide : lancez « python -m ingestion.ingest »."
         )
     return collection
 

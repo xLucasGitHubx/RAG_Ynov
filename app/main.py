@@ -10,13 +10,15 @@ import time
 from collections.abc import Iterator
 from contextlib import asynccontextmanager
 from functools import lru_cache
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Response
-from fastapi.responses import RedirectResponse, StreamingResponse
+from fastapi.responses import FileResponse, RedirectResponse, StreamingResponse
 
 from app import __version__
 from app.config import Settings, get_settings
+from app.dashboard import router as dashboard_router
 from app.llm import LLMError, LLMNotConfiguredError, build_llm_client
 from app.monitoring.tracker import (
     FeedbackRecord,
@@ -152,6 +154,7 @@ app = FastAPI(
         {"name": "Assistant", "description": "Poser une question à l'assistant."},
         {"name": "Supervision", "description": "État du service."},
         {"name": "Administration", "description": "Réservé au rôle admin."},
+        {"name": "Interface", "description": "Données de l'interface web (/ui)."},
     ],
     lifespan=lifespan,
 )
@@ -171,8 +174,8 @@ def check_question(question: str, request_id: str | None = None, endpoint: str =
         raise HTTPException(
             status_code=400,
             detail=(
-                f"Ta question contient des données personnelles ({kinds}). Pour les protéger, "
-                "elle n'a pas été traitée : reformule-la sans ces informations."
+                f"Votre question contient des données personnelles ({kinds}). Pour les protéger, "
+                "elle n'a pas été traitée : reformulez-la sans ces informations."
             ),
         )
 
@@ -182,9 +185,30 @@ def server_timing(timings_ms: dict[str, float]) -> str:
     return ", ".join(f"{name};dur={value:.0f}" for name, value in timings_ms.items())
 
 
+UI_DIR = Path(__file__).parent / "static" / "ui"
+
+
 @app.get("/", include_in_schema=False)
 def root() -> RedirectResponse:
-    return RedirectResponse(url="/docs")
+    """L'interface si elle est construite (cd frontend && npm run build), sinon le Swagger."""
+    return RedirectResponse(url="/ui/" if (UI_DIR / "index.html").exists() else "/docs")
+
+
+@app.get("/ui", include_in_schema=False)
+@app.get("/ui/{path:path}", include_in_schema=False)
+def ui(path: str = "") -> FileResponse:
+    """Interface web (application monopage React) : fichier statique s'il existe, sinon
+    index.html, pour que les adresses comme /ui/evaluation fonctionnent au rechargement."""
+    if not (UI_DIR / "index.html").exists():
+        raise HTTPException(status_code=404,
+                            detail="Interface non construite : cd frontend && npm run build.")
+    candidate = (UI_DIR / path).resolve()
+    if path and candidate.is_file() and UI_DIR.resolve() in candidate.parents:
+        return FileResponse(candidate)
+    return FileResponse(UI_DIR / "index.html", headers={"Cache-Control": "no-cache"})
+
+
+app.include_router(dashboard_router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Supervision"])
@@ -226,7 +250,7 @@ def ask(
         track_request(request_id, "ask", assistant, payload.question, status="erreur_llm")
         raise HTTPException(
             status_code=502,
-            detail="Le modèle de langage n'a pas pu répondre. Réessaie dans un instant.",
+            detail="Le modèle de langage n'a pas pu répondre. Réessayez dans un instant.",
         ) from exc
     timings = {**result.timings_ms, "total": (time.perf_counter() - start) * 1000}
     response.headers["Server-Timing"] = server_timing(timings)

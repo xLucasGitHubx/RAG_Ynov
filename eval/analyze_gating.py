@@ -11,7 +11,9 @@ Usage :
 """
 
 import argparse
+import json
 import os
+from pathlib import Path
 
 from app.config import get_settings
 from app.rag.factory import build_retriever
@@ -36,6 +38,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--reranker-model")
     parser.add_argument("--no-reranker", action="store_true")
+    parser.add_argument("--output", type=Path, help="écrit les scores par question en JSON")
     args = parser.parse_args()
     if args.reranker_model:
         os.environ["RERANKER_MODEL"] = args.reranker_model
@@ -49,10 +52,13 @@ def main() -> None:
     retriever = build_retriever(get_settings())
     scores: dict[str, dict[str, list[float]]] = {"cosinus": {"in": [], "out": []},
                                                  "reranker": {"in": [], "out": []}}
+    per_question = []
     for q in read_jsonl(NEXALIS_QUESTIONS):
         result = retriever.search(q["question"])
         group = "out" if q["type"] == "hors_perimetre" else "in"
         scores["cosinus"][group].append(max(c.score for c in result.chunks))
+        per_question.append({"id": q["id"], "type": q["type"], "in_scope": group == "in",
+                             "top_cosine": round(scores["cosinus"][group][-1], 4)})
         if retriever.reranker:
             scores["reranker"][group].append(max(c.rerank_score for c in result.chunks))
 
@@ -72,6 +78,13 @@ def main() -> None:
             out = sum(1 for s in outside if s < t)
             lost = sum(1 for s in inside if s < t)
             print(f"  {t:.3f}   {out:>2}/{len(outside)}                     {lost}/{len(inside)}")
+
+    if args.output:
+        args.output.write_text(json.dumps({
+            "hybrid_search": get_settings().hybrid_search,
+            "questions": per_question,
+        }, ensure_ascii=False, indent=1), encoding="utf-8")
+        print(f"\nScores écrits dans {args.output}")
 
 
 if __name__ == "__main__":

@@ -11,16 +11,18 @@ Un assistant virtuel qui répond aux questions RH et IT des employés (congés, 
 | 1 | Squelette : API FastAPI, `/ask`, Swagger | Fait |
 | 2 | Conteneurisation : Dockerfile multi-stage | Fait (mis à jour pour le RAG) |
 | 3 | Mémoire : corpus, ingestion Docling, chunking mesuré, BGE-M3, ChromaDB | Fait |
-| 4 | Cerveau : Ollama local, recherche hybride, streaming SSE | Fait en local, **sans interface** ; Space ZeroGPU écrit, non déployé |
-| 5 | Déploiement : Azure Container Apps + Space ZeroGPU | À faire |
-| 6 | Optimisation : quantization | À faire (benchmark rerankers fait) |
-| 7 | Sécurité et RGPD | Fait (local) |
-| 8 | MLOps avec MLflow | Fait (local) : runs d'évaluation, suivi par requête, feedback |
-| 9 | FinOps et documentation | À faire |
+| 4 | Cerveau : Ollama local, Space ZeroGPU, recherche hybride, streaming SSE, interface web | Fait |
+| 5 | Déploiement : Azure Container Apps + Space ZeroGPU | Space ZeroGPU en service ; Azure à faire |
+| 6 | Optimisation : rerankers, quantization (GGUF local ; bf16 / int8 / nf4 sur ZeroGPU) | Fait |
+| 7 | Sécurité et RGPD | Fait |
+| 8 | MLOps avec MLflow : runs d'évaluation, suivi par requête, feedback, registre de modèles | Fait |
+| 9 | FinOps et documentation | Fait |
 
-Résultats détaillés : [docs/resultats_retrieval.md](docs/resultats_retrieval.md) (chunking, recherche hybride, rerankers) et [docs/resultats_reponses.md](docs/resultats_reponses.md) (réponses de bout en bout). Note RGPD : [docs/note_rgpd.md](docs/note_rgpd.md).
+Chiffres clés : bonne source dans le top 5 pour 98 % des questions (recherche hybride), **97 % de réponses correctes** (66 / 68) avec Ministral 3 8B bf16 sur ZeroGPU, 10 / 10 questions hors périmètre refusées, 1,5 s de GPU par réponse, ≈ 122 $/mois pour 1 000 utilisateurs par jour (ZeroGPU) ou ≈ 223 $ avec une L4 dédiée.
 
-## Architecture (développement local)
+Résultats détaillés : [docs/resultats_retrieval.md](docs/resultats_retrieval.md) (chunking, recherche hybride, rerankers), [docs/resultats_reponses.md](docs/resultats_reponses.md) (réponses de bout en bout, local et ZeroGPU), [docs/estimation_budget.md](docs/estimation_budget.md) (FinOps). Note RGPD : [docs/note_rgpd.md](docs/note_rgpd.md).
+
+## Architecture
 
 ```
 Question ──> API FastAPI (CPU)
@@ -29,7 +31,7 @@ Question ──> API FastAPI (CPU)
               ├─ recherche hybride : BGE-M3 (Chroma) + BM25, fusion RRF, versions obsolètes exclues
               ├─ meilleur score < 0,42 ─> « je ne sais pas » sans appeler le LLM
               ├─ prompt : 5 extraits délimités + règles anti-injection
-              └─ LLM : Ollama (Ministral 3 3B, GGUF Q4) en local ── plus tard : Space ZeroGPU
+              └─ LLM : Space ZeroGPU (Ministral 3 8B bf16) ── en développement : Ollama (Ministral 3 3B GGUF)
             ─> réponse + sources (document, section, page) + request_id ─> suivi MLflow
 ```
 
@@ -39,6 +41,7 @@ Tout ce qui n'a pas besoin de GPU (parsing, embeddings, recherche, sécurité, s
 
 - Python 3.12 ([python.org](https://www.python.org/downloads/))
 - Docker Desktop ([docker.com](https://www.docker.com/products/docker-desktop/)) : sert à faire tourner Ollama
+- Node.js 22 ([nodejs.org](https://nodejs.org/)) : uniquement pour construire l'interface web
 - Git
 - ~10 Go d'espace disque (modèles BGE-M3, Docling, Ministral 3B)
 
@@ -92,10 +95,11 @@ Pipeline d'ingestion : Docling (PDF, DOCX → Markdown, OCR des scans) → titre
 uvicorn app.main:app --port 7860
 ```
 
+- Interface web : http://localhost:7860/ui (voir plus bas ; à construire une fois)
 - Swagger : http://localhost:7860/docs
 - Santé : http://localhost:7860/health
 
-Le démarrage prend ~20 s (chargement de BGE-M3). La première réponse d'Ollama est plus lente (chargement du modèle).
+Le démarrage prend de 20 à 70 s (chargement de BGE-M3). La première réponse d'Ollama est plus lente (chargement du modèle).
 
 ```powershell
 Invoke-RestMethod -Method Post -Uri http://localhost:7860/ask `
@@ -110,17 +114,62 @@ Invoke-RestMethod -Method Post -Uri http://localhost:7860/ask `
 | `POST` | `/feedback` | `{"request_id", "rating": 1 ou -1}` : pouce haut / bas, relié à la requête dans MLflow |
 | `POST` | `/ingest` | réindexation (rôle admin) |
 | `GET` | `/health` | état, modèle, nombre de chunks indexés |
+| `GET` | `/ui` | interface web (application React servie par l'API) |
+| `GET` | `/api/config`, `/api/documents`, `/api/documents/{doc}/chunks`, `/api/reports`, `/api/monitoring` | données de l'interface, en lecture seule, même clé d'API que `/ask` |
+
+## Interface web
+
+Une application React servie par l'API elle-même sur `/ui` (même conteneur, en plus du Swagger), pensée pour la démonstration :
+
+| Page | Contenu |
+| --- | --- |
+| Vue d'ensemble | chiffres clés, trajet d'une question (CPU / GPU), configuration en service lue sur l'API, avancement des 9 itérations |
+| Assistant | chat en streaming, citations cliquables reliées aux extraits (document, section, page, score), durée recherche / génération, pouces haut et bas, cas « hors périmètre » et « bloqué RGPD » visibles |
+| Corpus | les 10 documents, leurs métadonnées et sources réelles, le découpage en chunks de chacun (tableaux rendus) |
+| Évaluation | recherche (taille des chunks, hybride contre rerankers, coût des rerankers, seuil de refus), réponses (prompt v2 / v3, 8B sur ZeroGPU, par type, chaque question avec réponse attendue et obtenue), modèle (quantization en local et sur ZeroGPU), sécurité (20 messages Faker) |
+| Tests | rapport pytest par fichier, noms des tests lisibles, commandes pour relancer les mesures |
+| Monitoring | questions suivies dans MLflow en direct : volumes, refus, latence par étape, feedback |
+
+```powershell
+cd frontend
+npm install
+npm run build                       # -> app/static/ui, servi par l'API sur /ui
+cd ..
+python -m scripts.export_reports    # met à jour les pages Évaluation et Tests (relance pytest)
+```
+
+Développement de l'interface avec rechargement à chaud : API sur le port 7861 (`uvicorn app.main:app --port 7861`), puis `npm run dev` dans `frontend/` (http://localhost:5173/ui).
+
+Choix de conception :
+- **React + Vite + Tailwind**, et non Gradio comme prévu au plan : l'interface est servie par FastAPI (même image Docker), ZeroGPU n'impose Gradio que pour le Space du LLM. Swagger reste disponible.
+- **Système visuel** : `frontend/DESIGN.md` (analyse du design system de Vercel, [awesome-design-md](https://github.com/voltagent/awesome-design-md)), règles anti « AI slop » de [Taste Skill](https://www.tasteskill.dev/) (un fond, une encre, un accent ; pas de dégradés, de flou ni d'émojis ; deux polices, Geist et Geist Mono), thèmes clair et sombre.
+- **Accessibilité et détails** : [Web Interface Guidelines](https://github.com/vercel-labs/agent-skills/tree/main/skills/web-design-guidelines) de Vercel (focus visibles, libellés, `aria-live`, mouvement réduit, état dans l'URL, `Intl` pour nombres et dates, typographie française).
+- **Graphiques** : palette validée pour le daltonisme dans les deux thèmes, un seul axe par graphique, chaque graphique a son tableau de valeurs.
+- **Vérification** : captures à 1440, 768 et 390 px et contrôle du défilement horizontal avec [playwright-cli](https://github.com/microsoft/playwright-cli).
 
 ### Le modèle de langage
 
 | `LLM_PROVIDER` | Usage |
 | --- | --- |
 | `ollama` (défaut) | développement : Ministral 3 3B quantifié, local, aucune minute GPU ZeroGPU consommée |
-| `zerogpu` | production (itération 4 bis) : Space Gradio `space/app.py`, `HF_TOKEN` + `LLM_SPACE_ID` |
+| `zerogpu` | production : Space Gradio `space/app.py` (Ministral 3 8B), `HF_TOKEN` + `LLM_SPACE_ID` dans `.env` |
 | `mistral` | API Mistral (provisoire, ancienne configuration) |
 | `static` | réponse fixe, pour les tests |
 
 Tous respectent l'interface `app/llm/base.py` (`generate` et `stream`).
+
+### Le Space ZeroGPU
+
+`space/` contient le Space Gradio (privé) qui sert le LLM : Ministral 3 8B Instruct chargé avec transformers, décoré par `@spaces.GPU` (le GPU n'est attribué que pendant la génération). Deux points d'API : `/generate` (streaming, utilisé par `/ask/stream`) et `/generate_json` (réponse complète + mesures : temps de génération, tokens/s, VRAM au pic, GPU).
+
+```powershell
+python -m scripts.deploy_space            # publie space/ sur LLM_SPACE_ID et attend qu'il soit en service
+python -m scripts.deploy_space --status   # état du Space
+```
+
+Variables du Space : `MODEL_ID`, `QUANTIZATION` (`bf16`, `int8` ou `nf4` via bitsandbytes), `MAX_NEW_TOKENS`, `TEMPERATURE`, `GPU_DURATION`. Le tokenizer de Ministral 3 doit être chargé avec `fix_mistral_regex=True`, sinon le découpage en tokens est faux.
+
+Un Space ZeroGPU se met en pause après une période d'inactivité : le relancer (`--status` l'indique) avant une démonstration.
 
 ## Sécurité et RGPD
 
@@ -138,39 +187,57 @@ Détails : [docs/note_rgpd.md](docs/note_rgpd.md).
 python -m eval.eval_retrieval --dataset syntec --grid full     # grille de chunking (100 questions Syntec)
 python -m eval.eval_retrieval --dataset nexalis --hybrid       # recherche hybride sur les questions Nexalis
 python -m eval.analyze_gating                                  # seuil de refus sans LLM
-python -m eval.eval_answers                                    # réponses de bout en bout (Ollama)
+python -m eval.eval_answers                                    # réponses de bout en bout (LLM_PROVIDER)
+$env:LLM_PROVIDER="zerogpu"; python -m eval.eval_answers       # idem avec le 8B sur ZeroGPU
+python -m eval.compare_quantization                            # GGUF en local (Ollama), 20 questions
+python -m eval.compare_quantization --backend zerogpu          # 8B en bf16 / int8 / nf4 sur ZeroGPU
 python -m scripts.bench_reranker BAAI/bge-reranker-v2-m3       # latence d'un reranker sur CPU
+python -m scripts.finops                                       # budget pour 1 000 utilisateurs par jour
+python -m eval.register_config                                 # enregistre la configuration retenue dans le registre
 
 mlflow ui --backend-store-uri sqlite:///mlflow.db              # http://localhost:5000
 ```
 
-Expériences MLflow : `retrieval-chunking` (un run par configuration), `answers-nexalis` (un run par évaluation de bout en bout), `requests` (un run par question posée à l'API : latences par étape, nombre de chunks, scores, tokens, modèles, version de l'index, feedback ; jamais le texte de la question).
+Expériences MLflow : `retrieval-chunking` (un run par configuration), `answers-nexalis` (un run par évaluation de bout en bout), `quantization` (un run par variante de modèle), `requests` (un run par question posée à l'API : latences par étape, nombre de chunks, scores, tokens, modèles, version de l'index, feedback ; jamais le texte de la question). Registre de modèles : `assistant-rag-nexalis` (configuration complète du RAG en « models from code », alias `production`).
 
 Jeu d'évaluation maison `eval/questions.jsonl` : 68 questions, dont 58 avec réponse attendue, document et section (10 pièges : version obsolète, contradiction convention/accord, information dans un tableau, calculs) et 10 hors périmètre.
 
 ## Tests
 
 ```powershell
-pytest          # 86 tests, sans réseau ni modèle chargé
+pytest          # sans réseau ni modèle chargé
 ruff check .
 ```
+
+Intégration continue (`.github/workflows/ci.yml`, à chaque push et pull request) : ruff + pytest, build de l'interface, et build de l'étape Docker de l'interface.
 
 ## Docker
 
 ```powershell
 python -m ingestion.ingest           # l'index chroma_db/ est copié dans l'image
-docker compose up --build            # API (port 7860) + Ollama
+docker compose up --build            # API (port 7860) + Ollama + MLflow (port 5000)
 docker compose exec ollama ollama pull ministral-3:3b   # premier lancement uniquement
 ```
 
-Le Dockerfile installe torch en version CPU, télécharge BGE-M3 au build (aucun téléchargement au démarrage), copie l'index et tourne en utilisateur non root. Docling n'est pas embarqué : réindexer = reconstruire l'image (corpus fixe).
+Sans compose, avec l'Ollama déjà lancé sur la machine :
+
+```powershell
+docker build -t rag-api:local .
+docker run -d --name rag-api -p 7860:7860 --env-file .env -e OLLAMA_BASE_URL=http://host.docker.internal:11434 rag-api:local
+```
+
+Interface : http://localhost:7860/ui (la racine `/` y redirige). Image d'environ 7 Go, dont BGE-M3 (2,3 Go) et torch CPU ; démarrage en ~12 s. Avec compose, chaque question est suivie dans le serveur MLflow `rag-mlflow` (http://localhost:5000), qui alimente la page Monitoring.
+
+Le Dockerfile construit l'interface web (étape Node), installe torch en version CPU, télécharge BGE-M3 au build (aucun téléchargement au démarrage), copie l'index et le rapport d'évaluation, et tourne en utilisateur non root. Docling n'est pas embarqué : réindexer = reconstruire l'image (corpus fixe).
 
 ## Arborescence
 
 ```
 RAG_Ynov/
 ├── app/                    API FastAPI
-│   ├── main.py             Routes /ask, /ask/stream, /feedback, /ingest, /health
+│   ├── main.py             Routes /ask, /ask/stream, /feedback, /ingest, /health, /ui
+│   ├── dashboard.py        Routes /api/* de l'interface (config, corpus, rapports, monitoring)
+│   ├── reports/            Rapport d'évaluation consolidé (scripts/export_reports.py)
 │   ├── config.py           Configuration (variables d'environnement, .env)
 │   ├── prompts.py          Prompt système, phrase de refus, garde-fous
 │   ├── llm/                Fournisseurs de LLM : Ollama, ZeroGPU, Mistral, static
@@ -178,13 +245,15 @@ RAG_Ynov/
 │   ├── security/           Filtre RGPD, clés d'API, limite de débit, filtre de logs
 │   ├── monitoring/         Suivi MLflow des requêtes et du feedback
 │   └── services/           Assistant : recherche puis génération
+├── frontend/               Interface web React (Vite, Tailwind) + DESIGN.md ; build -> app/static/ui
 ├── ingestion/              Parsing Docling, découpage, indexation idempotente
 ├── data/sources/           Documents Nexalis en Markdown (source de vérité, avec métadonnées)
 ├── data/raw/               Documents rendus (PDF, DOCX, scan, MD) + metadata.json
 ├── eval/                   Jeux de questions, scripts d'évaluation, résultats CSV
-├── scripts/                Génération du corpus, benchmark des rerankers
-├── space/                  Space Gradio ZeroGPU (production, non déployé)
-├── docs/                   Plan d'action, résultats, note RGPD
+├── scripts/                Corpus, export des rapports, rerankers, déploiement du Space, FinOps
+├── space/                  Space Gradio ZeroGPU (LLM de production)
+├── docs/                   Plan d'action, résultats, note RGPD, budget
+├── .github/workflows/      Intégration continue
 ├── tests/                  Tests pytest
 ├── Dockerfile, docker-compose.yml
 └── requirements*.txt       API / ingestion / développement
