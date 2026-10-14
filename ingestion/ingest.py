@@ -20,7 +20,7 @@ from pathlib import Path
 
 from app.config import ROOT_DIR, Settings, get_settings
 from ingestion.chunking import Chunk, ChunkingConfig, bge_token_counter, chunk_markdown
-from ingestion.parsing import SUPPORTED_SUFFIXES, parse_file
+from ingestion.parsing import SUPPORTED_SUFFIXES, TEXT_SUFFIXES, parse_file
 
 logger = logging.getLogger("rag.ingestion")
 
@@ -38,7 +38,13 @@ class IngestReport:
 
 
 def file_hash(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    """Empreinte du fichier. Pour le texte, les fins de ligne sont normalisées : un même document
+    cloné sous Windows (CRLF) ou sous Linux, par la CI (LF), doit garder la même empreinte, sinon
+    l'image Docker croirait tous les documents Markdown modifiés et les réindexerait."""
+    data = path.read_bytes()
+    if path.suffix.lower() in TEXT_SUFFIXES:
+        data = data.replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def load_metadata(raw_dir: Path) -> dict[str, dict]:
@@ -96,7 +102,11 @@ def index_signature(settings: Settings, config: ChunkingConfig) -> str:
 
 
 def ingest(settings: Settings | None = None, config: ChunkingConfig | None = None,
-           reset: bool = False, collection=None, embedder=None) -> IngestReport:
+           reset: bool = False, collection=None, embedder=None,
+           only: set[str] | None = None) -> IngestReport:
+    """Indexe data/raw. Avec `only`, ne traite que ces fichiers et ne retire rien de l'index :
+    c'est le cas de l'ajout d'un document depuis l'interface, qui ne doit jamais toucher au
+    reste du corpus."""
     from app.rag.embeddings import Embedder
     from app.rag.store import get_collection, persistent_client
 
@@ -123,9 +133,12 @@ def ingest(settings: Settings | None = None, config: ChunkingConfig | None = Non
     report = IngestReport(added=[], skipped=[], removed=[], chunks=0, seconds=0)
 
     indexed = _indexed_hashes(collection)
-    for name in sorted(set(indexed) - {p.name for p in documents}):
-        collection.delete(where={"document": name})
-        report.removed.append(name)
+    if only is not None:
+        documents = [p for p in documents if p.name in only]
+    else:
+        for name in sorted(set(indexed) - {p.name for p in documents}):
+            collection.delete(where={"document": name})
+            report.removed.append(name)
 
     for path in documents:
         digest = file_hash(path)
