@@ -10,7 +10,7 @@ venv/
 .env
 
 # Données générées
-chroma_db/
+# (chroma_db/ est versionné : l'index est copié dans l'image par le workflow de déploiement)
 mlruns/
 mlflow.db
 mlartifacts/
