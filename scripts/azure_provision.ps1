@@ -92,38 +92,36 @@ if (-not (Get-AzValue acr show --name $Registry --query name -o tsv)) {
 
 Write-Host "3/5 Environnement Container Apps $Environment"
 if (-not (Get-AzValue containerapp env show --name $Environment --resource-group $ResourceGroup --query name -o tsv)) {
-    Invoke-Az containerapp env create --name $Environment --resource-group $ResourceGroup --location $Location --output none
+    # Mode par défaut (« Express » avec l'extension actuelle) : un environnement « standard » restait bloqué en « Waiting »
+    # sur l'abonnement étudiant, qui n'autorise de toute façon qu'un seul environnement.
+    Invoke-Az containerapp env create --name $Environment --resource-group $ResourceGroup --location $Location --logs-destination none --output none
 }
 
-Write-Host "4/5 Application $App (image de démarrage, remplacée par le workflow)"
-if (-not (Get-AzValue containerapp show --name $App --resource-group $ResourceGroup --query name -o tsv)) {
-    Invoke-Az containerapp create --name $App --resource-group $ResourceGroup --environment $Environment `
-        --image mcr.microsoft.com/k8se/quickstart:latest --target-port 7860 --ingress external `
-        --cpu 2 --memory 4Gi --min-replicas 1 --max-replicas 2 --output none
-}
-
-Write-Host "5/5 Accès au registre, secrets et variables"
-# Les environnements Container Apps récents n'acceptent pas l'identité managée pour le registre :
-# on utilise le compte administrateur du registre (identifiants stockés comme secret de l'application).
+Write-Host "4/5 Application $App (image :latest du registre ; le workflow y déploie ensuite chaque version)"
+# Environnement Container Apps en mode Express (défaut de l'extension az) :
+# - ni identité managée ni enregistrement tardif du registre : les identifiants du compte
+#   administrateur du registre sont fournis à la création de l'application ;
+# - le conteneur en cours n'est pas remplacé quand on change secrets ou variables après coup :
+#   tout est donc posé à la création. Pour changer un secret : supprimer l'application
+#   (az containerapp delete) et relancer ce script, qui la recrée.
 Invoke-Az acr update --name $Registry --admin-enabled true --output none
-$acrUser = az acr credential show --name $Registry --query username -o tsv
-$acrPassword = az acr credential show --name $Registry --query "passwords[0].value" -o tsv
-Invoke-Az containerapp registry set --name $App --resource-group $ResourceGroup `
-    --server "$Registry.azurecr.io" --username $acrUser --password $acrPassword --output none
-
-# Clés d'API déjà présentes (relance du script) : on ne les régénère pas.
-$secretNames = az containerapp secret list --name $App --resource-group $ResourceGroup --query "[].name" -o tsv
-if (($secretNames -contains "api-keys") -and $generated) {
-    $generated = $false
-    Invoke-Az containerapp secret set --name $App --resource-group $ResourceGroup --secrets "hf-token=$hfToken" --output none
+$appExisted = [bool](Get-AzValue containerapp show --name $App --resource-group $ResourceGroup --query name -o tsv)
+if ($appExisted) {
+    Write-Host "  L'application existe déjà : elle est conservée telle quelle (voir la note ci-dessus)."
 } else {
-    Invoke-Az containerapp secret set --name $App --resource-group $ResourceGroup `
-        --secrets "hf-token=$hfToken" "api-keys=$apiKeys" --output none
+    $acrUser = az acr credential show --name $Registry --query username -o tsv
+    $acrPassword = az acr credential show --name $Registry --query "passwords[0].value" -o tsv
+    if (-not (Get-AzValue acr repository show-tags --name $Registry --repository rag-api -o tsv)) {
+        throw "Le registre ne contient pas encore l'image rag-api : lancez d'abord le workflow Déploiement Azure (il échouera à la dernière étape, c'est attendu), puis relancez ce script."
+    }
+    Invoke-Az containerapp create --name $App --resource-group $ResourceGroup --environment $Environment `
+        --image "$Registry.azurecr.io/rag-api:latest" `
+        --registry-server "$Registry.azurecr.io" --registry-username $acrUser --registry-password $acrPassword `
+        --secrets "hf-token=$hfToken" "api-keys=$apiKeys" `
+        --env-vars "ENVIRONMENT=production" "LLM_PROVIDER=zerogpu" "LLM_SPACE_ID=$spaceId" `
+                   "HF_TOKEN=secretref:hf-token" "API_KEYS=secretref:api-keys" `
+        --target-port 7860 --ingress external --cpu 2 --memory 4Gi --min-replicas 1 --max-replicas 2 --output none
 }
-Invoke-Az containerapp update --name $App --resource-group $ResourceGroup --set-env-vars `
-    "ENVIRONMENT=production" "LLM_PROVIDER=zerogpu" "LLM_SPACE_ID=$spaceId" `
-    "HF_TOKEN=secretref:hf-token" "API_KEYS=secretref:api-keys" --output none
-
 $fqdn = az containerapp show --name $App --resource-group $ResourceGroup --query properties.configuration.ingress.fqdn -o tsv
 
 Write-Host ""
@@ -135,7 +133,7 @@ Write-Host "À renseigner dans GitHub (Settings > Secrets and variables > Action
 Write-Host "  AZURE_RESOURCE_GROUP = $ResourceGroup"
 Write-Host "  AZURE_REGISTRY       = $Registry"
 Write-Host "  AZURE_CONTAINER_APP  = $App"
-if ($generated) {
+if ($generated -and -not $appExisted) {
     Write-Host ""
     Write-Host "Des clés d'API ont été générées et stockées dans Azure (secret api-keys). Pour les lire :"
     Write-Host "  az containerapp secret show --name $App --resource-group $ResourceGroup --secret-name api-keys --query value -o tsv"

@@ -22,7 +22,7 @@ GitHub Actions (manuel) ── build ──> Azure Container Registry ── pul
    .\scripts\azure_provision.ps1
    ```
 
-   L'environnement Container Apps créé est de type « express » : il refuse l'identité managée, le registre est donc accédé avec ses identifiants administrateur (stockés comme secret de l'application). Le script lit `HF_TOKEN` et `LLM_SPACE_ID` dans `.env` et les envoie à Azure comme secrets (rien n'est affiché). Si `API_KEYS` est absent de `.env`, il génère une clé employé et une clé admin. Les abonnements étudiants limitent les régions (`az policy assignment list` indique lesquelles) : `francecentral` est refusée, le déploiement réel utilise `-Location germanywestcentral`. Le script est rejouable : il réutilise ce qui existe déjà.
+   L'environnement Container Apps créé est de type « Express » (défaut de l'extension az) : il refuse l'identité managée, le registre est donc accédé avec ses identifiants administrateur, fournis à la création de l'application. Un environnement « standard » est resté bloqué en « Waiting » sur l'abonnement étudiant, qui n'autorise de toute façon qu'**un seul** environnement. Secrets et variables sont aussi posés à la création : en mode Express, les changer ensuite ne remplace pas le conteneur en cours. Pour modifier un secret : `az containerapp delete --name rag-api --resource-group rg-rag-nexalis --yes` puis relancer le script. Le script lit `HF_TOKEN` et `LLM_SPACE_ID` dans `.env` et les envoie à Azure comme secrets (rien n'est affiché). Si `API_KEYS` est absent de `.env`, il génère une clé employé et une clé admin. Les abonnements étudiants limitent les régions (`az policy assignment list` indique lesquelles) : `francecentral` est refusée, le déploiement réel utilise `-Location germanywestcentral`. Le script est rejouable : il réutilise ce qui existe déjà.
 
    À la fin, il affiche les trois valeurs à copier dans GitHub et l'URL de l'application.
 
@@ -69,7 +69,7 @@ L'index (`chroma_db/`) est versionné dans le dépôt et copié dans l'image : s
 
 - **Space ZeroGPU** : il se met en pause après inactivité. Le relancer avant une démonstration (`python -m scripts.deploy_space --status`). Sans lui, l'API répond mais les questions échouent avec un message clair.
 - **MLflow** n'est pas déployé (le suivi est désactivé dans l'image) : la page Monitoring l'indique. C'est volontaire, MLflow reste un outil de développement et de soutenance en local.
-- **Journaux** : `az containerapp logs show --name rag-api --resource-group rg-rag-nexalis --follow`.
+- **Journaux** : pas d'espace de journaux (création sans Log Analytics, moins de dépendances et de coûts) ; `az containerapp logs show` ne fonctionne pas en mode Express. Utiliser `/health` et, si besoin, le portail Azure (Journal de la révision).
 
 ## 4. Alternative sans compte de service (déploiement depuis votre machine)
 
