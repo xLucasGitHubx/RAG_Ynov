@@ -56,6 +56,12 @@ class Retriever:
         # périmètre : aucun extrait n'est renvoyé (l'assistant refuse sans appeler le LLM).
         self.min_score = min_score
 
+    def refresh_lexical(self) -> None:
+        """Reconstruit l'index BM25 après un ajout ou un retrait de document (l'index vectoriel,
+        lui, est mis à jour directement dans Chroma)."""
+        if self.lexical is not None:
+            self.lexical = BM25Index.from_collection(self.collection)
+
     def search(self, question: str, top_k: int | None = None, where: dict | None = None,
                rerank: bool | None = None) -> SearchResult:
         top_k = top_k or self.top_k

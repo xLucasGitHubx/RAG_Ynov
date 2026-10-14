@@ -1,9 +1,9 @@
 # Déploiement sur Azure Container Apps
 
-Architecture : l'API (image Docker de ce dépôt : FastAPI, interface `/ui`, index, BGE-M3) tourne sur **Azure Container Apps**. Le LLM reste sur le **Space Hugging Face ZeroGPU** (`LLM_PROVIDER=zerogpu`). L'image est construite par GitHub Actions et stockée dans **Azure Container Registry**.
+Architecture : l'API (image Docker de ce dépôt : FastAPI, interface `/ui`, index, BGE-M3, Docling, base MLflow) tourne sur **Azure Container Apps**. Le LLM reste sur le **Space Hugging Face ZeroGPU** (`LLM_PROVIDER=zerogpu`). L'image est construite par GitHub Actions et stockée dans **Azure Container Registry**.
 
 ```
-GitHub Actions (manuel) ── build ──> Azure Container Registry ── pull (identifiants du registre) ──> Container Apps ──> Space ZeroGPU
+Fusion sur main ── CI ── GitHub Actions ── build ──> Azure Container Registry ── pull (identifiants du registre) ──> Container Apps ──> Space ZeroGPU
 ```
 
 ## 1. Une seule fois, sur votre machine
@@ -55,7 +55,11 @@ GitHub Actions (manuel) ── build ──> Azure Container Registry ── pul
 
 ## 2. Déployer
 
-GitHub > Actions > **Déploiement Azure** > *Run workflow*. Compter 15 à 25 minutes la première fois (image de 7 Go, puis le cache GitHub accélère). Le workflow construit l'image, la pousse, met à jour l'application et attend que `/health` réponde. L'URL finale est dans les journaux : `https://<application>.<région>.azurecontainerapps.io/ui/`.
+**Automatique** : chaque fusion sur `main` lance la CI (`ci.yml`) ; si elle réussit, `deploy.yml` construit l'image, la pousse, met à jour l'application avec la variable `GIT_SHA`, puis attend que `/health` renvoie ce commit. Ce dernier contrôle compte en mode Express : il garantit que c'est bien le nouveau conteneur qui répond, pas l'ancien. Une CI en échec, ou une CI de pull request, ne déploie jamais.
+
+**Manuel** : GitHub > Actions > **Déploiement Azure** > *Run workflow*.
+
+Compter 15 à 25 minutes la première fois (image d'environ 8 Go), beaucoup moins ensuite grâce au cache. L'URL finale est dans les journaux : `https://<application>.<région>.azurecontainerapps.io/ui/`.
 
 L'index (`chroma_db/`) est versionné dans le dépôt et copié dans l'image : si le corpus change, relancer `python -m ingestion.ingest`, committer `chroma_db/` et `data/raw/metadata.json`, puis redéployer.
 
@@ -68,7 +72,9 @@ L'index (`chroma_db/`) est versionné dans le dépôt et copié dans l'image : s
   ```
 
 - **Space ZeroGPU** : il se met en pause après inactivité. Le relancer avant une démonstration (`python -m scripts.deploy_space --status`). Sans lui, l'API répond mais les questions échouent avec un message clair.
-- **MLflow** n'est pas déployé (le suivi est désactivé dans l'image) : la page Monitoring l'indique. C'est volontaire, MLflow reste un outil de développement et de soutenance en local.
+- **MLflow** : chaque question est suivie dans une base SQLite du conteneur (`MLFLOW_TRACKING_URI`, posé par l'image), lue par la page Monitoring. Elle est **éphémère** : elle repart de zéro à chaque déploiement ou redémarrage. Pour la conserver : un serveur MLflow dédié, ou un partage Azure Files monté dans le conteneur.
+- **Ajout de documents** : avec la clé admin, la page Corpus permet d'ajouter un PDF, un scan, un Word ou un Markdown, indexé aussitôt (jusqu'à une ou deux minutes pour un scan lu par OCR). Comme la base MLflow, ces ajouts vivent sur le disque du conteneur et disparaissent au déploiement suivant : pour en faire un document permanent, l'ajouter à `data/raw` dans le dépôt, réindexer et committer.
+- **Une seule réplique** (`--max-replicas 1`) : la base MLflow et les documents ajoutés sont propres à chaque réplique, deux répliques donneraient deux historiques différents.
 - **Journaux** : pas d'espace de journaux (création sans Log Analytics, moins de dépendances et de coûts) ; `az containerapp logs show` ne fonctionne pas en mode Express. Utiliser `/health` et, si besoin, le portail Azure (Journal de la révision).
 
 ## 4. Alternative sans compte de service (déploiement depuis votre machine)

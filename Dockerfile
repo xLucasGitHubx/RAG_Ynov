@@ -49,6 +49,22 @@ for repo in (os.environ["EMBEDDING_MODEL"], os.environ["RERANKER_MODEL"]):
 PY
 EOF
 
+# Modèles de Docling (mise en page, tableaux) et de l'OCR RapidOCR, pour l'ajout de documents
+# depuis l'interface : téléchargés ici en convertissant un PDF vierge, rien à l'exécution.
+# RapidOCR range ses modèles dans son paquet : l'image finale copie donc /opt/venv de cette étape.
+RUN <<EOF
+python - <<'PY'
+import pypdfium2 as pdfium
+from docling.document_converter import DocumentConverter
+
+pdf = pdfium.PdfDocument.new()
+pdf.new_page(595, 842)
+pdf.save("/tmp/vierge.pdf")
+DocumentConverter().convert("/tmp/vierge.pdf")
+print("Modèles Docling prêts")
+PY
+EOF
+
 
 # ---------- Étape 3 : image finale, légère et sans outils de build ----------
 FROM python:3.12-slim AS runtime
@@ -63,22 +79,28 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     MODELS_LOCAL_ONLY=1 \
     EMBEDDING_MODEL=${EMBEDDING_MODEL} \
     RERANKER_MODEL=${RERANKER_MODEL} \
-    MLFLOW_TRACKING_ENABLED=false
+    MLFLOW_TRACKING_ENABLED=true \
+    MLFLOW_TRACKING_URI=sqlite:////home/appuser/app/data/mlflow.db
 
 # Utilisateur non root (uid 1000)
 RUN useradd --create-home --uid 1000 appuser
 
-COPY --from=builder /opt/venv /opt/venv
+COPY --from=models /opt/venv /opt/venv
 COPY --from=models --chown=appuser:appuser /opt/hf /opt/hf
 
 WORKDIR /home/appuser/app
+# Dossiers écrits à l'exécution : base MLflow (suivi des requêtes), documents ajoutés depuis
+# l'interface, cache du parsing. Disque du conteneur : éphémère sur Azure Container Apps.
+RUN mkdir -p data/raw data/parsed && chown -R appuser:appuser /home/appuser/app
 COPY --chown=appuser:appuser app ./app
+COPY --chown=appuser:appuser ingestion ./ingestion
 # Interface web servie par FastAPI sur /ui (rapport d'évaluation : app/reports/dashboard.json).
 COPY --from=frontend --chown=appuser:appuser /build/app/static/ui ./app/static/ui
-# Index Chroma construit en amont par `python -m ingestion.ingest` (corpus fixe) :
-# réindexer = reconstruire l'image. Docling n'est donc pas embarqué.
+# Index Chroma construit en amont par `python -m ingestion.ingest`, et documents sources : l'ajout
+# depuis l'interface relance l'ingestion incrémentale, qui retirerait de l'index tout document
+# absent de data/raw.
 COPY --chown=appuser:appuser chroma_db ./chroma_db
-COPY --chown=appuser:appuser data/raw/metadata.json ./data/raw/metadata.json
+COPY --chown=appuser:appuser data/raw ./data/raw
 
 USER appuser
 

@@ -5,7 +5,7 @@ import { BarList, LineChartBlock, SERIES } from "../components/charts";
 import { ErrorState } from "../components/ErrorState";
 import { DataTable } from "../components/tables";
 import { Card, CardHeader, CodeLine, EmptyState, LoadingBlock, Mono, PageHeader, SegmentedControl, StatTile } from "../components/ui";
-import type { Monitoring } from "../lib/api";
+import type { Config, Monitoring } from "../lib/api";
 import { STAGE_LABELS, fmt } from "../lib/format";
 import { useApi } from "../lib/hooks";
 
@@ -18,13 +18,22 @@ const STATUS_LABELS: Record<string, string> = {
 export function MonitoringPage() {
   const [refresh, setRefresh] = useState<"on" | "off">("on");
   const data = useApi<Monitoring>("/api/monitoring", refresh === "on" ? 10000 : undefined);
+  const config = useApi<Config>("/api/config");
   const m = data.data;
+  const production = config.data?.environment === "production";
 
   return (
     <>
       <PageHeader
         title="Monitoring."
-        description="Chaque question posée à l'API devient un run MLflow : durée de chaque étape, nombre d'extraits, scores, tokens, refus et feedback. Jamais le texte de la question."
+        description={
+          <>
+            Chaque question posée à l'API devient un run MLflow : durée de chaque étape, nombre d'extraits, scores,
+            tokens, refus et feedback. Jamais le texte de la question.
+            {production &&
+              " Sur Azure, la base MLflow vit dans le conteneur : elle repart de zéro à chaque déploiement."}
+          </>
+        }
         action={
           <SegmentedControl
             label="Actualisation automatique"
@@ -43,7 +52,8 @@ export function MonitoringPage() {
         <LoadingBlock />
       ) : !m.available ? (
         <EmptyState title="Suivi indisponible.">
-          {m.reason} Activez <code>MLFLOW_TRACKING_ENABLED=true</code> et installez les dépendances de développement.
+          {m.reason} Activez <code>MLFLOW_TRACKING_ENABLED=true</code> : le client MLflow et sa base SQLite sont déjà dans
+          les dépendances de l'API.
         </EmptyState>
       ) : !m.total ? (
         <EmptyState

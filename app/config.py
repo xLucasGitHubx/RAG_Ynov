@@ -15,6 +15,8 @@ class Settings(BaseSettings):
 
     app_name: str = "Assistant RH/IT — Nexalis Conseil"
     environment: str = "local"
+    # Commit déployé, posé par le workflow de déploiement (vide en local).
+    git_sha: str = ""
     log_level: str = "INFO"
 
     # --- LLM ---
@@ -69,6 +71,8 @@ class Settings(BaseSettings):
     rate_limit_per_minute: int = 30
     # Bloque les questions contenant des données personnelles (NIR, IBAN, carte, e-mail, tél.).
     pii_filter_enabled: bool = True
+    # Taille maximale d'un document ajouté depuis l'interface (rôle admin).
+    upload_max_mb: int = 20
 
     # --- Suivi MLflow (itération 8) ---
     mlflow_tracking_enabled: bool = True

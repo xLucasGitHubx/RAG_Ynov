@@ -17,6 +17,7 @@ from fastapi import Depends, FastAPI, HTTPException, Response
 from fastapi.responses import FileResponse, RedirectResponse, StreamingResponse
 
 from app import __version__
+from app.admin import router as admin_router
 from app.config import Settings, get_settings
 from app.dashboard import router as dashboard_router
 from app.llm import LLMError, LLMNotConfiguredError, build_llm_client
@@ -218,6 +219,7 @@ def ui(path: str = "") -> FileResponse:
 
 
 app.include_router(dashboard_router)
+app.include_router(admin_router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Supervision"])
@@ -237,6 +239,7 @@ def health(settings: Annotated[Settings, Depends(get_settings)]) -> HealthRespon
         llm_model=models.get(settings.llm_provider, "?"),
         rag_enabled=settings.rag_enabled,
         indexed_chunks=indexed,
+        commit=settings.git_sha or None,
     )
 
 

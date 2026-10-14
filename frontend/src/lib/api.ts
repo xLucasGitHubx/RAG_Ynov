@@ -64,6 +64,18 @@ export async function postJson<T>(path: string, body: unknown): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+/** Envoi multipart (fichier + champs) : le navigateur fixe lui-même le Content-Type. */
+export async function postForm<T>(path: string, form: FormData): Promise<T> {
+  const response = await fetch(path, { method: "POST", headers: headers(), body: form });
+  if (!response.ok) throw await errorFrom(response);
+  return response.json() as Promise<T>;
+}
+
+export async function deleteRequest(path: string): Promise<void> {
+  const response = await fetch(path, { method: "DELETE", headers: headers() });
+  if (!response.ok) throw await errorFrom(response);
+}
+
 // ---------------------------------------------------------------- types de l'API
 
 export interface Source {
@@ -168,6 +180,23 @@ export interface DocumentInfo {
   chunks: number | null;
   tokens: number | null;
   pages: number | null;
+  /** « corpus » : corpus de référence ; « interface » : ajouté par un admin depuis le site. */
+  origine: "corpus" | "interface";
+  ajoute_le: string | null;
+}
+
+export interface WhoAmI {
+  role: "employe" | "admin";
+  auth_enabled: boolean;
+  environment: string;
+  upload: { docling: boolean; max_mb: number };
+}
+
+export interface UploadResult {
+  document: string;
+  format: string;
+  chunks: number;
+  seconds: number;
 }
 
 export interface ChunkInfo {

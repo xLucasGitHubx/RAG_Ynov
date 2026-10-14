@@ -51,6 +51,7 @@ class HealthResponse(BaseModel):
     llm_model: str = Field(..., examples=["ministral-3:3b"])
     rag_enabled: bool = Field(..., examples=[True])
     indexed_chunks: int | None = Field(None, description="Nombre de chunks dans l'index.")
+    commit: str | None = Field(None, description="Commit déployé (GIT_SHA, posé par la CI).")
 
 
 class IngestResponse(BaseModel):
