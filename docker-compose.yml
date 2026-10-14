@@ -1,4 +1,5 @@
 services:
+  # API + interface web (/ui) : une seule image, voir Dockerfile.
   api:
     build: .
     image: rag-api:local
@@ -9,14 +10,18 @@ services:
       - path: .env
         required: false
     environment:
-      # Dans le réseau compose, Ollama est joignable par son nom de service.
+      # Dans le réseau compose, les services sont joignables par leur nom.
       OLLAMA_BASE_URL: http://ollama:11434
+      MLFLOW_TRACKING_ENABLED: "true"
+      MLFLOW_TRACKING_URI: http://mlflow:5000
     depends_on:
       - ollama
+      - mlflow
     restart: unless-stopped
 
   # LLM local quantifié pour le développement (aucune minute ZeroGPU consommée).
   # Premier lancement : docker compose exec ollama ollama pull ministral-3:3b
+  # En production (LLM_PROVIDER=zerogpu dans .env), ce service n'est pas utilisé.
   ollama:
     image: ollama/ollama:latest
     container_name: rag-ollama
@@ -34,9 +39,24 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
 
-  # Itération 8 : MLflow s'ajoutera ici comme service.
+  # Suivi des requêtes, du feedback et des évaluations : http://localhost:5000
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.17.1
+    container_name: rag-mlflow
+    command: >
+      mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --artifacts-destination /mlflow/artifacts
+      --allowed-hosts "mlflow:5000,localhost:5000,127.0.0.1:5000"
+    ports:
+      - "5000:5000"
+    volumes:
+      - rag-mlflow:/mlflow
+    restart: unless-stopped
 
 volumes:
   rag-ollama:
     # Nom fixe : réutilise le volume créé par `docker run ... -v rag-ollama:/root/.ollama`.
     name: rag-ollama
+  rag-mlflow:
+    name: rag-mlflow

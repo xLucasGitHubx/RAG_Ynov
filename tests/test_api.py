@@ -104,4 +104,5 @@ def test_swagger_est_disponible():
 def test_racine_redirige_vers_swagger():
     response = client.get("/", follow_redirects=False)
     assert response.status_code in (302, 307)
-    assert response.headers["location"] == "/docs"
+    # Vers l'interface si elle est construite, sinon vers le Swagger.
+    assert response.headers["location"] in ("/docs", "/ui/")

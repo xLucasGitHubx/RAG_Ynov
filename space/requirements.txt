@@ -1,4 +1,6 @@
-# Dépendances du Space Hugging Face (ZeroGPU). gradio et spaces sont fournis par le SDK Gradio.
+# Dépendances du Space Hugging Face (ZeroGPU). gradio et spaces sont fournis par le SDK.
+# torch : version fournie et supportée par ZeroGPU (ne pas épingler)
 torch
-transformers>=5.0
-accelerate
+transformers==5.19.0
+accelerate==1.15.0
+bitsandbytes==0.50.2

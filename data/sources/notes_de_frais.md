@@ -8,7 +8,7 @@ date_effet: "2026-01-01"
 statut: en_vigueur
 sources: >-
   Convention Syntec, articles 50 à 60 (déplacements et changements de résidence) ; barème kilométrique
-  publié par l'administration fiscale (impots.gouv.fr / BOFiP, barème applicable aux revenus 2024 et 2025).
+  publié par l'administration fiscale (impots.gouv.fr / BOFiP, barème inchangé depuis 2023, applicable aux revenus 2025, vérifié le 14/10/2026).
   Plafonds et procédures propres à Nexalis Conseil fictifs.
 ---
 

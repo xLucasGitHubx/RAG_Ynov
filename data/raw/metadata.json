@@ -41,10 +41,10 @@
     "titre": "Guide des congés et absences",
     "format": "pdf",
     "categorie": "RH",
-    "version": "2026",
-    "date_effet": "2026-01-01",
+    "version": "2026.2",
+    "date_effet": "2026-09-01",
     "statut": "en_vigueur",
-    "sources": "Fiches Service Public « Congés payés du salarié dans le secteur privé », « Congés pour événements familiaux », « Arrêt maladie : indemnités journalières », « Congé de paternité et d'accueil de l'enfant » (service-public.fr, Licence Ouverte 2.0) ; article 23 de la convention Syntec (congés d'ancienneté). Les règles plus favorables propres à Nexalis Conseil sont fictives."
+    "sources": "Fiches Service Public « Congés payés du salarié dans le secteur privé », « Congé pour décès d'un membre de la famille », « Congé de paternité et d'accueil de l'enfant » (service-public.fr, Licence Ouverte 2.0, vérifiées le 14/10/2026) ; loi n° 2023-622 du 19 juillet 2023 (décès d'un enfant) et loi n° 2026-492 du 12 juin 2026 (annonce d'un handicap ou d'un cancer chez un enfant) ; article 23 de la convention Syntec (congés d'ancienneté). Les règles plus favorables propres à Nexalis Conseil sont fictives."
   },
   "guide_depannage_it.md": {
     "titre": "Guide de dépannage informatique",
@@ -71,7 +71,7 @@
     "version": "2026",
     "date_effet": "2026-01-01",
     "statut": "en_vigueur",
-    "sources": "Convention Syntec, articles 50 à 60 (déplacements et changements de résidence) ; barème kilométrique publié par l'administration fiscale (impots.gouv.fr / BOFiP, barème applicable aux revenus 2024 et 2025). Plafonds et procédures propres à Nexalis Conseil fictifs."
+    "sources": "Convention Syntec, articles 50 à 60 (déplacements et changements de résidence) ; barème kilométrique publié par l'administration fiscale (impots.gouv.fr / BOFiP, barème inchangé depuis 2023, applicable aux revenus 2025, vérifié le 14/10/2026). Plafonds et procédures propres à Nexalis Conseil fictifs."
   },
   "notice_mutuelle_prevoyance.pdf": {
     "titre": "Notice d'information mutuelle et prévoyance",

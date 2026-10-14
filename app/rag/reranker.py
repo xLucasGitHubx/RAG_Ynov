@@ -7,6 +7,7 @@ qu'aux 20 meilleurs chunks pour n'en garder que 5.
 
 import logging
 import math
+import os
 import time
 
 logger = logging.getLogger("rag.reranker")
@@ -20,7 +21,8 @@ class Reranker:
         start = time.perf_counter()
         self.model_name = model_name
         self.batch_size = batch_size
-        self._model = CrossEncoder(model_name, device=device)
+        local_only = os.environ.get("MODELS_LOCAL_ONLY") == "1"
+        self._model = CrossEncoder(model_name, device=device, local_files_only=local_only)
         # Ne jamais dépasser la longueur maximale du modèle (512 positions pour les MiniLM).
         model_max = getattr(self._model.tokenizer, "model_max_length", max_length) or max_length
         self._model.max_length = min(max_length, model_max)

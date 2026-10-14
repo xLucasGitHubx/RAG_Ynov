@@ -51,7 +51,16 @@ class OllamaClient:
             raise LLMError("Réponse vide d'Ollama.")
         logger.info("Ollama %s : %s tokens en entrée, %s en sortie", self.model,
                     data.get("prompt_eval_count"), data.get("eval_count"))
-        return Generation(text, data.get("prompt_eval_count"), data.get("eval_count"))
+        eval_s = (data.get("eval_duration") or 0) / 1e9
+        meta = {
+            "model": self.model,
+            "generation_seconds": round((data.get("total_duration") or 0) / 1e9, 3),
+            "prompt_seconds": round((data.get("prompt_eval_duration") or 0) / 1e9, 3),
+            "load_seconds": round((data.get("load_duration") or 0) / 1e9, 3),
+            "tokens_per_second": round(data["eval_count"] / eval_s, 2)
+            if eval_s and data.get("eval_count") else None,
+        }
+        return Generation(text, data.get("prompt_eval_count"), data.get("eval_count"), meta)
 
     def stream(self, system_prompt: str, user_prompt: str) -> Iterator[str]:
         payload = self._payload(system_prompt, user_prompt, True)

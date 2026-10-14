@@ -1,0 +1,4 @@
+accuracy,correct,gpu_share,llm_seconds_p50,memory_gb,model,prompt_seconds_p50,questions,tokens_per_second,vram_gb
+0.75,15,,13.9,,ministral-3:3b-instruct-2512-q4_K_M,9.85,20,18.7,
+0.95,19,0.27,23.3,4.75,ministral-3:3b-instruct-2512-q8_0,14.03,20,9.5,1.28
+0.9,18,0.23,83.7,6.35,ministral-3:8b-instruct-2512-q4_K_M,24.86,20,2.7,1.45

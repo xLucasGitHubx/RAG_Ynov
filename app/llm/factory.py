@@ -34,7 +34,7 @@ def build_llm_client(settings: Settings) -> LLMClient:
     if settings.llm_provider == "mistral":
         if settings.mistral_api_key is None or not settings.mistral_api_key.get_secret_value():
             raise LLMNotConfiguredError(
-                "MISTRAL_API_KEY est absente : ajoute-la dans le fichier .env "
+                "MISTRAL_API_KEY est absente : ajoutez-la dans le fichier .env "
                 "ou passe LLM_PROVIDER=static."
             )
         from app.llm.mistral_client import MistralClient  # import tardif : SDK chargé si utilisé

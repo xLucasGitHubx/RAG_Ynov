@@ -1,5 +1,14 @@
 # syntax=docker/dockerfile:1
 
+# ---------- Étape 0 : interface web (React + Vite), construite dans app/static/ui ----------
+FROM node:22-alpine AS frontend
+WORKDIR /build/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY frontend/ ./
+RUN npm run build
+
+
 # ---------- Étape 1 : environnement Python (torch CPU, sans les bibliothèques CUDA) ----------
 FROM python:3.12-slim AS builder
 
@@ -21,10 +30,24 @@ FROM builder AS models
 ARG EMBEDDING_MODEL=BAAI/bge-m3
 ARG RERANKER_MODEL=cross-encoder/mmarco-mMiniLMv2-L12-H384-v1
 ENV HF_HOME=/opt/hf
-# Uniquement les poids safetensors et la configuration : pas les doublons .bin / onnx.
-RUN python -c "from huggingface_hub import snapshot_download as d; \
-pat=['*.json','*.safetensors','*.model','*.txt','sentencepiece*','1_Pooling/*']; \
-d('${EMBEDDING_MODEL}', allow_patterns=pat); d('${RERANKER_MODEL}', allow_patterns=pat)"
+# Configuration + un seul jeu de poids par modèle : model.safetensors s'il existe, sinon
+# pytorch_model.bin (BGE-M3 n'est publié qu'en .bin). Ni ONNX, ni OpenVINO, ni doublons.
+RUN <<EOF
+python - <<'PY'
+import os
+from huggingface_hub import HfApi, snapshot_download
+
+for repo in (os.environ["EMBEDDING_MODEL"], os.environ["RERANKER_MODEL"]):
+    files = set(HfApi().list_repo_files(repo))
+    weights = "model.safetensors" if "model.safetensors" in files else "pytorch_model.bin"
+    snapshot_download(repo, allow_patterns=[
+        weights, "config.json", "config_sentence_transformers.json", "modules.json",
+        "sentence_bert_config.json", "tokenizer*", "special_tokens_map.json",
+        "sentencepiece.bpe.model", "1_Pooling/*",
+    ])
+    print(f"{repo} : {weights}")
+PY
+EOF
 
 
 # ---------- Étape 3 : image finale, légère et sans outils de build ----------
@@ -37,7 +60,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
     HF_HOME=/opt/hf \
-    HF_HUB_OFFLINE=1 \
+    MODELS_LOCAL_ONLY=1 \
     EMBEDDING_MODEL=${EMBEDDING_MODEL} \
     RERANKER_MODEL=${RERANKER_MODEL} \
     MLFLOW_TRACKING_ENABLED=false
@@ -46,10 +69,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN useradd --create-home --uid 1000 appuser
 
 COPY --from=builder /opt/venv /opt/venv
-COPY --from=models /opt/hf /opt/hf
+COPY --from=models --chown=appuser:appuser /opt/hf /opt/hf
 
 WORKDIR /home/appuser/app
 COPY --chown=appuser:appuser app ./app
+# Interface web servie par FastAPI sur /ui (rapport d'évaluation : app/reports/dashboard.json).
+COPY --from=frontend --chown=appuser:appuser /build/app/static/ui ./app/static/ui
 # Index Chroma construit en amont par `python -m ingestion.ingest` (corpus fixe) :
 # réindexer = reconstruire l'image. Docling n'est donc pas embarqué.
 COPY --chown=appuser:appuser chroma_db ./chroma_db

@@ -10,13 +10,15 @@ import time
 from collections.abc import Iterator
 from contextlib import asynccontextmanager
 from functools import lru_cache
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Response
-from fastapi.responses import RedirectResponse, StreamingResponse
+from fastapi.responses import FileResponse, RedirectResponse, StreamingResponse
 
 from app import __version__
 from app.config import Settings, get_settings
+from app.dashboard import router as dashboard_router
 from app.llm import LLMError, LLMNotConfiguredError, build_llm_client
 from app.monitoring.tracker import (
     FeedbackRecord,
@@ -51,14 +53,22 @@ logger = logging.getLogger("rag.api")
 
 
 @lru_cache
-def get_assistant() -> Assistant:
-    current = get_settings()
-    retriever = None
-    if current.rag_enabled:
-        from app.rag.factory import build_retriever
+def get_retriever():
+    """Recherche seule (embeddings + index), indépendante du LLM et donc du Space.
 
-        retriever = build_retriever(current)
-    return Assistant(build_llm_client(current), retriever)
+    Le corpus, /health et /ingest n'ont pas besoin du LLM : un Space en pause ne les casse pas.
+    """
+    current = get_settings()
+    if not current.rag_enabled:
+        return None
+    from app.rag.factory import build_retriever
+
+    return build_retriever(current)
+
+
+@lru_cache
+def get_assistant() -> Assistant:
+    return Assistant(build_llm_client(get_settings()), get_retriever())
 
 
 @lru_cache
@@ -134,9 +144,10 @@ async def lifespan(app: FastAPI):
     if get_settings().rag_enabled:
         start = time.perf_counter()
         try:
+            get_retriever()
+            logger.info("Recherche prête en %.1f s", time.perf_counter() - start)
             get_assistant()
-            logger.info("Assistant prêt en %.1f s", time.perf_counter() - start)
-        except Exception as exc:  # l'API démarre quand même : /health et /docs restent utiles
+        except Exception as exc:  # l'API démarre quand même : /health, /docs, corpus utiles
             logger.error("Assistant indisponible au démarrage : %s", exc)
     yield
 
@@ -152,6 +163,7 @@ app = FastAPI(
         {"name": "Assistant", "description": "Poser une question à l'assistant."},
         {"name": "Supervision", "description": "État du service."},
         {"name": "Administration", "description": "Réservé au rôle admin."},
+        {"name": "Interface", "description": "Données de l'interface web (/ui)."},
     ],
     lifespan=lifespan,
 )
@@ -171,8 +183,8 @@ def check_question(question: str, request_id: str | None = None, endpoint: str =
         raise HTTPException(
             status_code=400,
             detail=(
-                f"Ta question contient des données personnelles ({kinds}). Pour les protéger, "
-                "elle n'a pas été traitée : reformule-la sans ces informations."
+                f"Votre question contient des données personnelles ({kinds}). Pour les protéger, "
+                "elle n'a pas été traitée : reformulez-la sans ces informations."
             ),
         )
 
@@ -182,9 +194,30 @@ def server_timing(timings_ms: dict[str, float]) -> str:
     return ", ".join(f"{name};dur={value:.0f}" for name, value in timings_ms.items())
 
 
+UI_DIR = Path(__file__).parent / "static" / "ui"
+
+
 @app.get("/", include_in_schema=False)
 def root() -> RedirectResponse:
-    return RedirectResponse(url="/docs")
+    """L'interface si elle est construite (cd frontend && npm run build), sinon le Swagger."""
+    return RedirectResponse(url="/ui/" if (UI_DIR / "index.html").exists() else "/docs")
+
+
+@app.get("/ui", include_in_schema=False)
+@app.get("/ui/{path:path}", include_in_schema=False)
+def ui(path: str = "") -> FileResponse:
+    """Interface web (application monopage React) : fichier statique s'il existe, sinon
+    index.html, pour que les adresses comme /ui/evaluation fonctionnent au rechargement."""
+    if not (UI_DIR / "index.html").exists():
+        raise HTTPException(status_code=404,
+                            detail="Interface non construite : cd frontend && npm run build.")
+    candidate = (UI_DIR / path).resolve()
+    if path and candidate.is_file() and UI_DIR.resolve() in candidate.parents:
+        return FileResponse(candidate)
+    return FileResponse(UI_DIR / "index.html", headers={"Cache-Control": "no-cache"})
+
+
+app.include_router(dashboard_router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Supervision"])
@@ -193,8 +226,8 @@ def health(settings: Annotated[Settings, Depends(get_settings)]) -> HealthRespon
     models = {"mistral": settings.mistral_model, "ollama": settings.ollama_model,
               "zerogpu": settings.llm_space_id or "?", "static": "static"}
     indexed = None
-    if settings.rag_enabled and get_assistant.cache_info().currsize:
-        retriever = get_assistant().retriever
+    if settings.rag_enabled and get_retriever.cache_info().currsize:
+        retriever = get_retriever()
         indexed = retriever.collection.count() if retriever else None
     return HealthResponse(
         status="ok",
@@ -226,7 +259,7 @@ def ask(
         track_request(request_id, "ask", assistant, payload.question, status="erreur_llm")
         raise HTTPException(
             status_code=502,
-            detail="Le modèle de langage n'a pas pu répondre. Réessaie dans un instant.",
+            detail="Le modèle de langage n'a pas pu répondre. Réessayez dans un instant.",
         ) from exc
     timings = {**result.timings_ms, "total": (time.perf_counter() - start) * 1000}
     response.headers["Server-Timing"] = server_timing(timings)
@@ -337,6 +370,7 @@ def ingest_documents(
     except ImportError as exc:  # dépendances d'ingestion absentes de l'image
         raise HTTPException(status_code=501, detail=f"Ingestion indisponible : {exc}") from exc
     get_assistant.cache_clear()
+    get_retriever.cache_clear()
     logger.info("Réindexation par %s : %d ajouté(s), %d retiré(s)", principal.key_id,
                 len(report.added), len(report.removed))
     return IngestResponse(added=report.added, skipped=report.skipped, removed=report.removed,

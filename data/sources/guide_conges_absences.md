@@ -3,19 +3,21 @@ titre: Guide des congés et absences
 fichier: guide_conges_absences.pdf
 format: pdf
 categorie: RH
-version: "2026"
-date_effet: "2026-01-01"
+version: "2026.2"
+date_effet: "2026-09-01"
 statut: en_vigueur
 sources: >-
-  Fiches Service Public « Congés payés du salarié dans le secteur privé », « Congés pour événements
-  familiaux », « Arrêt maladie : indemnités journalières », « Congé de paternité et d'accueil de l'enfant »
-  (service-public.fr, Licence Ouverte 2.0) ; article 23 de la convention Syntec (congés d'ancienneté).
-  Les règles plus favorables propres à Nexalis Conseil sont fictives.
+  Fiches Service Public « Congés payés du salarié dans le secteur privé », « Congé pour décès d'un
+  membre de la famille », « Congé de paternité et d'accueil de l'enfant » (service-public.fr, Licence
+  Ouverte 2.0, vérifiées le 14/10/2026) ; loi n° 2023-622 du 19 juillet 2023 (décès d'un enfant) et
+  loi n° 2026-492 du 12 juin 2026 (annonce d'un handicap ou d'un cancer chez un enfant) ; article 23
+  de la convention Syntec (congés d'ancienneté). Les règles plus favorables propres à Nexalis Conseil
+  sont fictives.
 ---
 
 # Guide des congés et absences
 
-Nexalis Conseil — Direction des ressources humaines, édition janvier 2026.
+Nexalis Conseil — Direction des ressources humaines, édition septembre 2026 (mise à jour des durées légales issues de la loi du 12 juin 2026).
 
 Ce guide rassemble les règles applicables aux congés et absences. En cas de différence entre la loi, la convention collective Syntec et un accord Nexalis, c'est la règle **la plus favorable au salarié** qui s'applique.
 
@@ -66,11 +68,11 @@ Ces congés sont rémunérés et n'entraînent aucune réduction des congés pay
 | Mariage ou PACS du salarié | 4 jours | 5 jours ouvrés |
 | Mariage d'un enfant | 1 jour | 2 jours ouvrés |
 | Naissance ou adoption | 3 jours | 3 jours ouvrés |
-| Décès d'un enfant | 5 jours (7 jours ouvrés si enfant de moins de 25 ans) | identique à la loi, plus le congé de deuil de 8 jours |
+| Décès d'un enfant | 12 jours ouvrables (14 si l'enfant avait moins de 25 ans ou était lui-même parent) | identique à la loi, plus le congé de deuil de 8 jours |
 | Décès du conjoint, partenaire de PACS ou concubin | 3 jours | 5 jours ouvrés |
 | Décès d'un parent, beau-parent, frère ou sœur | 3 jours | 3 jours ouvrés |
 | Décès d'un grand-parent | aucun | 1 jour ouvré |
-| Annonce d'un handicap, d'une maladie chronique ou d'un cancer chez un enfant | 5 jours | 5 jours ouvrés |
+| Annonce d'un handicap, d'une maladie chronique ou d'un cancer chez un enfant | 10 jours ouvrables (depuis le 14 juin 2026) | 10 jours ouvrables |
 | Déménagement | aucun | 1 jour ouvré par an |
 
 ## 3. Le congé de paternité et d'accueil de l'enfant

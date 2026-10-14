@@ -99,7 +99,7 @@ def authenticate(
     wait = rate_limiter.check(principal.key_id, settings.rate_limit_per_minute)
     if wait is not None:
         raise HTTPException(status_code=429,
-                            detail="Trop de requêtes : réessaie dans quelques secondes.",
+                            detail="Trop de requêtes : réessayez dans quelques secondes.",
                             headers={"Retry-After": str(int(wait) + 1)})
     return principal
 

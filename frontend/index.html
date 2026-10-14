@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="Assistant RH et IT de Nexalis Conseil : réponses sourcées à partir des documents internes, évaluations et monitoring." />
+    <link rel="icon" type="image/svg+xml" href="/ui/favicon.svg" />
+    <title>Nexalis — Assistant RH et IT</title>
+    <script>
+      // Thème appliqué avant le rendu, pour éviter un flash clair / sombre.
+      try {
+        const saved = localStorage.getItem("nexalis-theme");
+        const dark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      } catch {
+        document.documentElement.dataset.theme = "light";
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -5,8 +5,14 @@ uvicorn[standard]==0.54.0
 pydantic-settings==2.15.0
 httpx==0.28.1
 mistralai==3.2.0
+# Appel du Space ZeroGPU (LLM_PROVIDER=zerogpu)
+gradio_client==2.7.2
+# Client MLflow léger : suivi des requêtes vers un serveur MLflow (MLFLOW_TRACKING_URI)
+mlflow-skinny==3.17.1
 # Recherche : base vectorielle, embeddings BGE-M3 et reranker (CPU)
 chromadb==1.5.9
 torch==2.14.1
 sentence-transformers==6.1.0
 transformers==5.19.0
+# Recherche hybride : racinisation française pour BM25
+snowballstemmer==3.1.1

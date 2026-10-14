@@ -5,6 +5,7 @@ façon. Les vecteurs sont normalisés, la similarité cosinus revient donc au pr
 """
 
 import logging
+import os
 import time
 
 logger = logging.getLogger("rag.embeddings")
@@ -18,7 +19,10 @@ class Embedder:
         start = time.perf_counter()
         self.model_name = model_name
         self.batch_size = batch_size
-        self._model = SentenceTransformer(model_name, device=device)
+        # Dans l'image Docker, les poids sont embarqués : aucun téléchargement au démarrage.
+        # (HF_HUB_OFFLINE serait trop large : il bloquerait aussi l'appel au Space ZeroGPU.)
+        local_only = os.environ.get("MODELS_LOCAL_ONLY") == "1"
+        self._model = SentenceTransformer(model_name, device=device, local_files_only=local_only)
         self._model.max_seq_length = max_length
         # sentence-transformers 6 renomme la méthode ; on garde la compatibilité avec la v5.
         get_dimension = (getattr(self._model, "get_embedding_dimension", None)
