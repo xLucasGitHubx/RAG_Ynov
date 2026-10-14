@@ -90,12 +90,13 @@ def save_metadata(raw_dir: Path, metadata: dict[str, dict]) -> None:
     tmp.replace(path)
 
 
-def _run_ingest(settings: Settings, retriever):
+def _run_ingest(settings: Settings, retriever, name: str):
     from ingestion.ingest import ingest
     from ingestion.parsing import _converter
 
     try:
-        return ingest(settings, collection=retriever.collection, embedder=retriever.embedder)
+        return ingest(settings, collection=retriever.collection, embedder=retriever.embedder,
+                      only={name})
     finally:
         # Les modèles de Docling (mise en page, tableaux, OCR) occupent près d'1 Go : on les libère
         # après chaque ajout, l'application n'a que 4 Go et BGE-M3 en occupe déjà la moitié.
@@ -160,7 +161,7 @@ def add_document(settings: Settings, retriever, filename: str, content: bytes, f
         save_metadata(raw_dir, metadata)
 
         try:
-            report = (ingest_fn or _run_ingest)(settings, retriever)
+            report = (ingest_fn or _run_ingest)(settings, retriever, name)
             chunks = len(retriever.collection.get(where={"document": name}, include=[])["ids"])
             if chunks == 0:
                 raise ValueError("aucun texte n'a pu être extrait du document")
@@ -173,7 +174,7 @@ def add_document(settings: Settings, retriever, filename: str, content: bytes, f
             # Le document peut avoir été partiellement indexé : on retire ses chunks.
             retriever.collection.delete(where={"document": name})
             if previous_file is not None:
-                (ingest_fn or _run_ingest)(settings, retriever)
+                (ingest_fn or _run_ingest)(settings, retriever, name)
             retriever.refresh_lexical()
             logger.warning("Ajout de %s annulé : %s", name, exc)
             raise DocumentError(422, f"Indexation impossible : {exc}") from exc

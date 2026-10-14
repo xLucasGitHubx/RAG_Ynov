@@ -47,7 +47,7 @@ class FakeReport:
     seconds: float = 0.2
 
 
-def fake_ingest(settings, retriever):
+def fake_ingest(settings, retriever, name):
     retriever.collection.chunks = {}
     for path in settings.raw_dir.iterdir():
         if path.name != "metadata.json":
@@ -139,7 +139,7 @@ def test_echec_d_indexation_annule_tout(corpus, monkeypatch):
     raw, retriever = corpus
     before = json.loads((raw / "metadata.json").read_text(encoding="utf-8"))
 
-    def broken(settings, retriever):
+    def broken(settings, retriever, name):
         raise ValueError("PDF illisible")
 
     monkeypatch.setattr(documents, "_run_ingest", broken)
