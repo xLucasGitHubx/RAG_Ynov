@@ -77,11 +77,11 @@ def config(settings: CurrentSettings) -> dict[str, Any]:
 
 def _collection():
     """Collection Chroma de l'assistant déjà chargé (None si la recherche est désactivée)."""
-    from app.main import get_assistant
+    from app.main import get_retriever
 
     if not get_settings().rag_enabled:
         return None
-    retriever = get_assistant().retriever
+    retriever = get_retriever()
     return getattr(retriever, "collection", None)
 
 

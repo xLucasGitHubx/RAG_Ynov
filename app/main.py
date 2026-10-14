@@ -53,14 +53,22 @@ logger = logging.getLogger("rag.api")
 
 
 @lru_cache
-def get_assistant() -> Assistant:
-    current = get_settings()
-    retriever = None
-    if current.rag_enabled:
-        from app.rag.factory import build_retriever
+def get_retriever():
+    """Recherche seule (embeddings + index), indépendante du LLM et donc du Space.
 
-        retriever = build_retriever(current)
-    return Assistant(build_llm_client(current), retriever)
+    Le corpus, /health et /ingest n'ont pas besoin du LLM : un Space en pause ne les casse pas.
+    """
+    current = get_settings()
+    if not current.rag_enabled:
+        return None
+    from app.rag.factory import build_retriever
+
+    return build_retriever(current)
+
+
+@lru_cache
+def get_assistant() -> Assistant:
+    return Assistant(build_llm_client(get_settings()), get_retriever())
 
 
 @lru_cache
@@ -136,9 +144,10 @@ async def lifespan(app: FastAPI):
     if get_settings().rag_enabled:
         start = time.perf_counter()
         try:
+            get_retriever()
+            logger.info("Recherche prête en %.1f s", time.perf_counter() - start)
             get_assistant()
-            logger.info("Assistant prêt en %.1f s", time.perf_counter() - start)
-        except Exception as exc:  # l'API démarre quand même : /health et /docs restent utiles
+        except Exception as exc:  # l'API démarre quand même : /health, /docs, corpus utiles
             logger.error("Assistant indisponible au démarrage : %s", exc)
     yield
 
@@ -217,8 +226,8 @@ def health(settings: Annotated[Settings, Depends(get_settings)]) -> HealthRespon
     models = {"mistral": settings.mistral_model, "ollama": settings.ollama_model,
               "zerogpu": settings.llm_space_id or "?", "static": "static"}
     indexed = None
-    if settings.rag_enabled and get_assistant.cache_info().currsize:
-        retriever = get_assistant().retriever
+    if settings.rag_enabled and get_retriever.cache_info().currsize:
+        retriever = get_retriever()
         indexed = retriever.collection.count() if retriever else None
     return HealthResponse(
         status="ok",
@@ -361,6 +370,7 @@ def ingest_documents(
     except ImportError as exc:  # dépendances d'ingestion absentes de l'image
         raise HTTPException(status_code=501, detail=f"Ingestion indisponible : {exc}") from exc
     get_assistant.cache_clear()
+    get_retriever.cache_clear()
     logger.info("Réindexation par %s : %d ajouté(s), %d retiré(s)", principal.key_id,
                 len(report.added), len(report.removed))
     return IngestResponse(added=report.added, skipped=report.skipped, removed=report.removed,
