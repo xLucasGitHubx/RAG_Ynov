@@ -9,6 +9,9 @@ mistralai==3.2.0
 gradio_client==2.7.2
 # Client MLflow léger : suivi des requêtes vers un serveur MLflow (MLFLOW_TRACKING_URI)
 mlflow-skinny==3.17.1
+# Base MLflow locale (sqlite) : le client léger a besoin de SQLAlchemy et d'Alembic
+sqlalchemy==2.1.4
+alembic==1.20.0
 # Recherche : base vectorielle, embeddings BGE-M3 et reranker (CPU)
 chromadb==1.5.9
 torch==2.14.1
@@ -16,3 +19,9 @@ sentence-transformers==6.1.0
 transformers==5.19.0
 # Recherche hybride : racinisation française pour BM25
 snowballstemmer==3.1.1
+# Ajout de documents depuis l'interface (rôle admin) : envoi de fichiers, parsing, découpage
+python-multipart==0.0.20
+docling==2.138.0
+# OCR des PDF scannés (moteur choisi automatiquement par Docling ; onnxruntime vient de chromadb)
+rapidocr==3.10.0
+langchain-text-splitters==1.1.3

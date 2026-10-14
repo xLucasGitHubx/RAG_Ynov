@@ -1,9 +1,14 @@
 name: Déploiement Azure
 
-# Déclenchement manuel (Actions > Déploiement Azure > Run workflow) : chaque déploiement
-# consomme des crédits Azure, il ne part donc pas à chaque push.
+# Déploiement continu : après chaque CI réussie sur main (donc après chaque fusion), l'image est
+# construite, poussée dans Azure Container Registry puis déployée sur Azure Container Apps.
+# Aussi lançable à la main (Actions > Déploiement Azure > Run workflow).
 # Prérequis (une seule fois) : scripts/azure_provision.ps1 puis docs/deploiement_azure.md.
 on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -16,14 +21,22 @@ permissions:
 jobs:
   deploy:
     name: Image et Container Apps
+    # Jamais après une CI en échec, ni pour une CI déclenchée par une pull request.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
       REGISTRY: ${{ vars.AZURE_REGISTRY }}
       RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
       APP: ${{ vars.AZURE_CONTAINER_APP }}
+      # Commit testé par la CI (workflow_run) ou commit courant (lancement manuel).
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SHA }}
 
       - name: Vérifier la configuration
         run: |
@@ -35,7 +48,7 @@ jobs:
           done
           test -f chroma_db/chroma.sqlite3 || { echo "::error::Index chroma_db absent du dépôt."; exit 1; }
 
-      # L'image fait environ 7 Go (torch, BGE-M3) : on libère de la place sur le runner.
+      # L'image fait environ 8 Go (torch, BGE-M3, Docling) : on libère de la place sur le runner.
       - name: Libérer de l'espace disque
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
@@ -57,7 +70,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ vars.AZURE_REGISTRY }}.azurecr.io/rag-api:${{ github.sha }}
+            ${{ vars.AZURE_REGISTRY }}.azurecr.io/rag-api:${{ env.SHA }}
             ${{ vars.AZURE_REGISTRY }}.azurecr.io/rag-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -66,19 +79,22 @@ jobs:
         run: |
           az containerapp update \
             --name "$APP" --resource-group "$RESOURCE_GROUP" \
-            --image "$REGISTRY.azurecr.io/rag-api:${{ github.sha }}" \
-            --set-env-vars "GIT_SHA=${{ github.sha }}" \
+            --image "$REGISTRY.azurecr.io/rag-api:$SHA" \
+            --set-env-vars "GIT_SHA=$SHA" \
             --output none
 
-      - name: Vérifier que l'API répond
+      # /health renvoie le commit servi : on attend que ce soit le nouveau, pas l'ancien conteneur.
+      - name: Vérifier que la nouvelle version répond
         run: |
           fqdn=$(az containerapp show --name "$APP" --resource-group "$RESOURCE_GROUP" \
                    --query properties.configuration.ingress.fqdn -o tsv)
-          for i in $(seq 1 30); do
-            if curl -fsS "https://$fqdn/health" | tee /dev/stderr | grep -q '"status":"ok"'; then
-              echo; echo "Déployé : https://$fqdn/ui/"; exit 0
+          for i in $(seq 1 40); do
+            body=$(curl -fsS "https://$fqdn/health" || true)
+            echo "$body"
+            if echo "$body" | grep -q "\"commit\":\"$SHA\""; then
+              echo "Déployé : https://$fqdn/ui/ (commit $SHA)"; exit 0
             fi
-            sleep 10
+            sleep 15
           done
-          echo "::error::L'API ne répond pas après 5 minutes."
+          echo "::error::Après 10 minutes, /health ne renvoie pas le commit $SHA : l'ancienne version répond encore."
           exit 1

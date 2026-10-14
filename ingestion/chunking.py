@@ -9,6 +9,7 @@ Règles (voir le plan d'action, « Stratégie de chunking ») :
 5. chaque chunk est préfixé par son chemin « Document > Section > Sous-section ».
 """
 
+import os
 import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -72,7 +73,9 @@ def bge_token_counter(model_name: str = "BAAI/bge-m3") -> TokenCounter:
     """Compteur de tokens du tokenizer de BGE-M3 (seul le tokenizer est téléchargé)."""
     from transformers import AutoTokenizer
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    # Dans l'image Docker, le tokenizer est embarqué avec BGE-M3 (voir app/rag/embeddings.py).
+    local_only = os.environ.get("MODELS_LOCAL_ONLY") == "1"
+    tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=local_only)
 
     def count(text: str) -> int:
         return len(tokenizer.encode(text, add_special_tokens=False))

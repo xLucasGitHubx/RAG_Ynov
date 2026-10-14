@@ -1,4 +1,5 @@
 import {
+  BookOpenText,
   ChartLineUp,
   ChatCircleText,
   Files,
@@ -21,6 +22,7 @@ import { Button, IconButton, cx } from "./ui";
 
 const NAV: { to: string; label: string; icon: Icon; end?: boolean }[] = [
   { to: "/", label: "Vue d'ensemble", icon: SquaresFour, end: true },
+  { to: "/projet", label: "Le projet", icon: BookOpenText },
   { to: "/assistant", label: "Assistant", icon: ChatCircleText },
   { to: "/corpus", label: "Corpus", icon: Files },
   { to: "/evaluation", label: "Évaluation", icon: ChartLineUp },

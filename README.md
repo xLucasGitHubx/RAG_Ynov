@@ -12,7 +12,7 @@ Un assistant virtuel qui répond aux questions RH et IT des employés (congés, 
 | 2 | Conteneurisation : Dockerfile multi-stage | Fait (mis à jour pour le RAG) |
 | 3 | Mémoire : corpus, ingestion Docling, chunking mesuré, BGE-M3, ChromaDB | Fait |
 | 4 | Cerveau : Ollama local, Space ZeroGPU, recherche hybride, streaming SSE, interface web | Fait |
-| 5 | Déploiement : Azure Container Apps + Space ZeroGPU | Space ZeroGPU en service ; Azure à faire |
+| 5 | Déploiement : Azure Container Apps + Space ZeroGPU, déploiement continu GitHub Actions | Fait |
 | 6 | Optimisation : rerankers, quantization (GGUF local ; bf16 / int8 / nf4 sur ZeroGPU) | Fait |
 | 7 | Sécurité et RGPD | Fait |
 | 8 | MLOps avec MLflow : runs d'évaluation, suivi par requête, feedback, registre de modèles | Fait |
@@ -20,7 +20,9 @@ Un assistant virtuel qui répond aux questions RH et IT des employés (congés, 
 
 Chiffres clés : bonne source dans le top 5 pour 98 % des questions (recherche hybride), **97 % de réponses correctes** (66 / 68) avec Ministral 3 8B bf16 sur ZeroGPU, 10 / 10 questions hors périmètre refusées, 1,5 s de GPU par réponse, ≈ 122 $/mois pour 1 000 utilisateurs par jour (ZeroGPU) ou ≈ 223 $ avec une L4 dédiée.
 
-Résultats détaillés : [docs/resultats_retrieval.md](docs/resultats_retrieval.md) (chunking, recherche hybride, rerankers), [docs/resultats_reponses.md](docs/resultats_reponses.md) (réponses de bout en bout, local et ZeroGPU), [docs/estimation_budget.md](docs/estimation_budget.md) (FinOps). Note RGPD : [docs/note_rgpd.md](docs/note_rgpd.md).
+**En ligne** : https://rag-api.wittysea-7248563d.germanywestcentral.azurecontainerapps.io/ui/ (clé d'API demandée). La page **Le projet** du site raconte la démarche dans l'ordre, pour un lecteur qui découvre le projet.
+
+Résultats détaillés : [docs/resultats_retrieval.md](docs/resultats_retrieval.md) (chunking, recherche hybride, rerankers), [docs/resultats_reponses.md](docs/resultats_reponses.md) (réponses de bout en bout, local et ZeroGPU), [docs/estimation_budget.md](docs/estimation_budget.md) (FinOps), [docs/deploiement_azure.md](docs/deploiement_azure.md) (déploiement). Note RGPD : [docs/note_rgpd.md](docs/note_rgpd.md).
 
 ## Architecture
 
@@ -113,9 +115,11 @@ Invoke-RestMethod -Method Post -Uri http://localhost:7860/ask `
 | `POST` | `/ask/stream` | même chose en Server-Sent Events : `sources`, puis `token` (au fil de l'eau), puis `done` |
 | `POST` | `/feedback` | `{"request_id", "rating": 1 ou -1}` : pouce haut / bas, relié à la requête dans MLflow |
 | `POST` | `/ingest` | réindexation (rôle admin) |
-| `GET` | `/health` | état, modèle, nombre de chunks indexés |
+| `POST` | `/api/admin/documents` | ajout d'un document (rôle admin, multipart) : PDF, PDF scanné (OCR), Word, Markdown ; indexé aussitôt |
+| `DELETE` | `/api/admin/documents/{doc}` | retrait d'un document ajouté depuis l'interface (le corpus de référence est protégé) |
+| `GET` | `/health` | état, modèle, nombre de chunks indexés, commit déployé |
 | `GET` | `/ui` | interface web (application React servie par l'API) |
-| `GET` | `/api/config`, `/api/documents`, `/api/documents/{doc}/chunks`, `/api/reports`, `/api/monitoring` | données de l'interface, en lecture seule, même clé d'API que `/ask` |
+| `GET` | `/api/config`, `/api/whoami`, `/api/documents`, `/api/documents/{doc}/chunks`, `/api/reports`, `/api/monitoring` | données de l'interface, en lecture seule, même clé d'API que `/ask` |
 
 ## Interface web
 
@@ -124,8 +128,9 @@ Une application React servie par l'API elle-même sur `/ui` (même conteneur, en
 | Page | Contenu |
 | --- | --- |
 | Vue d'ensemble | chiffres clés, trajet d'une question (CPU / GPU), configuration en service lue sur l'API, avancement des 9 itérations |
+| Le projet | la documentation pour l'évaluateur : le besoin, comment lire le site, les 9 itérations dans l'ordre (objectif, réalisation, résultat, lien vers la preuve), l'architecture, les choix chiffrés, les limites, comment reproduire |
 | Assistant | chat en streaming, citations cliquables reliées aux extraits (document, section, page, score), durée recherche / génération, pouces haut et bas, cas « hors périmètre » et « bloqué RGPD » visibles |
-| Corpus | les 10 documents, leurs métadonnées et sources réelles, le découpage en chunks de chacun (tableaux rendus) |
+| Corpus | les 10 documents, leurs métadonnées et sources réelles, le découpage en chunks de chacun (tableaux rendus) ; avec une clé admin, ajout de documents (PDF, scan, Word, Markdown) indexés aussitôt, et retrait de ces ajouts |
 | Évaluation | recherche (taille des chunks, hybride contre rerankers, coût des rerankers, seuil de refus), réponses (prompt v2 / v3, 8B sur ZeroGPU, par type, chaque question avec réponse attendue et obtenue), modèle (quantization en local et sur ZeroGPU), sécurité (20 messages Faker) |
 | Tests | rapport pytest par fichier, noms des tests lisibles, commandes pour relancer les mesures |
 | Monitoring | questions suivies dans MLflow en direct : volumes, refus, latence par étape, feedback |
@@ -226,9 +231,28 @@ docker build -t rag-api:local .
 docker run -d --name rag-api -p 7860:7860 --env-file .env -e OLLAMA_BASE_URL=http://host.docker.internal:11434 rag-api:local
 ```
 
-Interface : http://localhost:7860/ui (la racine `/` y redirige). Image d'environ 7 Go, dont BGE-M3 (2,3 Go) et torch CPU ; démarrage en ~12 s. Avec compose, chaque question est suivie dans le serveur MLflow `rag-mlflow` (http://localhost:5000), qui alimente la page Monitoring.
+Interface : http://localhost:7860/ui (la racine `/` y redirige). Image d'environ 8,8 Go, dont BGE-M3 (2,3 Go), torch CPU et Docling ; démarrage en ~12 s. Avec compose, chaque question est suivie dans le serveur MLflow `rag-mlflow` (http://localhost:5000), qui alimente la page Monitoring ; sans compose (et sur Azure), dans une base SQLite du conteneur (`MLFLOW_TRACKING_URI`).
 
-Le Dockerfile construit l'interface web (étape Node), installe torch en version CPU, télécharge BGE-M3 au build (aucun téléchargement au démarrage), copie l'index et le rapport d'évaluation, et tourne en utilisateur non root. Docling n'est pas embarqué : réindexer = reconstruire l'image (corpus fixe).
+Le Dockerfile construit l'interface web (étape Node), installe torch en version CPU, télécharge BGE-M3 ainsi que les modèles de Docling et de l'OCR au build (aucun téléchargement à l'exécution), copie l'index, les documents sources et le rapport d'évaluation, et tourne en utilisateur non root. Docling est embarqué pour l'ajout de documents depuis l'interface.
+
+## Déploiement (Azure)
+
+L'API tourne sur **Azure Container Apps** (région Allemagne de l'Ouest), le LLM sur le **Space ZeroGPU**. Mise en ligne continue : chaque fusion sur `main` lance la CI, puis, si elle réussit, `.github/workflows/deploy.yml` construit l'image, la pousse dans Azure Container Registry, déploie une nouvelle révision et vérifie que `/health` renvoie bien le nouveau commit. Infrastructure créée une fois par `scripts/azure_provision.ps1`. Détails, coûts et arrêt : [docs/deploiement_azure.md](docs/deploiement_azure.md).
+
+Latences mesurées en production (14/10/2026, 8 questions sur l'URL publique, en-tête `Server-Timing` de `/ask`, médianes hors première question) :
+
+| Étape | Médiane |
+| --- | --- |
+| Embedding de la question (BGE-M3, CPU Azure) | 189 ms |
+| Recherche vectorielle (ChromaDB) | 8 ms |
+| Recherche lexicale (BM25) | 4 ms |
+| Génération (Space ZeroGPU, aller-retour) | 2,0 s |
+| **Total côté API** | **2,2 s** |
+| Total vu du navigateur (réseau compris) | 2,8 s |
+| Question hors périmètre (refus sans appel au LLM) | 0,2 s |
+| Première question après une période d'inactivité (GPU réattribué) | 10 s |
+
+Le goulot est la génération (environ 90 % du temps) : la recherche complète tient en moins de 0,2 s sur CPU. L'API démarre en une quinzaine de secondes (chargement de BGE-M3).
 
 ## Arborescence
 
@@ -237,6 +261,7 @@ RAG_Ynov/
 ├── app/                    API FastAPI
 │   ├── main.py             Routes /ask, /ask/stream, /feedback, /ingest, /health, /ui
 │   ├── dashboard.py        Routes /api/* de l'interface (config, corpus, rapports, monitoring)
+│   ├── admin.py, documents.py  Ajout et retrait de documents depuis l'interface (rôle admin)
 │   ├── reports/            Rapport d'évaluation consolidé (scripts/export_reports.py)
 │   ├── config.py           Configuration (variables d'environnement, .env)
 │   ├── prompts.py          Prompt système, phrase de refus, garde-fous
@@ -253,7 +278,7 @@ RAG_Ynov/
 ├── scripts/                Corpus, export des rapports, rerankers, déploiement du Space, FinOps
 ├── space/                  Space Gradio ZeroGPU (LLM de production)
 ├── docs/                   Plan d'action, résultats, note RGPD, budget
-├── .github/workflows/      Intégration continue
+├── .github/workflows/      Intégration continue et déploiement continu sur Azure
 ├── tests/                  Tests pytest
 ├── Dockerfile, docker-compose.yml
 └── requirements*.txt       API / ingestion / développement

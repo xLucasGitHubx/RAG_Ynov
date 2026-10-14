@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-14T14:22:20+02:00",
+ "generated_at": "2026-10-14T18:25:35+02:00",
  "prompt_version": "v3",
  "datasets": {
   "syntec_questions": 100,
@@ -5887,64 +5887,119 @@
   }
  },
  "tests": {
-  "timestamp": "2026-10-14T14:22:18.672693+02:00",
-  "total": 99,
+  "timestamp": "2026-10-14T18:25:32.841439+02:00",
+  "total": 109,
   "failed": 0,
-  "passed": 99,
-  "seconds": 1.193,
+  "passed": 109,
+  "seconds": 2.423,
   "files": [
+   {
+    "file": "tests/test_admin_documents.py",
+    "tests": [
+     {
+      "name": "test_safe_filename_retire_chemin_accents_et_espaces",
+      "status": "passed",
+      "seconds": 0.161
+     },
+     {
+      "name": "test_ajout_reserve_au_role_admin",
+      "status": "passed",
+      "seconds": 0.064
+     },
+     {
+      "name": "test_ajout_enregistre_le_fichier_les_metadonnees_et_indexe",
+      "status": "passed",
+      "seconds": 0.058
+     },
+     {
+      "name": "test_ajout_refuse_les_formats_non_pris_en_charge",
+      "status": "passed",
+      "seconds": 0.019
+     },
+     {
+      "name": "test_ajout_refuse_d_ecraser_le_corpus_de_reference",
+      "status": "passed",
+      "seconds": 0.028
+     },
+     {
+      "name": "test_ajout_en_double_demande_remplacer",
+      "status": "passed",
+      "seconds": 0.041
+     },
+     {
+      "name": "test_echec_d_indexation_annule_tout",
+      "status": "passed",
+      "seconds": 0.031
+     },
+     {
+      "name": "test_retrait_limite_aux_documents_ajoutes_depuis_l_interface",
+      "status": "passed",
+      "seconds": 0.072
+     },
+     {
+      "name": "test_whoami_indique_le_role_et_les_capacites",
+      "status": "passed",
+      "seconds": 0.008
+     },
+     {
+      "name": "test_pdf_sans_couche_texte_detecte_comme_scan",
+      "status": "passed",
+      "seconds": 0.099
+     }
+    ]
+   },
    {
     "file": "tests/test_api.py",
     "tests": [
      {
       "name": "test_health_renvoie_ok",
       "status": "passed",
-      "seconds": 0.091
+      "seconds": 0.008
      },
      {
       "name": "test_ask_renvoie_la_reponse_du_llm",
       "status": "passed",
-      "seconds": 0.006
+      "seconds": 0.009
      },
      {
       "name": "test_ask_transmet_la_question_au_llm",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.009
      },
      {
       "name": "test_ask_renvoie_502_si_le_llm_echoue",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.011
      },
      {
       "name": "test_ask_renvoie_503_si_la_cle_mistral_manque",
       "status": "passed",
-      "seconds": 0.007
+      "seconds": 0.017
      },
      {
       "name": "test_ask_refuse_une_question_vide",
       "status": "passed",
-      "seconds": 0.006
+      "seconds": 0.011
      },
      {
       "name": "test_ask_refuse_un_corps_sans_question",
       "status": "passed",
-      "seconds": 0.004
+      "seconds": 0.005
      },
      {
       "name": "test_ask_refuse_une_question_trop_longue",
       "status": "passed",
-      "seconds": 0.004
+      "seconds": 0.005
      },
      {
       "name": "test_swagger_est_disponible",
       "status": "passed",
-      "seconds": 0.022
+      "seconds": 0.036
      },
      {
       "name": "test_racine_redirige_vers_swagger",
       "status": "passed",
-      "seconds": 0.004
+      "seconds": 0.039
      }
     ]
    },
@@ -5954,12 +6009,12 @@
      {
       "name": "test_les_sections_suivent_les_titres",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.006
      },
      {
       "name": "test_chaque_chunk_est_prefixe_par_son_chemin",
       "status": "passed",
-      "seconds": 0.066
+      "seconds": 0.126
      },
      {
       "name": "test_une_section_trop_longue_est_redecoupee",
@@ -5979,12 +6034,12 @@
      {
       "name": "test_mode_par_section_un_chunk_par_section",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_le_numero_de_page_suit_les_marqueurs",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_relevel_reconstruit_la_hierarchie_des_titres_pdf",
@@ -5994,7 +6049,7 @@
      {
       "name": "test_relevel_ne_touche_pas_une_hierarchie_existante",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      }
     ]
    },
@@ -6004,32 +6059,32 @@
      {
       "name": "test_config_expose_la_configuration_sans_secret",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.014
      },
      {
       "name": "test_les_routes_de_l_interface_exigent_la_cle_d_api",
       "status": "passed",
-      "seconds": 0.009
+      "seconds": 0.016
      },
      {
       "name": "test_documents_sans_recherche_renvoie_les_metadonnees_sans_statistiques",
       "status": "passed",
-      "seconds": 0.006
+      "seconds": 0.01
      },
      {
       "name": "test_chunks_indisponibles_sans_recherche",
       "status": "passed",
-      "seconds": 0.004
+      "seconds": 0.009
      },
      {
       "name": "test_reports_lit_le_fichier_genere",
       "status": "passed",
-      "seconds": 0.019
+      "seconds": 0.02
      },
      {
       "name": "test_monitoring_desactive_dans_les_tests",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.008
      },
      {
       "name": "test_summarize_runs_agrege_les_latences_les_statuts_et_le_feedback",
@@ -6039,7 +6094,7 @@
      {
       "name": "test_ui_sert_index_html_pour_toutes_les_routes",
       "status": "passed",
-      "seconds": 0.106
+      "seconds": 0.169
      }
     ]
    },
@@ -6049,27 +6104,27 @@
      {
       "name": "test_l_analyseur_racinise_et_retire_accents_et_mots_vides",
       "status": "passed",
-      "seconds": 0.025
+      "seconds": 0.065
      },
      {
       "name": "test_bm25_trouve_le_mot_exact_malgre_la_conjugaison",
       "status": "passed",
-      "seconds": 0.002
+      "seconds": 0.004
      },
      {
       "name": "test_bm25_exclut_les_documents_obsoletes",
       "status": "passed",
-      "seconds": 0.003
+      "seconds": 0.005
      },
      {
       "name": "test_rrf_favorise_les_documents_bien_classes_partout",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_la_recherche_hybride_ajoute_les_chunks_trouves_par_bm25",
       "status": "passed",
-      "seconds": 0.002
+      "seconds": 0.003
      }
     ]
    },
@@ -6079,12 +6134,12 @@
      {
       "name": "test_generate_envoie_les_bons_messages_et_renvoie_le_texte",
       "status": "passed",
-      "seconds": 0.037
+      "seconds": 0.119
      },
      {
       "name": "test_generate_transforme_les_erreurs_du_sdk_en_llm_error",
       "status": "passed",
-      "seconds": 0.004
+      "seconds": 0.002
      },
      {
       "name": "test_generate_refuse_une_reponse_vide",
@@ -6094,12 +6149,12 @@
      {
       "name": "test_factory_exige_une_cle_pour_mistral",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.002
      },
      {
       "name": "test_factory_construit_le_client_mistral_avec_une_cle",
       "status": "passed",
-      "seconds": 0.003
+      "seconds": 0.004
      }
     ]
    },
@@ -6119,12 +6174,12 @@
      {
       "name": "test_les_erreurs_http_deviennent_des_llm_error",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.003
      },
      {
       "name": "test_factory_construit_ollama",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.01
      }
     ]
    },
@@ -6134,27 +6189,27 @@
      {
       "name": "test_retriever_exclut_les_versions_obsoletes",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_retriever_reclasse_et_filtre_avec_le_reranker",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_retriever_sans_reranker_garde_l_ordre_vectoriel",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_assistant_refuse_sans_appeler_le_llm_si_rien_n_est_trouve",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_assistant_envoie_les_extraits_et_ne_garde_que_les_sources_citees",
       "status": "passed",
-      "seconds": 0.003
+      "seconds": 0.001
      },
      {
       "name": "test_assistant_masque_les_sources_quand_le_llm_refuse",
@@ -6164,22 +6219,22 @@
      {
       "name": "test_build_sources_deduplique_et_tronque_l_extrait",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_is_refusal_detecte_la_phrase_de_refus",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_endpoint_stream_envoie_sources_tokens_puis_done",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.014
      },
      {
       "name": "test_endpoint_ask_renvoie_l_en_tete_server_timing",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.008
      },
      {
       "name": "test_metriques_de_retrieval",
@@ -6234,7 +6289,7 @@
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-07]",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-08]",
@@ -6244,7 +6299,7 @@
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-09]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.002
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-10]",
@@ -6284,17 +6339,17 @@
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-17]",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-18]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-19]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-20]",
@@ -6304,32 +6359,32 @@
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-01]",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.01
      },
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-05]",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.007
      },
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-09]",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.008
      },
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-13]",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.007
      },
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-17]",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.009
      },
      {
       "name": "test_aucune_question_legitime_n_est_bloquee",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.002
      },
      {
       "name": "test_les_chiffres_courants_ne_sont_pas_des_donnees_personnelles",
@@ -6339,37 +6394,37 @@
      {
       "name": "test_un_iban_invalide_n_est_pas_detecte",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_mask_pii_remplace_par_le_type",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_le_filtre_de_logs_masque_les_donnees_personnelles",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_sans_api_keys_l_authentification_est_desactivee",
       "status": "passed",
-      "seconds": 0.004
+      "seconds": 0.009
      },
      {
       "name": "test_cle_absente_ou_invalide_renvoie_401",
       "status": "passed",
-      "seconds": 0.009
+      "seconds": 0.018
      },
      {
       "name": "test_cle_employe_peut_poser_une_question",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.011
      },
      {
       "name": "test_ingest_est_reserve_aux_admins",
       "status": "passed",
-      "seconds": 0.007
+      "seconds": 0.01
      },
      {
       "name": "test_parse_api_keys_refuse_un_role_inconnu",
@@ -6379,7 +6434,7 @@
      {
       "name": "test_limitation_de_debit_renvoie_429",
       "status": "passed",
-      "seconds": 0.018
+      "seconds": 0.028
      }
     ]
    },
@@ -6389,22 +6444,22 @@
      {
       "name": "test_chaque_question_est_suivie_sans_son_contenu",
       "status": "passed",
-      "seconds": 0.007
+      "seconds": 0.011
      },
      {
       "name": "test_une_question_bloquee_est_suivie_avec_son_statut",
       "status": "passed",
-      "seconds": 0.004
+      "seconds": 0.01
      },
      {
       "name": "test_feedback_relie_a_la_requete",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.014
      },
      {
       "name": "test_feedback_refuse_un_identifiant_ou_une_note_invalide",
       "status": "passed",
-      "seconds": 0.007
+      "seconds": 0.012
      }
     ]
    },
@@ -6429,12 +6484,12 @@
      {
       "name": "test_factory_exige_token_et_space",
       "status": "passed",
-      "seconds": 0.002
+      "seconds": 0.003
      },
      {
       "name": "test_factory_construit_le_client_zerogpu",
       "status": "passed",
-      "seconds": 0.002
+      "seconds": 0.003
      }
     ]
    }

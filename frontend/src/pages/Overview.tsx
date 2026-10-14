@@ -12,11 +12,11 @@ const ROADMAP: { n: number; title: string; state: "done" | "partial" | "todo"; d
   { n: 2, title: "Conteneurisation", state: "done", detail: "Dockerfile multi-stage, utilisateur non root" },
   { n: 3, title: "Mémoire", state: "done", detail: "Docling, découpage mesuré, BGE-M3, ChromaDB" },
   { n: 4, title: "Cerveau", state: "done", detail: "Ollama local, Space ZeroGPU (8B), recherche hybride, streaming" },
-  { n: 5, title: "Déploiement cloud", state: "partial", detail: "Space ZeroGPU en service ; Azure Container Apps à faire" },
+  { n: 5, title: "Déploiement cloud", state: "done", detail: "Azure Container Apps et Space ZeroGPU, mise en ligne par GitHub Actions" },
   { n: 6, title: "Optimisation", state: "done", detail: "Rerankers et quantization (GGUF, int8, nf4) mesurés" },
   { n: 7, title: "Sécurité et RGPD", state: "done", detail: "Filtre de données personnelles, clés, limite de débit" },
-  { n: 8, title: "MLOps", state: "done", detail: "MLflow : évaluations, requêtes, feedback" },
-  { n: 9, title: "FinOps et documentation", state: "done", detail: "Budget pour 1 000 utilisateurs par jour, temps GPU mesuré" },
+  { n: 8, title: "MLOps", state: "done", detail: "MLflow : évaluations, requêtes en production, feedback, registre" },
+  { n: 9, title: "FinOps et documentation", state: "done", detail: "Budget au temps GPU mesuré, documentation et page « Le projet »" },
 ];
 
 const STATE = {
@@ -42,13 +42,21 @@ export function OverviewPage() {
         title="Assistant RH et IT de Nexalis Conseil."
         description="Les salariés posent leurs questions sur les congés, le télétravail, la mutuelle ou le VPN. L'assistant répond uniquement à partir des documents internes, cite ses sources et refuse ce qui sort de son périmètre."
         action={
-          <Link
-            to="/assistant"
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-ink px-4 text-sm font-medium text-bg transition-[background-color,transform] duration-150 hover:bg-ink/85 active:scale-[0.98]"
-          >
-            Poser une question
-            <ArrowRight size={16} aria-hidden="true" />
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              to="/projet"
+              className="inline-flex h-10 items-center rounded-md bg-surface px-4 text-sm font-medium text-ink shadow-[inset_0_0_0_1px_var(--line-strong)] transition-[background-color,transform] duration-150 hover:bg-surface-2 active:scale-[0.98]"
+            >
+              Comprendre le projet
+            </Link>
+            <Link
+              to="/assistant"
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-ink px-4 text-sm font-medium text-bg transition-[background-color,transform] duration-150 hover:bg-ink/85 active:scale-[0.98]"
+            >
+              Poser une question
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
         }
       />
 

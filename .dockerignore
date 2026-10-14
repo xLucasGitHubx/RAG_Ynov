@@ -23,7 +23,6 @@ docs/
 eval/
 scripts/
 space/
-ingestion/
 mlruns/
 mlflow.db
 *.md
@@ -31,12 +30,11 @@ docker-compose.yml
 requirements-dev.txt
 requirements-ingest.txt
 
-# Données : seul l'index (chroma_db/) et data/raw/metadata.json entrent dans l'image
+# Données : l'index (chroma_db/) et les documents de data/raw entrent dans l'image
 data/sources/
 data/parsed/
-data/raw/*.pdf
-data/raw/*.docx
-data/raw/*.md
+# Exception à « *.md » ci-dessus : les documents Markdown du corpus
+!data/raw/*.md
 
 # Interface : reconstruite dans l'étape « frontend » du Dockerfile
 frontend/node_modules/

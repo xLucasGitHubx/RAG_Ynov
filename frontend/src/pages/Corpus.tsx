@@ -1,9 +1,10 @@
 import { CaretRight, FileDoc, FilePdf, FileText, Scan } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
+import { DocumentUpload } from "../components/DocumentUpload";
 import { ErrorState } from "../components/ErrorState";
-import { Badge, Card, EmptyState, LoadingBlock, Mono, PageHeader, Skeleton, StatTile, cx } from "../components/ui";
-import type { ChunkInfo, DocumentInfo } from "../lib/api";
+import { Badge, Button, Card, EmptyState, LoadingBlock, Mono, PageHeader, Skeleton, StatTile, cx } from "../components/ui";
+import { ApiError, deleteRequest, type ChunkInfo, type DocumentInfo, type WhoAmI } from "../lib/api";
 import { fmt } from "../lib/format";
 import { useApi } from "../lib/hooks";
 
@@ -16,7 +17,10 @@ const FORMAT: Record<string, { label: string; icon: typeof FilePdf }> = {
 
 export function CorpusPage() {
   const docs = useApi<DocumentInfo[]>("/api/documents");
-  const [params] = useSearchParams();
+  // Le rôle de la clé décide de l'affichage de l'ajout de documents (sans clé valide : rien).
+  const whoami = useApi<WhoAmI>("/api/whoami");
+  const isAdmin = whoami.data?.role === "admin";
+  const [params, setParams] = useSearchParams();
   const selectedName = params.get("doc");
   const selected = docs.data?.find((d) => d.document === selectedName) ?? null;
 
@@ -24,6 +28,8 @@ export function CorpusPage() {
     (acc, d) => ({ chunks: acc.chunks + (d.chunks ?? 0), tokens: acc.tokens + (d.tokens ?? 0) }),
     { chunks: 0, tokens: 0 },
   );
+  const added = docs.data?.filter((d) => d.origine === "interface").length ?? 0;
+  const select = (document: string | null) => setParams(document ? { doc: document } : {}, { replace: true });
 
   return (
     <>
@@ -38,11 +44,27 @@ export function CorpusPage() {
       ) : (
         <>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <StatTile label="Documents" value={docs.data.length} detail="1 version obsolète conservée pour le test" />
+            <StatTile
+              label="Documents"
+              value={docs.data.length}
+              detail={added ? `Dont ${added} ajouté${added > 1 ? "s" : ""} depuis l'interface` : "1 version obsolète conservée pour le test"}
+            />
             <StatTile label="Chunks indexés" value={totals?.chunks ? fmt.int(totals.chunks) : "—"} detail="256 tokens, découpés par titres" />
             <StatTile label="Tokens BGE-M3" value={totals?.tokens ? fmt.int(totals.tokens) : "—"} detail="Comptés avec le tokenizer du modèle" />
             <StatTile label="Formats" value="4" detail="PDF, scan, Word, Markdown" />
           </div>
+
+          {isAdmin && whoami.data && (
+            <div className="mt-8">
+              <DocumentUpload
+                info={whoami.data}
+                onAdded={(document) => {
+                  docs.reload();
+                  select(document);
+                }}
+              />
+            </div>
+          )}
 
           <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
             <Card className="overflow-hidden">
@@ -76,8 +98,11 @@ export function CorpusPage() {
                           >
                             <Glyph size={20} aria-label={format.label} className="shrink-0 text-ink-3" />
                             <span className="min-w-0">
-                              <span className="block truncate font-medium text-ink group-hover:underline group-hover:underline-offset-4">
-                                {doc.titre}
+                              <span className="flex min-w-0 items-center gap-2">
+                                <span className="truncate font-medium text-ink group-hover:underline group-hover:underline-offset-4">
+                                  {doc.titre}
+                                </span>
+                                {doc.origine === "interface" && <Badge tone="accent">Ajouté</Badge>}
                               </span>
                               <span className="block truncate text-xs text-ink-3">
                                 <Mono>{doc.document}</Mono>
@@ -106,7 +131,15 @@ export function CorpusPage() {
             </Card>
 
             {selected ? (
-              <DocumentDetail key={selected.document} doc={selected} />
+              <DocumentDetail
+                key={selected.document}
+                doc={selected}
+                canRemove={isAdmin && selected.origine === "interface"}
+                onRemoved={() => {
+                  select(null);
+                  docs.reload();
+                }}
+              />
             ) : (
               <EmptyState title="Choisissez un document.">
                 Vous verrez ses métadonnées, sa source réelle et la façon dont il a été découpé : chaque chunk garde le
@@ -120,7 +153,7 @@ export function CorpusPage() {
   );
 }
 
-function DocumentDetail({ doc }: { doc: DocumentInfo }) {
+function DocumentDetail({ doc, canRemove, onRemoved }: { doc: DocumentInfo; canRemove: boolean; onRemoved: () => void }) {
   const chunks = useApi<ChunkInfo[]>(doc.chunks ? `/api/documents/${encodeURIComponent(doc.document)}/chunks` : null);
   const format = FORMAT[doc.format ?? ""] ?? FORMAT.md;
   return (
@@ -154,6 +187,7 @@ function DocumentDetail({ doc }: { doc: DocumentInfo }) {
           </dd>
         </dl>
         <p className="mt-3 text-[13px] leading-5 text-ink-3">{doc.sources}</p>
+        {canRemove && <RemoveDocument document={doc.document} onRemoved={onRemoved} />}
       </div>
 
       <div className="p-5">
@@ -178,6 +212,47 @@ function DocumentDetail({ doc }: { doc: DocumentInfo }) {
         )}
       </div>
     </Card>
+  );
+}
+
+/** Retrait en deux temps (pas de suppression sur un seul clic). */
+function RemoveDocument({ document, onRemoved }: { document: string; onRemoved: () => void }) {
+  const [step, setStep] = useState<"idle" | "confirm" | "busy">("idle");
+  const [error, setError] = useState<string | null>(null);
+  const remove = async () => {
+    setStep("busy");
+    setError(null);
+    try {
+      await deleteRequest(`/api/admin/documents/${encodeURIComponent(document)}`);
+      onRemoved();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Retrait impossible.");
+      setStep("idle");
+    }
+  };
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-2">
+      {step === "idle" ? (
+        <Button size="sm" onClick={() => setStep("confirm")}>
+          Retirer ce document
+        </Button>
+      ) : (
+        <>
+          <span className="text-[13px] text-ink-2">Retirer le fichier et ses chunks de l'index ?</span>
+          <Button size="sm" variant="primary" disabled={step === "busy"} onClick={remove}>
+            {step === "busy" ? "Retrait…" : "Confirmer le retrait"}
+          </Button>
+          <Button size="sm" variant="ghost" disabled={step === "busy"} onClick={() => setStep("idle")}>
+            Annuler
+          </Button>
+        </>
+      )}
+      {error && (
+        <p role="alert" className="w-full text-[13px] text-bad-ink">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }
 

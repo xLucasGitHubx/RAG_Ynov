@@ -15,7 +15,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from app import __version__
 from app.config import ROOT_DIR, Settings, get_settings
 from app.prompts import PROMPT_VERSION
-from app.security.auth import authenticate
+from app.security.auth import Principal, authenticate
 
 logger = logging.getLogger("rag.dashboard")
 
@@ -72,6 +72,23 @@ def config(settings: CurrentSettings) -> dict[str, Any]:
     }
 
 
+# --------------------------------------------------------------------------- session
+
+
+@router.get("/whoami")
+def whoami(principal: Annotated[Principal, Depends(authenticate)],
+           settings: CurrentSettings) -> dict[str, Any]:
+    """Rôle de la clé utilisée : l'interface n'affiche l'ajout de documents qu'au rôle admin."""
+    from app.documents import docling_available
+
+    return {
+        "role": principal.role,
+        "auth_enabled": bool(settings.api_keys and settings.api_keys.get_secret_value()),
+        "environment": settings.environment,
+        "upload": {"docling": docling_available(), "max_mb": settings.upload_max_mb},
+    }
+
+
 # --------------------------------------------------------------------------- corpus
 
 
@@ -116,6 +133,8 @@ def documents(settings: CurrentSettings) -> list[dict[str, Any]]:
             "chunks": indexed.get("chunks"),
             "tokens": indexed.get("tokens"),
             "pages": indexed.get("pages") or None,
+            "origine": meta.get("origine", "corpus"),
+            "ajoute_le": meta.get("ajoute_le"),
         })
     return rows
 

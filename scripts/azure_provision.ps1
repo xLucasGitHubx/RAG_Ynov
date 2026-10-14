@@ -114,13 +114,14 @@ if ($appExisted) {
     if (-not (Get-AzValue acr repository show-tags --name $Registry --repository rag-api -o tsv)) {
         throw "Le registre ne contient pas encore l'image rag-api : lancez d'abord le workflow Déploiement Azure (il échouera à la dernière étape, c'est attendu), puis relancez ce script."
     }
+    # Une seule réplique : la base MLflow et les documents ajoutés vivent sur son disque.
     Invoke-Az containerapp create --name $App --resource-group $ResourceGroup --environment $Environment `
         --image "$Registry.azurecr.io/rag-api:latest" `
         --registry-server "$Registry.azurecr.io" --registry-username $acrUser --registry-password $acrPassword `
         --secrets "hf-token=$hfToken" "api-keys=$apiKeys" `
         --env-vars "ENVIRONMENT=production" "LLM_PROVIDER=zerogpu" "LLM_SPACE_ID=$spaceId" `
                    "HF_TOKEN=secretref:hf-token" "API_KEYS=secretref:api-keys" `
-        --target-port 7860 --ingress external --cpu 2 --memory 4Gi --min-replicas 1 --max-replicas 2 --output none
+        --target-port 7860 --ingress external --cpu 2 --memory 4Gi --min-replicas 1 --max-replicas 1 --output none
 }
 $fqdn = az containerapp show --name $App --resource-group $ResourceGroup --query properties.configuration.ingress.fqdn -o tsv
 
