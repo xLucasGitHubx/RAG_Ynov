@@ -67,6 +67,7 @@ jobs:
           az containerapp update \
             --name "$APP" --resource-group "$RESOURCE_GROUP" \
             --image "$REGISTRY.azurecr.io/rag-api:${{ github.sha }}" \
+            --set-env-vars "GIT_SHA=${{ github.sha }}" \
             --output none
 
       - name: Vérifier que l'API répond
