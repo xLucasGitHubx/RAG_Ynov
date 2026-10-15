@@ -90,5 +90,104 @@
     "date_effet": null,
     "statut": "en_vigueur",
     "sources": "Texte de la convention Syntec (IDCC 1486, public sur Légifrance) tel que publié dans le jeu de test lyon-nlp/mteb-fr-retrieval-syntec-s2p (Wikit AI, MTEB-French, Ciancone et al. 2024)."
+  },
+  "syntec_conges_payes.md": {
+    "titre": "Fiche Syntec — Congés payés, ancienneté et fractionnement",
+    "format": "md",
+    "categorie": "RH",
+    "version": "2023",
+    "date_effet": "2023-05-01",
+    "statut": "en_vigueur",
+    "sources": "Articles 5.1 à 5.6 de la convention collective Syntec (IDCC 1486) mise à jour par l'avenant n° 46 du 16 juillet 2021, étendu par arrêté du 5 avril 2023 et applicable depuis le 1er mai 2023 (Légifrance, consulté le 15/10/2026) ; fiche « Congés supplémentaires pour ancienneté » IDCC 1486 du Code du travail numérique."
+  },
+  "syntec_deplacements_mobilite.md": {
+    "titre": "Fiche Syntec — Déplacements professionnels et mobilité géographique",
+    "format": "md",
+    "categorie": "RH",
+    "version": "2023",
+    "date_effet": "2023-05-01",
+    "statut": "en_vigueur",
+    "sources": "Articles 11.1 à 11.6 « Déplacements et changements de résidence en France métropolitaine » de la convention collective Syntec (IDCC 1486) mise à jour par l'avenant n° 46 (Légifrance, consulté le 15/10/2026). Les plafonds de remboursement propres à Nexalis figurent dans la politique notes de frais et déplacements."
+  },
+  "syntec_duree_du_travail.pdf": {
+    "titre": "Fiche Syntec — Durée du travail, forfait jours et droit à la déconnexion",
+    "format": "pdf",
+    "categorie": "RH",
+    "version": "1999, à jour 2022",
+    "date_effet": "1999-06-22",
+    "statut": "en_vigueur",
+    "sources": "Accord de branche Syntec du 22 juin 1999 relatif à la durée du travail, chapitre II (modalités standard, réalisation de missions, forfait annuel en jours) et chapitre X (droit à la déconnexion), modifié par les avenants du 1er avril 2014 et n° 2 du 13 décembre 2022 ; article 6.1 de la convention collective IDCC 1486 (Légifrance, KALITEXT000005679936, consulté le 15/10/2026)."
+  },
+  "syntec_egalite_professionnelle.docx": {
+    "titre": "Fiche Syntec — Égalité professionnelle entre les femmes et les hommes (accord 2025)",
+    "format": "docx",
+    "categorie": "RH",
+    "version": "2026",
+    "date_effet": "2026-09-01",
+    "statut": "en_vigueur",
+    "sources": "Accord de branche Syntec du 22 octobre 2025 relatif à la lutte contre les inégalités professionnelles entre les femmes et les hommes (IDCC 1486), conclu pour 4 ans, étendu par arrêté du 21 juillet 2026 (JORF du 4 août 2026) et applicable le premier jour du mois suivant, articles 3, 4 et 7 à 9 ; accord du 26 juin 2024 sur les salaires minimaux, article 2 (Légifrance, consulté le 15/10/2026)."
+  },
+  "syntec_evenements_familiaux_parentalite.docx": {
+    "titre": "Fiche Syntec — Événements familiaux et parentalité (avenant n° 49)",
+    "format": "docx",
+    "categorie": "RH",
+    "version": "2026",
+    "date_effet": "2026-05-01",
+    "statut": "en_vigueur",
+    "sources": "Avenant n° 49 du 22 octobre 2025 relatif à la parentalité et aux évènements familiaux, qui réécrit les articles 5.7 et 9.3 de la convention Syntec (IDCC 1486) ; étendu par arrêté du 26 mars 2026 (JORF du 4 avril 2026), applicable le premier jour du mois suivant, soit le 1er mai 2026 (Légifrance, consulté le 15/10/2026) ; fiche « Congés pour événements familiaux » IDCC 1486 du Code du travail numérique (mise à jour du 15/06/2026)."
+  },
+  "syntec_heures_sup_dimanche_nuit.docx": {
+    "titre": "Fiche Syntec — Heures supplémentaires, dimanche, jours fériés et nuit",
+    "format": "docx",
+    "categorie": "RH",
+    "version": "2023",
+    "date_effet": "2023-05-01",
+    "statut": "en_vigueur",
+    "sources": "Articles 6.2 « Heures supplémentaires », 6.3 « Travail du dimanche et des jours fériés » et 6.4 « Travail habituel de nuit » de la convention collective Syntec (IDCC 1486) mise à jour par l'avenant n° 46, étendue par arrêté du 5 avril 2023 (Légifrance, consulté le 15/10/2026) ; accord de branche du 22 juin 1999, chapitre IV."
+  },
+  "syntec_indemnites_licenciement_retraite.docx": {
+    "titre": "Fiche Syntec — Indemnités de licenciement, départ et mise à la retraite",
+    "format": "docx",
+    "categorie": "RH",
+    "version": "2023",
+    "date_effet": "2023-05-01",
+    "statut": "en_vigueur",
+    "sources": "Articles 4.5 « Indemnité de licenciement », 4.6 « Départ et mise à la retraite », 4.7 « Régime de retraite » et 4.8 « Indemnité de départ et de mise à la retraite » de la convention collective Syntec (IDCC 1486) mise à jour par l'avenant n° 46 (Légifrance, consulté le 15/10/2026) ; fiches « Préavis de départ à la retraite » et « Indemnités de départ à la retraite » IDCC 1486 du Code du travail numérique."
+  },
+  "syntec_maladie_maintien_salaire.pdf": {
+    "titre": "Fiche Syntec — Arrêt maladie et maintien du salaire",
+    "format": "pdf_scan",
+    "categorie": "RH",
+    "version": "2023",
+    "date_effet": "2023-05-01",
+    "statut": "en_vigueur",
+    "sources": "Articles 9.1 « Formalités », 9.2 « Incapacité temporaire de travail » et 9.5 « Décès » de la convention collective Syntec (IDCC 1486) mise à jour par l'avenant n° 46, étendue par arrêté du 5 avril 2023 (Légifrance, consulté le 15/10/2026) ; fiche « Arrêt maladie : quel maintien de salaire ? » IDCC 1486 du Code du travail numérique ; accord de branche du 27 mars 1997 relatif à la prévoyance (relais au-delà de 90 jours)."
+  },
+  "syntec_periode_essai_preavis.pdf": {
+    "titre": "Fiche Syntec — Période d'essai, préavis et rupture du contrat",
+    "format": "pdf",
+    "categorie": "RH",
+    "version": "2023",
+    "date_effet": "2023-05-01",
+    "statut": "en_vigueur",
+    "sources": "Articles 3.4 « Période d'essai », 3.7 « Ancienneté », 4.1 à 4.4 (procédures, durée du préavis, absences pour recherche d'emploi, indemnité compensatrice) de la convention collective Syntec (IDCC 1486) mise à jour par l'avenant n° 46, coefficient 240 issu de l'avenant n° 2 du 27 octobre 2022 (Légifrance, consulté le 15/10/2026) ; fiches « Préavis de démission » et « Renouvellement de la période d'essai » IDCC 1486 du Code du travail numérique."
+  },
+  "syntec_salaires_minima.pdf": {
+    "titre": "Fiche Syntec — Salaires minima et règles de rémunération",
+    "format": "pdf",
+    "categorie": "RH",
+    "version": "2025",
+    "date_effet": "2025-01-01",
+    "statut": "en_vigueur",
+    "sources": "Accord de branche Syntec du 26 juin 2024 relatif aux salaires minimaux (annexe III de la convention IDCC 1486), étendu par arrêté du 8 novembre 2024 (JORF du 27 novembre 2024) ; articles 7.1 « Généralités », 7.2 « Classifications » et 7.3 « Prime de vacances » de la convention collective mise à jour par l'avenant n° 46 ; accord du 22 juin 1999 sur la durée du travail, articles 3 et 4.4 (Légifrance, KALICONT000005635173, consulté le 15/10/2026) ; fiche « Salaire minimum » IDCC 1486 du Code du travail numérique (mise à jour du 01/06/2026)."
+  },
+  "syntec_travail_hybride.pdf": {
+    "titre": "Fiche Syntec — Organisation hybride du travail (accord de branche 2022)",
+    "format": "pdf",
+    "categorie": "RH",
+    "version": "2024",
+    "date_effet": "2024-04-01",
+    "statut": "en_vigueur",
+    "sources": "Accord de branche Syntec du 13 décembre 2022 relatif à l'organisation hybride du travail en entreprise (IDCC 1486), étendu par arrêté du 20 février 2024 (JORF du 16 mars 2024), articles 4 à 10, 14, 16 à 18 et 20 (Légifrance, KALITEXT000047348328, consulté le 15/10/2026). Les règles propres à Nexalis figurent dans l'accord d'entreprise sur le télétravail de 2025."
   }
 }

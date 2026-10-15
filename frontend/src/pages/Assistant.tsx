@@ -301,7 +301,7 @@ function Suggestions({ onPick }: { onPick: (question: string) => void }) {
     <div className="reveal rounded-lg bg-surface p-6 shadow-[inset_0_0_0_1px_var(--line)] sm:p-8">
       <h2 className="text-xl tracking-[-0.6px]">Posez une question sur les règles RH ou IT.</h2>
       <p className="mt-2 max-w-[60ch] text-sm text-ink-2">
-        L'assistant cherche dans les 10 documents de Nexalis (accords, guides, charte, convention Syntec) et ne répond
+        L'assistant cherche dans les 21 documents de Nexalis (accords, guides, charte, convention Syntec et ses fiches pratiques) et ne répond
         qu'à partir des extraits trouvés. Exemples tirés du jeu d'évaluation :
       </p>
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">

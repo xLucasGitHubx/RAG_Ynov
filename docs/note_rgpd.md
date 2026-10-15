@@ -23,7 +23,7 @@ Aucune adresse IP, aucun nom ni identifiant de salarié n'est enregistré par l'
 ## Mesures techniques
 
 1. **Filtre d'entrée** (`app/security/pii.py`) : les questions contenant un numéro de sécurité sociale (avec contrôle de la clé), un IBAN (contrôle modulo 97), un numéro de carte bancaire (algorithme de Luhn), une adresse e-mail ou un numéro de téléphone français sont **bloquées** (HTTP 400) avec un message explicatif. Elles ne sont ni envoyées au modèle, ni journalisées : seul le type de donnée détecté est tracé.
-   - Test : les 20 messages générés avec Faker (`eval/pii_messages.jsonl`) sont tous bloqués ; aucune des 68 questions légitimes du jeu d'évaluation n'est bloquée (`tests/test_security.py`).
+   - Test : les 20 messages générés avec Faker (`eval/pii_messages.jsonl`) sont tous bloqués ; aucune des 81 questions légitimes du jeu d'évaluation n'est bloquée (`tests/test_security.py`).
    - Limite : les noms propres et adresses postales ne sont pas détectés par les expressions régulières. Piste : Microsoft Presidio avec un modèle spaCy français.
 2. **Journaux** : le contenu des questions n'est jamais écrit. Un filtre de journalisation (`app/security/logging_filter.py`) masque en plus toute donnée personnelle qui apparaîtrait dans un message (exception de bibliothèque, etc.).
 3. **Authentification** : clé d'API par en-tête `X-API-Key`, deux rôles (`employe`, `admin` pour la réindexation et l'ajout de documents). Limitation à 30 requêtes par minute et par clé.

@@ -102,6 +102,25 @@ sy-01 est une vraie erreur, et instructive : le bon article était bien dans les
 
 Le temps GPU mesuré (1,5 s) remplace l'hypothèse de 8 s du plan dans `docs/estimation_budget.md`.
 
+## Corpus étendu : 11 fiches Syntec (15/10/2026)
+
+Le corpus passe de 10 à 21 documents avec 11 fiches de la convention Syntec à jour d'octobre 2026, rédigées à partir des textes en vigueur sur Légifrance (convention modernisée par l'avenant n° 46, accord salaires du 26 juin 2024, avenant n° 49 sur la parentalité, accords sur la durée du travail, le travail hybride et l'égalité professionnelle) et des fiches du Code du travail numérique. Formats : 4 PDF, 1 PDF scanné, 4 Word, 2 Markdown. Indexation incrémentale : 61 chunks de plus (237 au total), les 10 documents existants ne sont pas retraités. 13 questions sont ajoutées au jeu d'évaluation (`cc-01` à `cc-13`, 81 questions au total).
+
+Évaluation complète sur ZeroGPU (Ministral 3 8B bf16, prompt v3), fichier `answers_zerogpu_v3_20261015_1000.jsonl` :
+
+| Métrique | 10 documents (14/10) | **21 documents (15/10)** |
+| --- | --- | --- |
+| Questions avec réponse | 56 / 58 | **69 / 71 (97,2 %)** |
+| dont les 58 questions d'origine | 56 / 58 | 56 / 58 |
+| dont les 13 questions Syntec | — | 13 / 13 |
+| Hors périmètre refusés | 10 / 10 | 10 / 10 |
+| Bon document retrouvé | 100 % | 100 % |
+| Bon document cité | 100 % | 95,8 % |
+
+L'extension ne dégrade pas les réponses d'origine. **sy-01** (préavis d'un cadre), en échec avec 10 documents, passe désormais : la fiche « période d'essai et préavis » donne la ligne des cadres sans ambiguïté. En revanche **tdt-03** (report des RTT) échoue : le modèle omet l'échéance du 31 mars, alors que tous ses extraits venaient de l'accord Nexalis (erreur du modèle, sans lien avec les nouveaux documents). **it-05** reste l'échec connu (verdict juste, sans l'alternative des clés chiffrées).
+
+Le critère de **cc-12** a été corrigé après coup : la réponse « 5ᵉ mois » est juste, mais l'exposant ᵉ n'était pas reconnu par l'expression régulière.
+
 ## Quantization (itération 6)
 
 Script : `python -m eval.compare_quantization` (MLflow : expérience `quantization`). Échantillon fixe de 20 questions couvrant tous les types (factuelles, tableaux, calculs, pièges, 2 hors périmètre), mêmes critères que ci-dessus.

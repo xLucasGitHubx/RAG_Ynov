@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-10-14T18:25:35+02:00",
+ "generated_at": "2026-10-15T10:03:06+02:00",
  "prompt_version": "v3",
  "datasets": {
   "syntec_questions": 100,
-  "nexalis_questions": 68,
+  "nexalis_questions": 81,
   "pii_messages": 20
  },
  "retained": {
@@ -4132,9 +4132,9 @@
     ]
    },
    {
-    "version": "zerogpu",
-    "label": "8B bf16 · ZeroGPU",
-    "note": "Modèle de production : Ministral 3 8B bf16 sur le Space Hugging Face.",
+    "version": "zerogpu-10docs",
+    "label": "8B · ZeroGPU, 10 documents",
+    "note": "Ministral 3 8B bf16 sur le Space Hugging Face, corpus initial de 10 documents.",
     "summary": {
      "generation_seconds_p50": 1.476,
      "evaluated": 58,
@@ -5586,6 +5586,1739 @@
       "status": "ok"
      }
     ]
+   },
+   {
+    "version": "zerogpu",
+    "label": "8B · ZeroGPU, 21 documents",
+    "note": "Modèle de production : Ministral 3 8B bf16 sur le Space Hugging Face, corpus étendu aux 11 fiches Syntec (81 questions).",
+    "summary": {
+     "generation_seconds_p50": 1.695,
+     "evaluated": 71,
+     "correct": 69,
+     "accuracy": 0.971830985915493,
+     "false_refusals": 0,
+     "source_cited": 0.9577464788732394,
+     "oos_total": 10,
+     "oos_refused": 10,
+     "oos_without_llm": 3,
+     "errors": 0,
+     "latency_p50_ms": 2756,
+     "by_type": {
+      "factuelle": {
+       "total": 48,
+       "correct": 46
+      },
+      "piege_version": {
+       "total": 3,
+       "correct": 3
+      },
+      "calcul": {
+       "total": 4,
+       "correct": 4
+      },
+      "tableau": {
+       "total": 13,
+       "correct": 13
+      },
+      "piege_contradiction": {
+       "total": 2,
+       "correct": 2
+      },
+      "piege_tableau": {
+       "total": 1,
+       "correct": 1
+      }
+     }
+    },
+    "items": [
+     {
+      "id": "tt-01",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien de jours de télétravail par semaine ai-je le droit de prendre ?",
+      "expected": "Jusqu'à 2 jours par semaine (3 jours pour les salariés RQTH, les salariées enceintes à partir du 3e mois et les proches aidants).",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Vous avez le droit de télétravailler jusqu’à **deux jours par semaine** en télétravail régulier.\n\nSi vous êtes reconnu travailleur handicapé (RQTH), enceinte à partir du troisième mois de grossesse ou proche aidant (avec justificatif), ce nombre passe à **trois jours par semaine** [accord_teletravail_2025.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 6894,
+      "prompt_tokens": 1854,
+      "completion_tokens": 86,
+      "generation_seconds": 3.134,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tt-02",
+      "type": "piege_version",
+      "type_label": "Piège : version obsolète",
+      "question": "Quel est le montant de l'indemnité de télétravail ?",
+      "expected": "2,50 euros par jour télétravaillé, dans la limite de 55 euros par mois (l'accord de 2023, obsolète, prévoyait 10 euros par mois).",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Le salarié en télétravail régulier perçoit une **indemnité forfaitaire de 2,50 € par jour télétravaillé**, dans la limite de **55 € par mois**.\n\nCette indemnité est versée avec la paie du mois suivant, sur la base des jours déclarés dans l'outil RH [accord_teletravail_2025.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 3659,
+      "prompt_tokens": 1739,
+      "completion_tokens": 89,
+      "generation_seconds": 2.649,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tt-03",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Un stagiaire peut-il faire du télétravail ?",
+      "expected": "Oui, au maximum un jour par semaine, avec l'accord de son tuteur.",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Oui, un stagiaire peut télétravailler **au maximum un jour par semaine**, mais cela nécessite l'accord écrit de son tuteur [accord_teletravail_2025.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 2586,
+      "prompt_tokens": 1732,
+      "completion_tokens": 46,
+      "generation_seconds": 1.457,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tt-04",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Est-ce que je peux télétravailler depuis l'étranger ?",
+      "expected": "Oui, dans la limite de 10 jours par an et avec l'accord préalable des RH.",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Non, vous ne pouvez télétravailler depuis l'étranger que pour **dix jours par an**, sous réserve d'obtenir l'accord préalable des RH [accord_teletravail_2025.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 2577,
+      "prompt_tokens": 1933,
+      "completion_tokens": 48,
+      "generation_seconds": 1.553,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tt-05",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Pendant quelles plages horaires dois-je être joignable quand je télétravaille ?",
+      "expected": "De 9 h 30 à 12 h 00 et de 14 h 00 à 16 h 30.",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Vous devez être joignable pendant les plages fixes de **9 h 30 à 12 h 00 et de 14 h 00 à 16 h 30** [accord_teletravail_2025.docx].\n\nEn dehors de ces horaires, ainsi qu’entre **20 h 00 et 8 h 00**, vous n’êtes pas tenu de répondre aux messages professionnels.",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 3996,
+      "prompt_tokens": 1717,
+      "completion_tokens": 99,
+      "generation_seconds": 2.962,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tt-06",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quel matériel l'entreprise me fournit-elle pour télétravailler ?",
+      "expected": "Un ordinateur portable, un écran externe de 24 pouces, un casque audio et, sur demande, un siège ergonomique jusqu'à 250 euros TTC.",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Nexalis Conseil vous fournit un **ordinateur portable, un écran externe de 24 pouces, un casque audio**, ainsi qu’un **siège ergonomique sur demande dans la limite de 250 € TTC** [accord_teletravail_2025.docx].\n\nLe matériel reste la propriété de l’entreprise et doit être restitué en cas de départ.",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 3684,
+      "prompt_tokens": 1751,
+      "completion_tokens": 86,
+      "generation_seconds": 2.582,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tt-07",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien de jours de télétravail occasionnel ai-je par an ?",
+      "expected": "10 jours par année civile, avec un délai de prévenance de 24 heures.",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Vous disposez d’un crédit de **dix jours de télétravail occasionnel par année civile** [accord_teletravail_2025.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 2384,
+      "prompt_tokens": 1870,
+      "completion_tokens": 39,
+      "generation_seconds": 1.436,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tt-08",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Dans quel délai mon manager doit-il répondre à ma demande de télétravail ?",
+      "expected": "Dans un délai de 15 jours ; tout refus est motivé par écrit.",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Votre manager doit répondre à votre demande de télétravail régulier dans un délai de **quinze jours**.\n\n[accord_teletravail_2025.docx]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 2591,
+      "prompt_tokens": 1956,
+      "completion_tokens": 42,
+      "generation_seconds": 1.379,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tt-09",
+      "type": "piege_version",
+      "type_label": "Piège : version obsolète",
+      "question": "Je suis en CDD de 8 mois et ma période d'essai est terminée. Suis-je éligible au télétravail ?",
+      "expected": "Oui : l'accord 2025 ouvre le télétravail aux CDD d'au moins six mois ayant terminé leur période d'essai (l'accord 2023, obsolète, l'excluait).",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Non, vous n'êtes pas éligible au télétravail régulier.\n\nVous devez être en CDD d'une durée d'au moins six mois pour en bénéficier [accord_teletravail_2025.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 2875,
+      "prompt_tokens": 1882,
+      "completion_tokens": 53,
+      "generation_seconds": 1.695,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tt-10",
+      "type": "piege_version",
+      "type_label": "Piège : version obsolète",
+      "question": "Le télétravail est-il limité à un jour par semaine ?",
+      "expected": "Non, depuis le 1er mars 2025 la limite est de 2 jours par semaine (1 jour dans l'accord 2023, obsolète).",
+      "document": "accord_teletravail_2025.docx",
+      "answer": "Non, le télétravail n'est pas limité à un jour par semaine pour les salariés éligibles.\n\nLe salarié éligible peut télétravailler jusqu'à **deux jours par semaine**, avec des exceptions pour certains profils (travailleurs handicapés, salariées enceintes, proches aidants) [accord_teletravail_2025.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_teletravail_2025.docx"
+      ],
+      "latency_ms": 3434,
+      "prompt_tokens": 1868,
+      "completion_tokens": 82,
+      "generation_seconds": 2.489,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tdt-01",
+      "type": "calcul",
+      "type_label": "Calcul",
+      "question": "Combien de jours de RTT a un cadre au forfait jours en 2026 ?",
+      "expected": "7 jours (365 − 104 − 9 − 27 − 218).",
+      "document": "accord_temps_de_travail.pdf",
+      "answer": "Un cadre au forfait jours a **7 jours de RTT** en 2026.\n\nCela correspond au calcul annuel basé sur les jours fériés tombant en semaine et les jours ouvrés [accord_temps_de_travail.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf"
+      ],
+      "latency_ms": 2736,
+      "prompt_tokens": 1880,
+      "completion_tokens": 55,
+      "generation_seconds": 1.744,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tdt-02",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Combien de jours de RTT a un ETAM ?",
+      "expected": "12 jours de RTT par année civile (37 heures par semaine).",
+      "document": "accord_temps_de_travail.pdf",
+      "answer": "Un ETAM a **12 jours de RTT par an** selon l'**accord sur le temps de travail de Nexalis Conseil** [accord_temps_de_travail.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf"
+      ],
+      "latency_ms": 2576,
+      "prompt_tokens": 2080,
+      "completion_tokens": 41,
+      "generation_seconds": 1.385,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tdt-03",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Est-ce que je peux reporter mes RTT non pris sur l'année suivante ?",
+      "expected": "Non, sauf impossibilité liée à un arrêt maladie ou à un congé maternité, paternité ou parental : report jusqu'au 31 mars de l'année suivante.",
+      "document": "accord_temps_de_travail.pdf",
+      "answer": "Non, vous ne pouvez pas reporter vos RTT non pris sur l'année suivante, sauf en cas d'arrêt maladie ou de congé maternité, paternité ou parental, au-delà du 31 décembre [accord_temps_de_travail.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf"
+      ],
+      "latency_ms": 2935,
+      "prompt_tokens": 2099,
+      "completion_tokens": 55,
+      "generation_seconds": 1.784,
+      "status": "ko",
+      "source_cited": true
+     },
+     {
+      "id": "tdt-04",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien est payée une semaine d'astreinte ?",
+      "expected": "150 euros brut par semaine d'astreinte, le temps d'intervention étant du temps de travail effectif.",
+      "document": "accord_temps_de_travail.pdf",
+      "answer": "Une semaine d'astreinte est indemnisée à **150 euros brut**.\n\n[accord_temps_de_travail.pdf]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf"
+      ],
+      "latency_ms": 2000,
+      "prompt_tokens": 2009,
+      "completion_tokens": 29,
+      "generation_seconds": 1.01,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tdt-05",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quel jour est fixée la journée de solidarité ?",
+      "expected": "Le lundi de Pentecôte.",
+      "document": "accord_temps_de_travail.pdf",
+      "answer": "La journée de solidarité est fixée au **lundi de Pentecôte** [accord_temps_de_travail.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf"
+      ],
+      "latency_ms": 6074,
+      "prompt_tokens": 2136,
+      "completion_tokens": 29,
+      "generation_seconds": 1.616,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tdt-06",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Comment sont majorées les heures supplémentaires des ETAM ?",
+      "expected": "25 % pour les huit premières heures (de la 36e à la 43e heure), puis 50 %.",
+      "document": "accord_temps_de_travail.pdf",
+      "answer": "Les heures supplémentaires des ETAM sont majorées de **25 %** pour les huit premières heures (de la **36ᵉ à la 43ᵉ heure**), puis de **50 %** au-delà [accord_temps_de_travail.pdf].\n\n*Précisions* :\n- Ces majorations s'appliquent uniquement aux heures demandées par écrit par le manager.\n- Les heures supplémentaires peuvent aussi être récupérées sous forme de repos compensateur, à la demande du salarié [accord_temps_de_travail.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf"
+      ],
+      "latency_ms": 4522,
+      "prompt_tokens": 1669,
+      "completion_tokens": 118,
+      "generation_seconds": 3.463,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tdt-07",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien de jours par an travaille un cadre au forfait jours ?",
+      "expected": "218 jours par an, journée de solidarité incluse.",
+      "document": "accord_temps_de_travail.pdf",
+      "answer": "Un cadre au forfait jours travaille **218 jours par an**, journée de solidarité incluse [accord_temps_de_travail.pdf].\n\nPour l'année 2026, ce calcul inclut les jours fériés tombant un jour ouvré et les congés payés (27 jours ouvrés), comme détaillé dans le tableau du document [accord_temps_de_travail.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf"
+      ],
+      "latency_ms": 3797,
+      "prompt_tokens": 1848,
+      "completion_tokens": 88,
+      "generation_seconds": 2.755,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "tdt-08",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Quelle est la durée hebdomadaire de travail en modalité 2 « réalisation de missions » ?",
+      "expected": "38 h 30 par semaine, dans la limite de 219 jours travaillés par an.",
+      "document": "accord_temps_de_travail.pdf",
+      "answer": "La durée hebdomadaire de travail en modalité 2 « réalisation de missions » est de **38 heures et 30 minutes**.\n\n[accord_temps_de_travail.pdf] et [syntec_duree_du_travail.pdf]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf",
+       "syntec_duree_du_travail.pdf"
+      ],
+      "latency_ms": 2879,
+      "prompt_tokens": 2163,
+      "completion_tokens": 55,
+      "generation_seconds": 1.772,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-01",
+      "type": "piege_contradiction",
+      "type_label": "Piège : convention ou accord",
+      "question": "Combien de jours de congés payés ai-je par an ?",
+      "expected": "27 jours ouvrés chez Nexalis (accord plus favorable que la loi et la convention Syntec, qui prévoient 25 jours ouvrés / 30 jours ouvrables).",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Vous avez **27 jours ouvrés** de congés payés par an pour un temps plein chez Nexalis Conseil [guide_conges_absences.pdf].\n\nCela correspond à **2,25 jours ouvrés par mois** (du lundi au vendredi), ce qui est plus favorable que la convention Syntec (25 jours ouvrés). Les congés sont calculés sur la période du **1er juin de l'année précédente au 31 mai de l'année en cours** [guide_conges_absences.pdf, syntec_conges_payes.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf"
+      ],
+      "latency_ms": 4446,
+      "prompt_tokens": 1573,
+      "completion_tokens": 119,
+      "generation_seconds": 3.432,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-02",
+      "type": "piege_contradiction",
+      "type_label": "Piège : convention ou accord",
+      "question": "Combien de jours de congé ai-je pour mon mariage ?",
+      "expected": "5 jours ouvrés chez Nexalis (4 jours selon la loi).",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Vous avez **5 jours ouvrés** pour votre mariage chez Nexalis Conseil.\n\n[guide_conges_absences.pdf]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf"
+      ],
+      "latency_ms": 1911,
+      "prompt_tokens": 1847,
+      "completion_tokens": 26,
+      "generation_seconds": 0.916,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-03",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Combien de jours de congés supplémentaires ai-je après 10 ans d'ancienneté ?",
+      "expected": "2 jours ouvrés supplémentaires.",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Vous avez **2 jours ouvrés** de congés supplémentaires après 10 ans d'ancienneté.\n\nChez Nexalis Conseil, cette règle s'applique selon le guide des congés et absences [guide_conges_absences.pdf], qui prévoit des règles plus favorables que la convention collective Syntec.",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf"
+      ],
+      "latency_ms": 2974,
+      "prompt_tokens": 1631,
+      "completion_tokens": 65,
+      "generation_seconds": 1.974,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-04",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quelle est la durée du congé de paternité ?",
+      "expected": "25 jours calendaires (32 en cas de naissances multiples), en plus des 3 jours de congé de naissance.",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Le congé de paternité chez Nexalis Conseil dure **25 jours calendaires** (32 jours en cas de naissances multiples), en plus des 3 jours de congé de naissance [guide_conges_absences.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf"
+      ],
+      "latency_ms": 2710,
+      "prompt_tokens": 1703,
+      "completion_tokens": 51,
+      "generation_seconds": 1.599,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-05",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Dans quel délai dois-je envoyer mon arrêt maladie aux RH ?",
+      "expected": "Dans un délai de 48 heures (volet 3 de l'avis d'arrêt de travail).",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Vous devez envoyer le volet 3 de l'avis d'arrêt de travail aux RH dans un délai de **48 heures** à compter du premier jour d'absence [guide_conges_absences.pdf].\n\nLa convention collective Syntec précise également un délai de **48 heures** pour transmettre le certificat médical [syntec_maladie_maintien_salaire.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf",
+       "syntec_maladie_maintien_salaire.pdf"
+      ],
+      "latency_ms": 3462,
+      "prompt_tokens": 1756,
+      "completion_tokens": 83,
+      "generation_seconds": 2.484,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-06",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien de jours rémunérés pour enfant malade ai-je par an ?",
+      "expected": "5 jours rémunérés par an pour un enfant malade de moins de 16 ans, sur certificat médical.",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Vous avez **5 jours rémunérés par an** pour enfant malade de moins de 16 ans, sur présentation d'un certificat médical [guide_conges_absences.pdf].\n\nSi votre enfant a moins d’un an ou si vous avez au moins trois enfants de moins de 16 ans, vous bénéficiez de **5 jours rémunérés** au lieu de 3 jours non rémunérés au-delà des 5 premiers jours.",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf"
+      ],
+      "latency_ms": 4074,
+      "prompt_tokens": 1894,
+      "completion_tokens": 92,
+      "generation_seconds": 2.792,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-07",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Je n'ai pas pris tous mes congés au 31 mai, est-ce que je les perds ?",
+      "expected": "Oui en principe, sauf report de 5 jours maximum jusqu'au 31 décembre avec l'accord écrit du manager, ou impossibilité liée à un arrêt maladie, un accident du travail ou un congé maternité (report de 15 mois).",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Non, vous ne perdez pas tous vos congés non pris au 31 mai. Vous pouvez reporter **jusqu’à 5 jours maximum** jusqu’au 31 décembre avec l’accord écrit de votre manager [guide_conges_absences.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf"
+      ],
+      "latency_ms": 2612,
+      "prompt_tokens": 1651,
+      "completion_tokens": 54,
+      "generation_seconds": 1.656,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-08",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Ai-je droit à un jour de congé pour déménager ?",
+      "expected": "Oui, 1 jour ouvré par an.",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Oui, vous avez droit à **1 jour ouvré par an** pour un déménagement, selon la politique interne de Nexalis Conseil [guide_conges_absences.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf"
+      ],
+      "latency_ms": 2273,
+      "prompt_tokens": 1909,
+      "completion_tokens": 38,
+      "generation_seconds": 1.265,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-09",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "J'ai 3 ans d'ancienneté et je suis en arrêt maladie. Mon salaire est-il maintenu ?",
+      "expected": "Oui : sans carence employeur, 100 % du salaire net pendant 90 jours, puis 80 % pendant 90 jours.",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Oui, votre salaire est maintenu dès le premier jour d'arrêt maladie, car vous avez plus d'un an d'ancienneté.\n\nPour un ETAM avec **3 ans d'ancienneté** chez Nexalis Conseil, le maintien est le suivant :\n- **30 jours à 100 % du salaire brut**, puis **60 jours à 80 % du salaire brut** [syntec_maladie_maintien_salaire.pdf].\nLe total ne peut dépasser **90 jours sur 12 mois consécutifs** [syntec_maladie_maintien_salaire.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "syntec_maladie_maintien_salaire.pdf"
+      ],
+      "latency_ms": 4968,
+      "prompt_tokens": 1858,
+      "completion_tokens": 128,
+      "generation_seconds": 3.817,
+      "status": "ok",
+      "source_cited": false
+     },
+     {
+      "id": "cg-10",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Sur quelle période les congés payés sont-ils acquis ?",
+      "expected": "Du 1er juin au 31 mai de l'année suivante.",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Les congés payés sont acquis du **1er juin au 31 mai de l'année suivante** [guide_conges_absences.pdf].\n\nChez Nexalis Conseil, cette période est confirmée comme applicable, avec une durée totale de **25 jours ouvrés** (soit 30 jours ouvrables) pour un salarié présent toute l'année [syntec_conges_payes.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf",
+       "syntec_conges_payes.md"
+      ],
+      "latency_ms": 3632,
+      "prompt_tokens": 2005,
+      "completion_tokens": 86,
+      "generation_seconds": 2.578,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cg-11",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Ai-je droit à un congé pour le décès de mon grand-père ?",
+      "expected": "Oui, 1 jour ouvré chez Nexalis (la loi ne prévoit rien).",
+      "document": "guide_conges_absences.pdf",
+      "answer": "Oui, vous avez droit à **1 jour ouvré** pour le décès de votre grand-père [guide_conges_absences.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf"
+      ],
+      "latency_ms": 2010,
+      "prompt_tokens": 1801,
+      "completion_tokens": 30,
+      "generation_seconds": 1.027,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "mu-01",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quelle part de la cotisation mutuelle est payée par l'employeur ?",
+      "expected": "60 % par Nexalis Conseil, 40 % par le salarié.",
+      "document": "notice_mutuelle_prevoyance.pdf",
+      "answer": "L'employeur prend en charge **60 %** de la cotisation mutuelle.\n\nCette part est précisée dans la notice d'information mutuelle et prévoyance [notice_mutuelle_prevoyance.pdf, page 1].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "convention_collective_syntec.md",
+       "notice_mutuelle_prevoyance.pdf"
+      ],
+      "latency_ms": 2710,
+      "prompt_tokens": 1831,
+      "completion_tokens": 49,
+      "generation_seconds": 1.67,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "mu-02",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Combien me coûte la mutuelle par mois si je suis seul ?",
+      "expected": "36 euros par mois (part salarié ; cotisation totale de 90 euros dont 54 euros payés par l'employeur).",
+      "document": "notice_mutuelle_prevoyance.pdf",
+      "answer": "Votre cotisation mensuelle pour la mutuelle en tant que salarié seul s'élève à **36,00 €** [notice_mutuelle_prevoyance.pdf].\n\nLa part employeur est de **54,00 €** (financée par Nexalis Conseil).",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notice_mutuelle_prevoyance.pdf"
+      ],
+      "latency_ms": 2850,
+      "prompt_tokens": 1891,
+      "completion_tokens": 60,
+      "generation_seconds": 1.887,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "mu-03",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Combien la mutuelle rembourse-t-elle pour une chambre particulière à l'hôpital ?",
+      "expected": "90 euros par jour, sans limite de durée.",
+      "document": "notice_mutuelle_prevoyance.pdf",
+      "answer": "La mutuelle Nexalis Conseil rembourse **90 € par jour** pour une chambre particulière à l'hôpital, sans limite de durée.\n\n[notice_mutuelle_prevoyance.pdf, page 1]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notice_mutuelle_prevoyance.pdf"
+      ],
+      "latency_ms": 2499,
+      "prompt_tokens": 1877,
+      "completion_tokens": 43,
+      "generation_seconds": 1.401,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "mu-04",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Les séances d'ostéopathe sont-elles remboursées ?",
+      "expected": "Oui, 50 euros par séance, dans la limite de 6 séances par an (médecines douces).",
+      "document": "notice_mutuelle_prevoyance.pdf",
+      "answer": "Oui, les séances d'ostéopathe sont remboursées jusqu’à **50 € par séance**, avec un maximum de **6 séances par an** [notice_mutuelle_prevoyance.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notice_mutuelle_prevoyance.pdf"
+      ],
+      "latency_ms": 2588,
+      "prompt_tokens": 1828,
+      "completion_tokens": 46,
+      "generation_seconds": 1.475,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "mu-05",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Je suis déjà couvert par la mutuelle obligatoire de mon conjoint, dois-je adhérer à celle de Nexalis ?",
+      "expected": "Non, vous pouvez demander une dispense d'adhésion par écrit avec justificatif, à renouveler chaque année en janvier.",
+      "document": "notice_mutuelle_prevoyance.pdf",
+      "answer": "Non, vous n'êtes pas obligé d'adhérer à la mutuelle de Nexalis Conseil si vous êtes déjà couvert par celle de votre conjoint, car l'adhésion est obligatoire uniquement pour les salariés eux-mêmes.\n\nCependant, vous pouvez étendre la couverture à vos enfants à charge (jusqu'à 26 ans s'ils poursuivent des études) si vous le souhaitez [notice_mutuelle_prevoyance.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notice_mutuelle_prevoyance.pdf"
+      ],
+      "latency_ms": 3828,
+      "prompt_tokens": 1823,
+      "completion_tokens": 89,
+      "generation_seconds": 2.717,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "mu-06",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien de temps puis-je garder la mutuelle après avoir quitté l'entreprise ?",
+      "expected": "Portabilité gratuite pendant la durée du dernier contrat, dans la limite de 12 mois, si vous êtes indemnisé par l'assurance chômage.",
+      "document": "notice_mutuelle_prevoyance.pdf",
+      "answer": "Vous pouvez conserver gratuitement votre mutuelle et votre prévoyance pendant une durée égale à celle de votre dernier contrat de travail, dans la limite maximale de **12 mois** après la fin de votre contrat (hors licenciement pour faute lourde) [notice_mutuelle_prevoyance.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notice_mutuelle_prevoyance.pdf"
+      ],
+      "latency_ms": 3022,
+      "prompt_tokens": 2084,
+      "completion_tokens": 60,
+      "generation_seconds": 1.91,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "mu-07",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "La mutuelle verse-t-elle une prime à la naissance d'un enfant ?",
+      "expected": "Oui, un forfait naissance ou adoption de 400 euros par enfant.",
+      "document": "notice_mutuelle_prevoyance.pdf",
+      "answer": "Oui, la mutuelle verse un forfait de **400 € par enfant** à la naissance ou à l'adoption [notice_mutuelle_prevoyance.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notice_mutuelle_prevoyance.pdf"
+      ],
+      "latency_ms": 2340,
+      "prompt_tokens": 1834,
+      "completion_tokens": 37,
+      "generation_seconds": 1.255,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "mu-08",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Quel est le capital décès prévu pour un salarié marié ?",
+      "expected": "250 % du salaire annuel brut, majoré de 50 % par enfant à charge.",
+      "document": "notice_mutuelle_prevoyance.pdf",
+      "answer": "Le capital décès prévu pour un salarié marié est de **250 % du salaire annuel brut**.\n\n[notice_mutuelle_prevoyance.pdf]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notice_mutuelle_prevoyance.pdf"
+      ],
+      "latency_ms": 2240,
+      "prompt_tokens": 1787,
+      "completion_tokens": 31,
+      "generation_seconds": 1.066,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "it-01",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quelle doit être la longueur minimale de mon mot de passe ?",
+      "expected": "12 caractères minimum (une phrase de passe d'au moins 16 caractères est recommandée).",
+      "document": "charte_informatique.docx",
+      "answer": "La longueur minimale de votre mot de passe est de **12 caractères**.\n\n[charte_informatique.docx]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "charte_informatique.docx"
+      ],
+      "latency_ms": 1969,
+      "prompt_tokens": 1884,
+      "completion_tokens": 25,
+      "generation_seconds": 0.933,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "it-02",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Ai-je le droit de copier des données d'un client dans ChatGPT ?",
+      "expected": "Non : les IA génératives publiques sont interdites avec des données confidentielles, personnelles ou client ; seul l'assistant IA interne validé par le RSSI peut les recevoir.",
+      "document": "charte_informatique.docx",
+      "answer": "Non, vous n'avez pas le droit de copier des données d'un client dans ChatGPT.\n\nL'**article 5 de la charte informatique** interdit explicitement l'utilisation de services d'intelligence artificielle générative publics (comme ChatGPT) avec des données **confidentielles ou appartenant à un client**. Seuls les outils internes validés par le RSSI sont autorisés pour ce type de données [charte_informatique.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "charte_informatique.docx"
+      ],
+      "latency_ms": 4087,
+      "prompt_tokens": 1666,
+      "completion_tokens": 98,
+      "generation_seconds": 3.12,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "it-03",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "On m'a volé mon ordinateur portable, que dois-je faire ?",
+      "expected": "Le signaler au support informatique dans l'heure qui suit la découverte pour bloquer les accès, puis déposer plainte.",
+      "document": "charte_informatique.docx",
+      "answer": "Vous devez signaler le vol **dans l'heure** qui suit la découverte au support informatique (poste 4242) pour bloquer les accès à distance, puis déposer une plainte [charte_informatique.docx].\n\nLe renouvellement d’un ordinateur portable se fait tous les **4 ans** [guide_depannage_it.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "charte_informatique.docx",
+       "guide_depannage_it.md"
+      ],
+      "latency_ms": 3826,
+      "prompt_tokens": 1739,
+      "completion_tokens": 78,
+      "generation_seconds": 2.675,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "it-04",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien de temps sont conservés les journaux de connexion ?",
+      "expected": "6 mois.",
+      "document": "charte_informatique.docx",
+      "answer": "Les journaux de connexion sont conservés pendant **6 mois** par Nexalis Conseil [charte_informatique.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "charte_informatique.docx"
+      ],
+      "latency_ms": 2084,
+      "prompt_tokens": 1851,
+      "completion_tokens": 26,
+      "generation_seconds": 0.972,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "it-05",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Puis-je brancher ma clé USB personnelle sur mon ordinateur de travail ?",
+      "expected": "Non, les supports amovibles personnels sont interdits ; seules les clés USB chiffrées fournies par l'entreprise sont autorisées.",
+      "document": "charte_informatique.docx",
+      "answer": "Non, vous ne pouvez pas brancher votre clé USB personnelle sur votre ordinateur de travail.\n\nLes supports amovibles personnels sont interdits selon l’article 3 de la [charte_informatique.docx].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "charte_informatique.docx"
+      ],
+      "latency_ms": 2524,
+      "prompt_tokens": 1667,
+      "completion_tokens": 46,
+      "generation_seconds": 1.467,
+      "status": "ko",
+      "source_cited": true
+     },
+     {
+      "id": "it-06",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Mon VPN affiche « Certificat expiré », que faire ?",
+      "expected": "L'ordinateur ne s'est pas connecté au réseau de l'entreprise depuis plus de 90 jours : passer sur site ou ouvrir un ticket pour un renouvellement à distance.",
+      "document": "guide_depannage_it.md",
+      "answer": "Vous devez passer sur site ou ouvrir un ticket pour un renouvellement à distance du certificat, car votre ordinateur ne s'est pas connecté au réseau de l'entreprise depuis plus de **90 jours** [guide_depannage_it.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_depannage_it.md"
+      ],
+      "latency_ms": 2872,
+      "prompt_tokens": 2034,
+      "completion_tokens": 53,
+      "generation_seconds": 1.792,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "it-07",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "J'ai changé de téléphone, comment je récupère ma MFA ?",
+      "expected": "Depuis l'ordinateur, page « Mes informations de sécurité » > Ajouter une méthode > Application d'authentification, scanner le QR code avec le nouveau téléphone, puis supprimer l'ancien. Si l'ancien est perdu, appeler le support (poste 4242).",
+      "document": "guide_depannage_it.md",
+      "answer": "Pour récupérer votre MFA après un changement de téléphone, connectez-vous d’abord à la page **« Mes informations de sécurité »** depuis votre ordinateur, puis ajoutez l’application d’authentification sur votre nouveau téléphone en scannant le QR code fourni [guide_depannage_it.md].\n\nSi votre ancien téléphone est perdu ou cassé, appelez le support (poste **4242**) pour une réinitialisation après vérification de votre identité par votre manager [guide_depannage_it.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_depannage_it.md"
+      ],
+      "latency_ms": 4345,
+      "prompt_tokens": 1903,
+      "completion_tokens": 110,
+      "generation_seconds": 3.319,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "it-08",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Mon compte Windows est verrouillé, combien de temps dois-je attendre ?",
+      "expected": "Il se déverrouille automatiquement après 15 minutes ; sinon, réinitialisation en libre-service avec la MFA.",
+      "document": "guide_depannage_it.md",
+      "answer": "Votre compte Windows sera déverrouillé automatiquement après **15 minutes** d'attente.\n\n[guide_depannage_it.md]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_depannage_it.md"
+      ],
+      "latency_ms": 2228,
+      "prompt_tokens": 1872,
+      "completion_tokens": 31,
+      "generation_seconds": 1.101,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "it-09",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "J'ai lancé une impression mais rien ne sort de l'imprimante.",
+      "expected": "Vérifier la connexion au réseau (sur site ou VPN), puis badger sur l'imprimante et choisir « Mes impressions » ; les documents non imprimés sont supprimés après 24 heures.",
+      "document": "guide_depannage_it.md",
+      "answer": "Vérifiez d’abord que vous êtes connecté au réseau de l’entreprise (sur site ou via VPN) et badgez sur l’imprimante pour libérer vos impressions dans la file « Nexalis-Print ». Les documents non imprimés sont supprimés automatiquement après **24 heures** [guide_depannage_it.md].\n\nSi le problème persiste, signalez un éventuel bourrage papier ou toner vide à l’accueil du site.",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_depannage_it.md"
+      ],
+      "latency_ms": 3908,
+      "prompt_tokens": 1687,
+      "completion_tokens": 95,
+      "generation_seconds": 2.88,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "it-10",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quels sont les horaires du support informatique ?",
+      "expected": "Du lundi au vendredi de 8 h 00 à 19 h 00, au poste 4242 ou via le portail Nexalis Service Desk.",
+      "document": "guide_depannage_it.md",
+      "answer": "Le support informatique de Nexalis Conseil est joignable **du lundi au vendredi de 8 h 00 à 19 h 00** [guide_depannage_it.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_depannage_it.md"
+      ],
+      "latency_ms": 2505,
+      "prompt_tokens": 1630,
+      "completion_tokens": 43,
+      "generation_seconds": 1.435,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "la-01",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quelle est la durée de la période d'essai d'un cadre ?",
+      "expected": "4 mois, renouvelable une fois.",
+      "document": "livret_accueil_scan.pdf",
+      "answer": "La durée de la période d’essai pour un cadre est de **4 mois** chez Nexalis Conseil.\n\n[livret_accueil_scan.pdf] précise que la période d’essai est de 4 mois pour les cadres, et [syntec_periode_essai_preavis.pdf] confirme cette durée maximale pour les ingénieurs et cadres (coefficients 95 à 270).",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "livret_accueil_scan.pdf",
+       "syntec_periode_essai_preavis.pdf"
+      ],
+      "latency_ms": 3538,
+      "prompt_tokens": 1709,
+      "completion_tokens": 84,
+      "generation_seconds": 2.554,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "la-02",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien rapporte la prime de cooptation ?",
+      "expected": "1 500 euros brut, versée après la période d'essai du candidat embauché.",
+      "document": "livret_accueil_scan.pdf",
+      "answer": "La prime de cooptation rapporte **1 500 euros brut** pour tout candidat recommandé et embauché, versée après sa période d'essai.\n\n[livret_accueil_scan.pdf]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "livret_accueil_scan.pdf"
+      ],
+      "latency_ms": 2440,
+      "prompt_tokens": 1716,
+      "completion_tokens": 44,
+      "generation_seconds": 1.415,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "la-03",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quelle est la valeur des titres-restaurant ?",
+      "expected": "10 euros par jour travaillé, financés à 60 % par l'entreprise.",
+      "document": "livret_accueil_scan.pdf",
+      "answer": "La valeur des titres-restaurant est de **10 euros par jour travaillé**, financée à 60 % par l'entreprise [livret_accueil_scan.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "livret_accueil_scan.pdf"
+      ],
+      "latency_ms": 2226,
+      "prompt_tokens": 1764,
+      "completion_tokens": 35,
+      "generation_seconds": 1.157,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "nf-01",
+      "type": "piege_tableau",
+      "type_label": "Piège : tableau seul",
+      "question": "Quel est le plafond pour une nuit d'hôtel à Paris ?",
+      "expected": "150 euros par nuit, petit-déjeuner inclus.",
+      "document": "notes_de_frais_deplacements.pdf",
+      "answer": "Le plafond pour une nuit d'hôtel à Paris (petit-déjeuner inclus) est de **150 €** [notes_de_frais_deplacements.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notes_de_frais_deplacements.pdf"
+      ],
+      "latency_ms": 2230,
+      "prompt_tokens": 1659,
+      "completion_tokens": 36,
+      "generation_seconds": 1.216,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "nf-02",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien est remboursé un déjeuner pendant un déplacement ?",
+      "expected": "Dans la limite de 20 euros sur justificatif (30 euros pour le dîner).",
+      "document": "notes_de_frais_deplacements.pdf",
+      "answer": "Un déjeuner pendant un déplacement est remboursé dans la limite de **20 euros**, sur justificatif [notes_de_frais_deplacements.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notes_de_frais_deplacements.pdf"
+      ],
+      "latency_ms": 2242,
+      "prompt_tokens": 1797,
+      "completion_tokens": 33,
+      "generation_seconds": 1.15,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "nf-03",
+      "type": "calcul",
+      "type_label": "Calcul",
+      "question": "J'ai fait 3 000 km professionnels avec ma voiture de 5 CV cette année. Combien vais-je être remboursé ?",
+      "expected": "3 000 × 0,636 = 1 908 euros.",
+      "document": "notes_de_frais_deplacements.pdf",
+      "answer": "Vous serez remboursé **1 908 euros** pour 3 000 km professionnels avec un véhicule de 5 CV, selon le barème **d × 0,636** [notes_de_frais_deplacements.pdf, page 1].\n\n*Précision* : Ce remboursement s'applique si votre véhicule est **100 % électrique**, auquel cas il est majoré de 20 %. Sans cette condition, le calcul reste basé sur **d × 0,636** (soit 1 908 €). Un accord préalable de votre manager et une assurance couvrant les déplacements professionnels sont obligatoires [syntec_deplacements_mobilite.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "syntec_deplacements_mobilite.md"
+      ],
+      "latency_ms": 5684,
+      "prompt_tokens": 1863,
+      "completion_tokens": 154,
+      "generation_seconds": 4.537,
+      "status": "ok",
+      "source_cited": false
+     },
+     {
+      "id": "nf-04",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Dans quel délai dois-je déposer ma note de frais ?",
+      "expected": "Dans les 30 jours suivant la dépense ; au-delà de 90 jours, elle n'est plus remboursée.",
+      "document": "notes_de_frais_deplacements.pdf",
+      "answer": "Vous devez déposer votre note de frais dans un délai de **30 jours après la dépense**. Au-delà de 90 jours, la dépense n'est plus remboursée [notes_de_frais_deplacements.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notes_de_frais_deplacements.pdf"
+      ],
+      "latency_ms": 2756,
+      "prompt_tokens": 1657,
+      "completion_tokens": 51,
+      "generation_seconds": 1.63,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "nf-05",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quelle part de mon abonnement de transport en commun est remboursée ?",
+      "expected": "75 % (la loi impose 50 %).",
+      "document": "notes_de_frais_deplacements.pdf",
+      "answer": "Nexalis Conseil rembourse **75 %** de votre abonnement de transport en commun pour le trajet domicile-travail.\n\n[notes_de_frais_deplacements.pdf]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notes_de_frais_deplacements.pdf"
+      ],
+      "latency_ms": 2436,
+      "prompt_tokens": 2018,
+      "completion_tokens": 40,
+      "generation_seconds": 1.363,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "nf-06",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Ai-je le droit de voyager en première classe dans le train ?",
+      "expected": "Oui, pour un trajet de plus de 3 heures ; sinon seconde classe.",
+      "document": "notes_de_frais_deplacements.pdf",
+      "answer": "Oui, vous avez le droit de voyager en première classe dans le train si le trajet dépasse **3 heures** [notes_de_frais_deplacements.pdf].\n\nPour les trajets de moins de 3 heures, la seconde classe est obligatoire.",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "notes_de_frais_deplacements.pdf"
+      ],
+      "latency_ms": 2813,
+      "prompt_tokens": 2073,
+      "completion_tokens": 52,
+      "generation_seconds": 1.722,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "sy-01",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quel est le préavis de démission d'un cadre selon la convention collective ?",
+      "expected": "3 mois pour les ingénieurs et cadres (IC), quelle que soit la partie qui dénonce le contrat (article 15 Syntec).",
+      "document": "convention_collective_syntec.md",
+      "answer": "La durée du préavis de démission pour un cadre est de **3 mois**, conformément à la convention collective Syntec [convention_collective_syntec.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "convention_collective_syntec.md"
+      ],
+      "latency_ms": 2148,
+      "prompt_tokens": 1842,
+      "completion_tokens": 35,
+      "generation_seconds": 1.186,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "sy-02",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Qu'est-ce que la prime de vacances de la convention Syntec ?",
+      "expected": "Une prime au moins égale à 10 % de la masse globale des indemnités de congés payés, dont une partie est versée entre le 1er mai et le 31 octobre (article 31).",
+      "document": "convention_collective_syntec.md",
+      "answer": "La prime de vacances de la convention Syntec est une somme versée chaque année, représentant **au moins 10 % de la masse globale des indemnités de congés payés** pour tous les salariés, conformément aux articles 31 et 28 de la convention collective Syntec [convention_collective_syntec.md].\n\nElle peut être calculée de différentes manières (égalitaire, au prorata du salaire, etc.) et doit être versée **entre le 1er mai et le 31 octobre** pour être valide [syntec_salaires_minima.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "convention_collective_syntec.md",
+       "syntec_salaires_minima.pdf"
+      ],
+      "latency_ms": 4919,
+      "prompt_tokens": 2016,
+      "completion_tokens": 126,
+      "generation_seconds": 3.781,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "oos-01",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Quel est le cours de l'action Nexalis aujourd'hui ?",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": true,
+      "sources": [],
+      "latency_ms": 2422,
+      "prompt_tokens": 1485,
+      "completion_tokens": 37,
+      "generation_seconds": 1.196,
+      "status": "ok"
+     },
+     {
+      "id": "oos-02",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Qui a gagné la Coupe du monde de football 2018 ?",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": false,
+      "sources": [],
+      "latency_ms": 82,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "generation_seconds": null,
+      "status": "ok"
+     },
+     {
+      "id": "oos-03",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Donne-moi la recette de la blanquette de veau.",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": false,
+      "sources": [],
+      "latency_ms": 85,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "generation_seconds": null,
+      "status": "ok"
+     },
+     {
+      "id": "oos-04",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Combien gagne le directeur général de Nexalis ?",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": true,
+      "sources": [],
+      "latency_ms": 2231,
+      "prompt_tokens": 1608,
+      "completion_tokens": 37,
+      "generation_seconds": 1.232,
+      "status": "ok"
+     },
+     {
+      "id": "oos-05",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Quel temps fera-t-il demain à Toulouse ?",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": true,
+      "sources": [],
+      "latency_ms": 2216,
+      "prompt_tokens": 1742,
+      "completion_tokens": 37,
+      "generation_seconds": 1.227,
+      "status": "ok"
+     },
+     {
+      "id": "oos-06",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Écris-moi un poème sur les vacances d'été.",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": true,
+      "sources": [],
+      "latency_ms": 2273,
+      "prompt_tokens": 1785,
+      "completion_tokens": 37,
+      "generation_seconds": 1.232,
+      "status": "ok"
+     },
+     {
+      "id": "oos-07",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Quel est le salaire moyen d'un développeur à Lyon ?",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": true,
+      "sources": [],
+      "latency_ms": 2193,
+      "prompt_tokens": 1825,
+      "completion_tokens": 37,
+      "generation_seconds": 1.24,
+      "status": "ok"
+     },
+     {
+      "id": "oos-08",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Comment configurer un cluster Kubernetes avec Helm ?",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": false,
+      "sources": [],
+      "latency_ms": 78,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "generation_seconds": null,
+      "status": "ok"
+     },
+     {
+      "id": "oos-09",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Quelle est la date de la soirée de Noël de l'entreprise cette année ?",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": true,
+      "sources": [],
+      "latency_ms": 2466,
+      "prompt_tokens": 1750,
+      "completion_tokens": 37,
+      "generation_seconds": 1.234,
+      "status": "ok"
+     },
+     {
+      "id": "oos-10",
+      "type": "hors_perimetre",
+      "type_label": "Hors périmètre",
+      "question": "Combien de places de parking y a-t-il au siège de Toulouse ?",
+      "expected": null,
+      "document": null,
+      "answer": "Je ne trouve pas cette information dans les documents internes de Nexalis Conseil. Vous pouvez contacter le service RH ou le support informatique (poste 4242).",
+      "error": false,
+      "refused": true,
+      "llm_called": true,
+      "sources": [],
+      "latency_ms": 2196,
+      "prompt_tokens": 1746,
+      "completion_tokens": 37,
+      "generation_seconds": 1.23,
+      "status": "ok"
+     },
+     {
+      "id": "cc-01",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Quel est le salaire minimum d'un cadre en position 2.2 dans la convention Syntec ?",
+      "expected": "2 850 euros bruts par mois (coefficient 130), grille de l'accord du 26 juin 2024 applicable depuis le 1er janvier 2025.",
+      "document": "syntec_salaires_minima.pdf",
+      "answer": "Le salaire minimum mensuel brut pour un cadre en position **2.2** dans la convention Syntec est de **2 850 €**.\n\n[Source : syntec_salaires_minima.pdf, page 1 (Extrait 2)].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "syntec_salaires_minima.pdf"
+      ],
+      "latency_ms": 2884,
+      "prompt_tokens": 1962,
+      "completion_tokens": 53,
+      "generation_seconds": 1.844,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-02",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien de jours de congé ai-je pour les obsèques de mon fils de 30 ans ?",
+      "expected": "12 jours ouvrés (14 jours si l'enfant a moins de 25 ans).",
+      "document": "syntec_evenements_familiaux_parentalite.docx",
+      "answer": "Vous avez **12 jours ouvrés** pour les obsèques de votre fils de 30 ans.\n\nChez Nexalis Conseil, cette durée s'applique conformément à la convention collective Syntec, mais elle est **identique à la durée légale** (sans avantage supplémentaire) [guide_conges_absences.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf"
+      ],
+      "latency_ms": 3139,
+      "prompt_tokens": 1693,
+      "completion_tokens": 68,
+      "generation_seconds": 2.043,
+      "status": "ok",
+      "source_cited": false
+     },
+     {
+      "id": "cc-03",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Combien de jours de congés supplémentaires ai-je après 10 ans d'ancienneté ?",
+      "expected": "2 jours ouvrés supplémentaires par an.",
+      "document": "syntec_conges_payes.md",
+      "answer": "Vous avez **2 jours ouvrés** de congés supplémentaires après 10 ans d'ancienneté.\n\nChez Nexalis Conseil, cette règle s'applique selon le guide des congés et absences [guide_conges_absences.pdf] et la fiche interne [syntec_conges_payes.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "guide_conges_absences.pdf",
+       "syntec_conges_payes.md"
+      ],
+      "latency_ms": 3022,
+      "prompt_tokens": 1631,
+      "completion_tokens": 67,
+      "generation_seconds": 2.02,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-04",
+      "type": "calcul",
+      "type_label": "Calcul",
+      "question": "Quelle est la durée maximale de la période d'essai d'un cadre, renouvellement compris ?",
+      "expected": "8 mois : 4 mois, renouvelables une fois pour 4 mois, avec l'accord écrit des deux parties.",
+      "document": "syntec_periode_essai_preavis.pdf",
+      "answer": "La durée maximale de la période d'essai d'un cadre, renouvellement compris, est de **8 mois** chez Nexalis Conseil.\n\n[Source : livret_accueil_scan.pdf, page 1]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "convention_collective_syntec.md",
+       "livret_accueil_scan.pdf",
+       "syntec_periode_essai_preavis.pdf"
+      ],
+      "latency_ms": 2374,
+      "prompt_tokens": 1774,
+      "completion_tokens": 43,
+      "generation_seconds": 1.373,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-05",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Pendant mon préavis de licenciement, combien de jours puis-je m'absenter pour chercher un emploi ?",
+      "expected": "6 jours ouvrés par mois, payés en cas de licenciement (non payés en cas de démission).",
+      "document": "syntec_periode_essai_preavis.pdf",
+      "answer": "Vous pouvez vous absenter **6 jours ouvrés par mois** pour chercher un emploi pendant votre préavis de licenciement.\n\nCette absence est payée et peut être prise en une ou plusieurs fois, en principe par demi-journée, fixées pour moitié par l'employeur et pour moitié par vous [syntec_periode_essai_preavis.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "syntec_periode_essai_preavis.pdf"
+      ],
+      "latency_ms": 3457,
+      "prompt_tokens": 2009,
+      "completion_tokens": 75,
+      "generation_seconds": 2.316,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-06",
+      "type": "tableau",
+      "type_label": "Information dans un tableau",
+      "question": "Je suis ETAM avec 3 ans d'ancienneté : comment mon salaire est-il maintenu en arrêt maladie ?",
+      "expected": "30 jours à 100 % puis 60 jours à 80 % du salaire brut, dans la limite de 90 jours sur 12 mois.",
+      "document": "syntec_maladie_maintien_salaire.pdf",
+      "answer": "Chez Nexalis Conseil, votre salaire est maintenu **à 100 % pendant 30 jours**, puis à **80 % pendant 60 jours** en cas d’arrêt maladie, selon votre ancienneté de 3 ans (catégorie ETAM).\n\nPrécisions :\n- Le maintien s’applique dès le **premier jour d’absence** après un an d’ancienneté [syntec_maladie_maintien_salaire.pdf].\n- Le total ne dépasse pas **90 jours sur 12 mois consécutifs** [syntec_maladie_maintien_salaire.pdf].\n- Les primes et gratifications ne sont pas incluses [syntec_maladie_maintien_salaire.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "syntec_maladie_maintien_salaire.pdf"
+      ],
+      "latency_ms": 5814,
+      "prompt_tokens": 1894,
+      "completion_tokens": 157,
+      "generation_seconds": 4.636,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-07",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quel est le contingent annuel d'heures supplémentaires d'un ETAM ?",
+      "expected": "130 heures supplémentaires par an.",
+      "document": "syntec_heures_sup_dimanche_nuit.docx",
+      "answer": "Le contingent annuel d'heures supplémentaires pour un **ETAM** est de **130 heures par an** [syntec_heures_sup_dimanche_nuit.docx, accord_teletravail_2025.docx].\n\nLes salariés en forfait annuel en jours ne sont pas concernés par ce contingent.",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf",
+       "convention_collective_syntec.md",
+       "syntec_heures_sup_dimanche_nuit.docx"
+      ],
+      "latency_ms": 3181,
+      "prompt_tokens": 1593,
+      "completion_tokens": 71,
+      "generation_seconds": 2.163,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-08",
+      "type": "calcul",
+      "type_label": "Calcul",
+      "question": "Quelle indemnité de départ à la retraite vais-je toucher après 15 ans d'ancienneté ?",
+      "expected": "3 mois de salaire : 1 mois à 5 ans, plus 1/5 de mois par année à partir de la 6e (10 × 1/5 = 2 mois).",
+      "document": "syntec_indemnites_licenciement_retraite.docx",
+      "answer": "Vous toucherez **3 mois de salaire** en indemnité de départ à la retraite après 15 ans d'ancienneté.\n\nCela correspond à :\n- **1 mois** pour les 5 premières années révolues,\n- **plus 10 × 1/5 de mois** pour les 10 années supplémentaires (soit 2 mois supplémentaires).\n[syntec_indemnites_licenciement_retraite.docx] et [convention_collective_syntec.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "convention_collective_syntec.md",
+       "syntec_indemnites_licenciement_retraite.docx"
+      ],
+      "latency_ms": 4229,
+      "prompt_tokens": 1783,
+      "completion_tokens": 104,
+      "generation_seconds": 3.207,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-09",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Puis-je refuser une mission chez un client parce qu'elle ne permet pas le télétravail ?",
+      "expected": "Non, sauf avis contraire du service de santé au travail : le télétravail peut être suspendu selon les exigences du client.",
+      "document": "syntec_travail_hybride.pdf",
+      "answer": "Non, vous ne pouvez pas refuser une mission chez un client au motif qu'elle ne permet pas le télétravail, sauf avis contraire du service de santé au travail [syntec_travail_hybride.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "syntec_travail_hybride.pdf"
+      ],
+      "latency_ms": 2603,
+      "prompt_tokens": 1765,
+      "completion_tokens": 48,
+      "generation_seconds": 1.549,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-10",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "En forfait jours, au-delà de combien de jours travaillés le rachat de jours de repos est-il majoré de 35 % ?",
+      "expected": "Au-delà de 222 jours (20 % jusqu'à 222 jours), sans jamais dépasser 230 jours travaillés.",
+      "document": "syntec_duree_du_travail.pdf",
+      "answer": "Le rachat de jours de repos est majoré de **35 % au-delà de 222 jours travaillés** par an.\n\n[source : syntec_duree_du_travail.pdf]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "accord_temps_de_travail.pdf",
+       "syntec_duree_du_travail.pdf",
+       "syntec_heures_sup_dimanche_nuit.docx"
+      ],
+      "latency_ms": 2570,
+      "prompt_tokens": 1928,
+      "completion_tokens": 45,
+      "generation_seconds": 1.509,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-11",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "Quelle est la durée minimale de la pause en télétravail selon l'accord de branche ?",
+      "expected": "45 minutes par jour, dont les 20 minutes légales.",
+      "document": "syntec_travail_hybride.pdf",
+      "answer": "La durée minimale de la pause en télétravail est d'**au moins 45 minutes par jour**, dont **20 minutes obligatoires** après **6 heures de travail consécutives**, déconnectées des outils professionnels [syntec_travail_hybride.pdf].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "syntec_travail_hybride.pdf"
+      ],
+      "latency_ms": 3002,
+      "prompt_tokens": 1752,
+      "completion_tokens": 59,
+      "generation_seconds": 1.976,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-12",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "À partir de quel mois de grossesse ai-je droit à 30 minutes de réduction d'horaire par jour ?",
+      "expected": "À partir du 5e mois (20 minutes par jour dès le 3e mois).",
+      "document": "syntec_evenements_familiaux_parentalite.docx",
+      "answer": "À partir du **5ᵉ mois de grossesse**, vous avez droit à une réduction d'horaire de **30 minutes par jour**.\n\n[syntec_evenements_familiaux_parentalite.docx] et [convention_collective_syntec.md].",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "convention_collective_syntec.md",
+       "syntec_evenements_familiaux_parentalite.docx"
+      ],
+      "latency_ms": 2743,
+      "prompt_tokens": 1861,
+      "completion_tokens": 57,
+      "generation_seconds": 1.802,
+      "status": "ok",
+      "source_cited": true
+     },
+     {
+      "id": "cc-13",
+      "type": "factuelle",
+      "type_label": "Factuelle",
+      "question": "En dessous de quelle note de l'index égalité une entreprise doit-elle prendre des mesures de correction ?",
+      "expected": "En dessous de 75 points (objectifs de progression entre 75 et 85 points).",
+      "document": "syntec_egalite_professionnelle.docx",
+      "answer": "Une entreprise doit prendre des **mesures de correction obligatoires** si sa note globale à l'index de l'égalité professionnelle est **inférieure à 75 points**.\n\n[Fiche Syntec — Égalité professionnelle entre les femmes et les hommes (accord 2025)][syntec_egalite_professionnelle.docx]",
+      "error": false,
+      "refused": false,
+      "llm_called": true,
+      "sources": [
+       "syntec_egalite_professionnelle.docx"
+      ],
+      "latency_ms": 3319,
+      "prompt_tokens": 1605,
+      "completion_tokens": 75,
+      "generation_seconds": 2.306,
+      "status": "ok",
+      "source_cited": true
+     }
+    ]
    }
   ],
   "type_labels": {
@@ -5597,6 +7330,128 @@
    "piege_tableau": "Piège : tableau seul",
    "hors_perimetre": "Hors périmètre"
   }
+ },
+ "costs": {
+  "volume": {
+   "users": 1000,
+   "questions": 3,
+   "llm_share": 0.95,
+   "days": 22,
+   "hours": 10,
+   "answers_per_month": 62700.0
+  },
+  "measured": {
+   "prompt_tokens_mean": 1820.6025641025642,
+   "completion_tokens_mean": 61.57692307692308,
+   "gpu_seconds_p50": 1.695,
+   "answers": 78,
+   "file": "answers_zerogpu_v3_20261015_1000.jsonl"
+  },
+  "options": [
+   {
+    "key": "zerogpu",
+    "label": "ZeroGPU (Space Hugging Face)",
+    "model": "Ministral 3 8B bf16",
+    "billing": "temps GPU",
+    "self_hosted": true,
+    "per_answer_eur": 0.002523447967842787,
+    "monthly_eur": 87.65297007592677,
+    "note": "40 min de GPU incluses par jour (compte PRO), puis 1 $ les 10 minutes. Aucune garantie de disponibilité : outil de démonstration."
+   },
+   {
+    "key": "l4",
+    "label": "GPU dédié L4 24 Go, 10 h par jour",
+    "model": "Ministral 3 8B bf16",
+    "billing": "heure de GPU",
+    "self_hosted": true,
+    "per_answer_eur": 0.002507385032478472,
+    "monthly_eur": 157.2130415364002,
+    "note": "Coût fixe, quel que soit le volume : recommandé pour la production."
+   },
+   {
+    "key": "t4",
+    "label": "GPU dédié T4 16 Go, 10 h par jour",
+    "model": "Ministral 3 8B nf4",
+    "billing": "heure de GPU",
+    "self_hosted": true,
+    "per_answer_eur": 0.001253692516239236,
+    "monthly_eur": 78.6065207682001,
+    "note": "Possible grâce au nf4 (6,7 Go, sans perte mesurée) ; débit de la T4 à mesurer."
+   },
+   {
+    "key": "ministral-8b-2512",
+    "label": "API Mistral",
+    "model": "Ministral 3 8B (le modèle de production)",
+    "billing": "tokens",
+    "self_hosted": false,
+    "per_answer_eur": 0.00023997788461538466,
+    "monthly_eur": 15.046613365384617,
+    "note": "Même modèle que la production, servi par Mistral (France) : bien moins cher à ce volume, mais contraire à la contrainte d'auto-hébergement."
+   },
+   {
+    "key": "mistral-small-2603",
+    "label": "API Mistral",
+    "model": "Mistral Small 4",
+    "billing": "tokens",
+    "self_hosted": false,
+    "per_answer_eur": 0.00026353105769230775,
+    "monthly_eur": 16.523397317307698,
+    "note": "Modèle plus grand, pour comparaison."
+   },
+   {
+    "key": "mistral-large-2512",
+    "label": "API Mistral",
+    "model": "Mistral Large 3",
+    "billing": "tokens",
+    "self_hosted": false,
+    "per_answer_eur": 0.0008522666666666666,
+    "monthly_eur": 53.43711999999999,
+    "note": "Modèle plus grand, pour comparaison."
+   }
+  ],
+  "infrastructure": {
+   "label": "API sur Azure Container Apps et registre",
+   "monthly_eur": 42.09915140687807
+  },
+  "prices": [
+   {
+    "model": "ministral-8b-2512",
+    "label": "API Mistral · Ministral 3 8B (le modèle de production)",
+    "eur_per_m_input": 0.1275,
+    "eur_per_m_output": 0.1275,
+    "source": "docs.mistral.ai, prix en euros, 15/10/2026"
+   },
+   {
+    "model": "mistral-small-2603",
+    "label": "API Mistral · Mistral Small 4",
+    "eur_per_m_input": 0.1275,
+    "eur_per_m_output": 0.51,
+    "source": "docs.mistral.ai, prix en euros, 15/10/2026"
+   },
+   {
+    "model": "mistral-large-2512",
+    "label": "API Mistral · Mistral Large 3",
+    "eur_per_m_input": 0.425,
+    "eur_per_m_output": 1.275,
+    "source": "docs.mistral.ai, prix en euros, 15/10/2026"
+   },
+   {
+    "model": "Qwen/Qwen3-235B-A22B-Instruct-2507:deepinfra",
+    "label": "Hugging Face · Qwen3 235B Instruct (DeepInfra)",
+    "eur_per_m_input": 0.08039303260384101,
+    "eur_per_m_output": 0.4912907548012506,
+    "source": "router.huggingface.co, 0,09 $ / 0,55 $ par million, 15/10/2026"
+   }
+  ],
+  "evaluation": {
+   "questions": 81,
+   "gpu_seconds": 152.526,
+   "gpu_eur_equivalent": 0.22707458686913803,
+   "judge_model": null,
+   "judge_eur": null,
+   "judge_tokens": null
+  },
+  "rate_source": "taux de référence BCE du 14/10/2026 (1 € = 1,1195 $)"
  },
  "quantization": [
   {
@@ -5876,7 +7731,7 @@
    }
   ],
   "blocked": 20,
-  "legit_questions": 168,
+  "legit_questions": 181,
   "false_positives": 0,
   "labels": {
    "NIR": "numéro de sécurité sociale",

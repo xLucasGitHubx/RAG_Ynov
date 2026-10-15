@@ -337,8 +337,51 @@ def write_sources(metadata: dict) -> None:
 # --------------------------------------------------------------------------- main
 
 
+def render_source(path: Path) -> tuple[str, dict]:
+    """Rend un document source dans son format cible ; renvoie (fichier, métadonnées)."""
+    meta, body = read_source(path)
+    blocks = parse_blocks(body)
+    out = RAW_DIR / meta["fichier"]
+    if meta["format"] == "docx":
+        render_docx(meta, blocks, out)
+    elif meta["format"] == "pdf":
+        render_pdf(meta, blocks, out)
+    elif meta["format"] == "pdf_scan":
+        render_scanned_pdf(meta, blocks, out)
+    else:
+        render_markdown(meta, body, out)
+    print(f"  {meta['format']:<8} -> {out.relative_to(ROOT)}")
+    return meta["fichier"], {k: v for k, v in meta.items() if k != "fichier"}
+
+
+def build_only(names: list[str]) -> None:
+    """Rend seulement les sources indiquées et complète metadata.json : les autres documents
+    restent identiques octet pour octet, donc l'ingestion incrémentale ne les retraite pas."""
+    metadata_path = RAW_DIR / "metadata.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    for name in names:
+        path = SOURCES_DIR / (name if name.endswith(".md") else f"{name}.md")
+        fichier, meta = render_source(path)
+        metadata[fichier] = meta
+    metadata_path.write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2, default=str), encoding="utf-8"
+    )
+    write_sources(metadata)
+    print(f"{len(names)} document(s) rendu(s), {len(metadata)} documents dans metadata.json")
+
+
 def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Construit le corpus dans data/raw.")
+    parser.add_argument("--only", nargs="+", metavar="SOURCE",
+                        help="ne rendre que ces sources de data/sources (sans extension)")
+    args = parser.parse_args()
     RAW_DIR.mkdir(parents=True, exist_ok=True)
+    if args.only:
+        build_only(args.only)
+        return
+
     metadata = {}
     for path in sorted(SOURCES_DIR.glob("*.md")):
         meta, body = read_source(path)
