@@ -64,6 +64,10 @@ def evaluate_question(assistant: Assistant, q: dict) -> dict:
         "llm_called": result.llm_called,
         "sources": documents,
         "retrieved": retrieved,
+        # Extraits envoyés au modèle : le juge LLM (eval/judge.py) s'en sert pour vérifier que
+        # chaque affirmation de la réponse en provient (fidélité).
+        "contexts": [{"document": c.metadata.get("document"), "section": c.metadata.get("section"),
+                      "text": c.text} for c in result.chunks],
         "prompt_tokens": result.prompt_tokens,
         "completion_tokens": result.completion_tokens,
         "llm_meta": result.llm_meta,

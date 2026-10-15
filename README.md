@@ -18,7 +18,7 @@ Un assistant virtuel qui répond aux questions RH et IT des employés (congés, 
 | 8 | MLOps avec MLflow : runs d'évaluation, suivi par requête, feedback, registre de modèles | Fait |
 | 9 | FinOps et documentation | Fait |
 
-Chiffres clés : bonne source dans le top 5 pour 98 % des questions (recherche hybride), **97 % de réponses correctes** (66 / 68) avec Ministral 3 8B bf16 sur ZeroGPU, 10 / 10 questions hors périmètre refusées, 1,5 s de GPU par réponse, ≈ 122 $/mois pour 1 000 utilisateurs par jour (ZeroGPU) ou ≈ 223 $ avec une L4 dédiée.
+Chiffres clés : bonne source dans le top 5 pour 98 % des questions (recherche hybride), **96 % de réponses correctes** (78 / 81, corpus de 21 documents) avec Ministral 3 8B bf16 sur ZeroGPU, notées par mots-clés et relues par un LLM juge, 10 / 10 questions hors périmètre refusées, 1,5 s de GPU par réponse, ≈ 122 $/mois pour 1 000 utilisateurs par jour (ZeroGPU) ou ≈ 223 $ avec une L4 dédiée.
 
 **En ligne** : https://rag-api.wittysea-7248563d.germanywestcentral.azurecontainerapps.io/ui/ (clé d'API demandée). La page **Le projet** du site raconte la démarche dans l'ordre, pour un lecteur qui découvre le projet.
 
@@ -88,6 +88,7 @@ python -m ingestion.ingest --reset # reconstruction complète
 | Guide de dépannage IT | Markdown | procédures pas à pas |
 | Notes de frais et déplacements | PDF | barème kilométrique, plafonds |
 | Livret d'accueil | **PDF scanné** | OCR (RapidOCR via Docling) |
+| 11 fiches convention Syntec (salaires minima 2025, événements familiaux et parentalité 2026, congés payés, durée du travail et forfait jours, heures supplémentaires et dimanche, période d'essai et préavis, indemnités de licenciement et retraite, maladie, déplacements, travail hybride, égalité professionnelle) | PDF, Word, Markdown, **PDF scanné** | règles de branche à jour, rédigées à partir des textes de Légifrance et des fiches du Code du travail numérique |
 
 Pipeline d'ingestion : Docling (PDF, DOCX → Markdown, OCR des scans) → titres re-hiérarchisés pour les PDF → découpage par titres puis 256 tokens BGE-M3 (tableaux jamais coupés, fragments < 100 tokens fusionnés, chaque chunk préfixé par « Document > Section ») → embeddings BGE-M3 → ChromaDB avec métadonnées (document, version, statut, section, page).
 
@@ -130,7 +131,7 @@ Une application React servie par l'API elle-même sur `/ui` (même conteneur, en
 | Vue d'ensemble | chiffres clés, trajet d'une question (CPU / GPU), configuration en service lue sur l'API, avancement des 9 itérations |
 | Le projet | la documentation pour l'évaluateur : le besoin, comment lire le site, les 9 itérations dans l'ordre (objectif, réalisation, résultat, lien vers la preuve), l'architecture, les choix chiffrés, les limites, comment reproduire |
 | Assistant | chat en streaming, citations cliquables reliées aux extraits (document, section, page, score), durée recherche / génération, pouces haut et bas, cas « hors périmètre » et « bloqué RGPD » visibles |
-| Corpus | les 10 documents, leurs métadonnées et sources réelles, le découpage en chunks de chacun (tableaux rendus) ; avec une clé admin, ajout de documents (PDF, scan, Word, Markdown) indexés aussitôt, et retrait de ces ajouts |
+| Corpus | les 21 documents, leurs métadonnées et sources réelles, le découpage en chunks de chacun (tableaux rendus) ; avec une clé admin, ajout de documents (PDF, scan, Word, Markdown) indexés aussitôt, et retrait de ces ajouts |
 | Évaluation | recherche (taille des chunks, hybride contre rerankers, coût des rerankers, seuil de refus), réponses (prompt v2 / v3, 8B sur ZeroGPU, par type, chaque question avec réponse attendue et obtenue), modèle (quantization en local et sur ZeroGPU), sécurité (20 messages Faker) |
 | Tests | rapport pytest par fichier, noms des tests lisibles, commandes pour relancer les mesures |
 | Monitoring | questions suivies dans MLflow en direct : volumes, refus, latence par étape, feedback |
@@ -197,6 +198,7 @@ $env:LLM_PROVIDER="zerogpu"; python -m eval.eval_answers       # idem avec le 8B
 python -m eval.compare_quantization                            # GGUF en local (Ollama), 20 questions
 python -m eval.compare_quantization --backend zerogpu          # 8B en bf16 / int8 / nf4 sur ZeroGPU
 python -m scripts.bench_reranker BAAI/bge-reranker-v2-m3       # latence d'un reranker sur CPU
+python -m eval.judge eval/results/answers_zerogpu_….jsonl --backend hf --bill-to ynov   # LLM juge
 python -m scripts.finops                                       # budget pour 1 000 utilisateurs par jour
 python -m eval.register_config                                 # enregistre la configuration retenue dans le registre
 
@@ -205,7 +207,7 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db              # http://localhos
 
 Expériences MLflow : `retrieval-chunking` (un run par configuration), `answers-nexalis` (un run par évaluation de bout en bout), `quantization` (un run par variante de modèle), `requests` (un run par question posée à l'API : latences par étape, nombre de chunks, scores, tokens, modèles, version de l'index, feedback ; jamais le texte de la question). Registre de modèles : `assistant-rag-nexalis` (configuration complète du RAG en « models from code », alias `production`).
 
-Jeu d'évaluation maison `eval/questions.jsonl` : 68 questions, dont 58 avec réponse attendue, document et section (10 pièges : version obsolète, contradiction convention/accord, information dans un tableau, calculs) et 10 hors périmètre.
+Jeu d'évaluation maison `eval/questions.jsonl` : 81 questions, dont 71 avec réponse attendue (13 sur les fiches Syntec), document et section (10 pièges : version obsolète, contradiction convention/accord, information dans un tableau, calculs) et 10 hors périmètre.
 
 ## Tests
 

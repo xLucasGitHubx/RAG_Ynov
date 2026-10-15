@@ -4,10 +4,14 @@ const LOCALE = "fr-FR";
 
 const integer = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 0 });
 const decimal1 = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-const decimal2 =new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const decimal2 = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const decimal3 = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
 const percent0 = new Intl.NumberFormat(LOCALE, { style: "percent", maximumFractionDigits: 0 });
 const percent1 = new Intl.NumberFormat(LOCALE, { style: "percent", minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const euro0 = new Intl.NumberFormat(LOCALE, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+const euro2 = new Intl.NumberFormat(LOCALE, { style: "currency", currency: "EUR", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const euro4 = new Intl.NumberFormat(LOCALE, { style: "currency", currency: "EUR", minimumFractionDigits: 2, maximumFractionDigits: 4 });
+const euroSmall = new Intl.NumberFormat(LOCALE, { style: "currency", currency: "EUR", maximumSignificantDigits: 2 });
 const dateTime = new Intl.DateTimeFormat(LOCALE, { dateStyle: "medium", timeStyle: "short" });
 const time = new Intl.DateTimeFormat(LOCALE, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 const dateOnly = new Intl.DateTimeFormat(LOCALE, { dateStyle: "long" });
@@ -19,6 +23,12 @@ export const fmt = {
   dec3: (n: number | null | undefined) => (n == null ? "—" : decimal3.format(n)),
   pct: (n: number | null | undefined) => (n == null ? "—" : percent0.format(n)),
   pct1: (n: number | null | undefined) => (n == null ? "—" : percent1.format(n)),
+  /** Euros : 2 décimales, ou 2 chiffres significatifs sous 1 centime (coût d'une réponse). */
+  eur: (n: number | null | undefined) =>
+    n == null ? "—" : n !== 0 && Math.abs(n) < 0.01 ? euroSmall.format(n) : euro2.format(n),
+  eur0: (n: number | null | undefined) => (n == null ? "—" : euro0.format(n)),
+  /** Tarif au million de tokens : jusqu'à 4 décimales (0,1275 €). */
+  eurPrice: (n: number | null | undefined) => (n == null ? "—" : euro4.format(n)),
   dateTime: (value: string | number | Date) => dateTime.format(new Date(value)),
   time: (value: string | number | Date) => time.format(new Date(value)),
   date: (value: string | number | Date) => dateOnly.format(new Date(value)),

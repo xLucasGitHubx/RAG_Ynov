@@ -17,7 +17,7 @@ import {
   StatTile,
   StatusIcon,
 } from "../components/ui";
-import type { AnswerItem, AnswerRun, QuantizationRow, Report } from "../lib/api";
+import type { AnswerItem, AnswerRun, Costs, JudgeSummary, JudgeVerdict, QuantizationRow, Report } from "../lib/api";
 import { capitalize, fmt, fr } from "../lib/format";
 import { useApi } from "../lib/hooks";
 
@@ -25,6 +25,7 @@ const TABS = [
   { id: "retrieval", label: "Recherche" },
   { id: "reponses", label: "Réponses" },
   { id: "modele", label: "Modèle" },
+  { id: "couts", label: "Coûts" },
   { id: "securite", label: "Sécurité" },
 ];
 
@@ -46,6 +47,8 @@ export function EvaluationPage() {
         <LoadingBlock />
       ) : tab === "reponses" ? (
         <AnswersTab report={report.data} />
+      ) : tab === "couts" ? (
+        <CostsTab costs={report.data.costs} />
       ) : tab === "modele" ? (
         <ModelTab report={report.data} />
       ) : tab === "securite" ? (
@@ -258,7 +261,7 @@ function AnswersTab({ report }: { report: Report }) {
     <div className="grid grid-cols-1 gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <SegmentedControl
-          label="Version du prompt"
+          label="Évaluation affichée"
           value={run.version}
           onChange={(value) => {
             const next = new URLSearchParams(params);
@@ -276,6 +279,15 @@ function AnswersTab({ report }: { report: Report }) {
         <StatTile label="Bon document cité" value={fmt.pct(s.source_cited)} detail="Dans les sources renvoyées" emphasis />
         <StatTile label="Hors périmètre refusés" value={`${s.oos_refused}/${s.oos_total}`} detail={`${s.oos_without_llm} sans appeler le LLM`} emphasis />
       </div>
+
+      {run.judge ? (
+        <JudgeCard judge={run.judge} />
+      ) : (
+        <p className="text-[13px] text-ink-3">
+          Pas de jugement par LLM pour cette évaluation : le juge a besoin des extraits envoyés au modèle, enregistrés
+          seulement depuis l'évaluation sur le corpus étendu.
+        </p>
+      )}
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1fr]">
         <Card>
@@ -319,7 +331,8 @@ function AnswersTab({ report }: { report: Report }) {
             />
             <p className="mt-3 text-[13px] text-ink-3">
               v2 et v3 : Ministral 3 3B quantifié 4 bits via Ollama, sur un portable. Le 8B bf16 sur ZeroGPU corrige les
-              erreurs de lecture de tableau du 3B ; il reste une confusion de catégorie de salarié (sy-01).
+              erreurs de lecture de tableau du 3B. Avec le corpus étendu (11 fiches Syntec, 13 questions de plus), sy-01
+              passe grâce à la fiche sur le préavis.
             </p>
           </div>
         </Card>
@@ -330,7 +343,7 @@ function AnswersTab({ report }: { report: Report }) {
   );
 }
 
-type Filter = "all" | "ko" | "pieges" | "oos";
+type Filter = "all" | "ko" | "pieges" | "oos" | "desaccords";
 
 function QuestionExplorer({ run }: { run: AnswerRun }) {
   const [filter, setFilter] = useState<Filter>("all");
@@ -341,6 +354,7 @@ function QuestionExplorer({ run }: { run: AnswerRun }) {
       if (filter === "ko" && item.status === "ok") return false;
       if (filter === "pieges" && !item.type.startsWith("piege")) return false;
       if (filter === "oos" && item.type !== "hors_perimetre") return false;
+      if (filter === "desaccords" && (!item.judge || (item.judge.verdict === "correcte") === (item.status === "ok"))) return false;
       if (q && !`${item.id} ${item.question} ${item.answer ?? ""}`.toLowerCase().includes(q)) return false;
       return true;
     });
@@ -362,6 +376,7 @@ function QuestionExplorer({ run }: { run: AnswerRun }) {
             { value: "ko", label: `À revoir (${run.items.filter((i) => i.status !== "ok").length})` },
             { value: "pieges", label: "Pièges" },
             { value: "oos", label: "Hors périmètre" },
+            ...(run.judge ? [{ value: "desaccords" as const, label: `Désaccords avec le juge (${run.judge.disagreements.length})` }] : []),
           ]}
         />
         <label className="relative ml-auto w-full sm:w-64">
@@ -396,6 +411,11 @@ function QuestionRow({ item }: { item: AnswerItem }) {
           <StatusIcon status={item.status} />
           <Mono className="w-12 shrink-0 text-ink-3">{item.id}</Mono>
           <span className="min-w-0 flex-1 truncate text-sm text-ink">{fr(item.question)}</span>
+          {item.judge && (
+            <span className="hidden shrink-0 sm:block">
+              <VerdictBadge verdict={item.judge.verdict} />
+            </span>
+          )}
           <span className="hidden shrink-0 md:block">
             <Badge>{item.type_label}</Badge>
           </span>
@@ -429,6 +449,7 @@ function QuestionRow({ item }: { item: AnswerItem }) {
                 </span>
               )}
             </p>
+            {item.judge && <JudgeNote judge={item.judge} />}
           </div>
         </div>
       </details>
@@ -645,6 +666,225 @@ function SecurityTab({ report }: { report: Report }) {
             </ul>
           </Card>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ================================================================== juge LLM
+
+const VERDICT: Record<JudgeVerdict["verdict"], { label: string; tone: "good" | "warn" | "bad" }> = {
+  correcte: { label: "Juge : correcte", tone: "good" },
+  partielle: { label: "Juge : partielle", tone: "warn" },
+  incorrecte: { label: "Juge : incorrecte", tone: "bad" },
+};
+
+function VerdictBadge({ verdict }: { verdict: JudgeVerdict["verdict"] }) {
+  const v = VERDICT[verdict];
+  return <Badge tone={v.tone}>{v.label}</Badge>;
+}
+
+function JudgeNote({ judge }: { judge: JudgeVerdict }) {
+  return (
+    <div className="mt-3 rounded-md bg-surface p-3 shadow-[inset_0_0_0_1px_var(--line)]">
+      <div className="flex flex-wrap items-center gap-2">
+        <VerdictBadge verdict={judge.verdict} />
+        <span className="text-[13px] tnum text-ink-3">
+          Exactitude {judge.exactitude}/5 · Fidélité {judge.fidelite}/5 · Citation {judge.citation ? "juste" : "à revoir"}
+        </span>
+      </div>
+      <p className="mt-1.5 text-[13px] text-ink-2">{fr(judge.justification)}</p>
+    </div>
+  );
+}
+
+function modelName(model: string): string {
+  return model.split("/").at(-1)?.split(":")[0] ?? model;
+}
+
+function JudgeCard({ judge }: { judge: JudgeSummary }) {
+  const total = judge.judged || 1;
+  const kappa = judge.kappa_keywords;
+  // Juge = modèle évalué : faute de crédits pour un modèle plus grand (voir docs/resultats_reponses.md).
+  const selfJudge = judge.judge_backend === "zerogpu";
+  return (
+    <Card>
+      <CardHeader
+        title="Évaluation automatique par un LLM juge"
+        description={
+          <>
+            {selfJudge ? (
+              <>
+                Chaque réponse est relue par le modèle de production lui-même (Ministral 3 8B, sur le Space ZeroGPU), avec
+                une consigne de correcteur.
+              </>
+            ) : (
+              <>
+                Chaque réponse est relue par <Mono>{modelName(judge.judge_model)}</Mono>, un modèle plus grand et d'une
+                autre famille que celui évalué.
+              </>
+            )}{" "}
+            Il compare la réponse à la référence (exactitude) et vérifie que chaque affirmation vient des extraits fournis
+            (fidélité, c'est-à-dire aucune invention). Son accord avec le critère par mots-clés dit jusqu'où on peut lui
+            faire confiance.
+          </>
+        }
+      />
+      <div className="grid grid-cols-1 gap-6 p-5 lg:grid-cols-[1fr_1.2fr]">
+        <div>
+          <p className="mb-3 text-[13px] text-ink-3">Verdicts sur {judge.judged} réponses</p>
+          <BarList
+            label="Répartition des verdicts du juge"
+            format={(n) => fmt.pct(n)}
+            rows={(["correcte", "partielle", "incorrecte"] as const).map((v) => ({
+              key: v,
+              label: v.charAt(0).toUpperCase() + v.slice(1),
+              value: judge.verdicts[v] / total,
+              highlight: v === "correcte",
+              detail: `${judge.verdicts[v]} réponse${judge.verdicts[v] > 1 ? "s" : ""}`,
+            }))}
+          />
+        </div>
+        <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {[
+            ["Exactitude moyenne", judge.exactitude_mean != null ? `${fmt.dec2(judge.exactitude_mean)} / 5` : "—", "Par rapport à la réponse de référence"],
+            ["Fidélité moyenne", judge.fidelite_mean != null ? `${fmt.dec2(judge.fidelite_mean)} / 5` : "—", "5 = rien d'inventé hors des extraits"],
+            [
+              "Accord avec les mots-clés",
+              fmt.pct(judge.agreement_keywords),
+              kappa != null ? `Kappa de Cohen ${fmt.dec2(kappa)} ; ${judge.disagreements.length} désaccord${judge.disagreements.length > 1 ? "s" : ""} à relire` : "",
+            ],
+            ["Coût du juge", fmt.eur(judge.cost_eur), `${fmt.int(judge.tokens_in + judge.tokens_out)} tokens, ${fmt.int(judge.seconds)} s`],
+          ].map(([term, value, detail]) => (
+            <div key={term} className="rounded-md bg-surface-2 p-3">
+              <dt className="text-[13px] text-ink-3">{term}</dt>
+              <dd className="mt-0.5 text-xl font-semibold tracking-[-0.4px] text-ink tnum">{value}</dd>
+              {detail && <dd className="mt-0.5 text-[13px] text-ink-2">{detail}</dd>}
+            </div>
+          ))}
+        </dl>
+      </div>
+      {selfJudge && (
+        <p className="border-t border-line px-5 py-3 text-[13px] text-ink-2">
+          <span className="font-medium text-ink">Limite : le modèle se note lui-même.</span> Faute de crédits pour un
+          modèle plus grand, le juge est le Ministral 8B évalué. Il s'est montré plus sévère que les mots-clés et a révélé une
+          vraie erreur (tt-09), mais il se trompe aussi (cg-08, tdt-03) : il sert à signaler les réponses à relire. Le script{" "}
+          <Mono>eval/judge.py</Mono> sait déjà utiliser un juge plus grand (Qwen3 235B via Hugging Face, ou Mistral Large 3)
+          dès que des crédits sont disponibles.
+        </p>
+      )}
+      {judge.disagreements.length > 0 && (
+        <p className="border-t border-line px-5 py-3 text-[13px] text-ink-3">
+          Désaccords avec les mots-clés : <Mono>{judge.disagreements.join(", ")}</Mono>. Le filtre « Désaccords avec le
+          juge » ci-dessous les affiche avec la justification du juge.
+        </p>
+      )}
+    </Card>
+  );
+}
+
+// ================================================================== coûts
+
+function CostsTab({ costs }: { costs: Costs | null }) {
+  if (!costs) {
+    return <p className="text-sm text-ink-3">Coûts indisponibles : aucune évaluation sur ZeroGPU dans eval/results.</p>;
+  }
+  const byKey = Object.fromEntries(costs.options.map((o) => [o.key, o]));
+  const max = Math.max(...costs.options.map((o) => o.monthly_eur));
+  const v = costs.volume;
+  const m = costs.measured;
+  const ev = costs.evaluation;
+  return (
+    <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <StatTile label="Une réponse sur ZeroGPU" value={fmt.eur(byKey.zerogpu?.per_answer_eur)} detail={`${fmt.dec1(m.gpu_seconds_p50)} s de GPU, au tarif hors quota`} emphasis />
+        <StatTile label="Une réponse par l'API Mistral" value={fmt.eur(byKey["ministral-8b-2512"]?.per_answer_eur)} detail={`Même modèle, ${fmt.int(m.prompt_tokens_mean)} + ${fmt.int(m.completion_tokens_mean)} tokens`} emphasis />
+        <StatTile label="GPU L4 dédié, par mois" value={fmt.eur0(byKey.l4?.monthly_eur)} detail={`Pour ${fmt.int(v.users)} utilisateurs par jour`} emphasis />
+        <StatTile label="Évaluation par le juge" value={fmt.eur(ev.judge_eur)} detail={ev.judge_model ? `${ev.questions} questions, ${modelName(ev.judge_model)}` : "Juge pas encore lancé"} emphasis />
+      </div>
+
+      <Card>
+        <CardHeader
+          title="Coût mensuel du LLM selon la façon de le servir"
+          description={fr(`${fmt.int(v.users)} utilisateurs × ${v.questions} questions par jour, ${v.days} jours ouvrés, ${fmt.pct(v.llm_share)} des questions appellent le LLM : ${fmt.int(v.answers_per_month)} réponses par mois. Tokens et temps GPU mesurés sur les ${m.answers} réponses de l'évaluation en production.`)}
+        />
+        <div className="grid grid-cols-1 gap-6 p-5 lg:grid-cols-[1fr_1.4fr]">
+          <BarList
+            label="Coût mensuel du LLM, en euros"
+            max={max}
+            format={(n) => fmt.eur0(n)}
+            rows={costs.options.map((o) => ({
+              key: o.key,
+              label: (
+                <>
+                  {o.label} <span className="text-ink-3">· {o.model}</span>
+                </>
+              ),
+              value: o.monthly_eur,
+              highlight: o.key === "l4",
+              detail: o.self_hosted ? "Auto-hébergé" : "API externe",
+            }))}
+          />
+          <DataTable
+            caption="Coût du LLM par réponse et par mois, selon le mode de facturation"
+            head={["Option", "Facturation", "Par réponse", "Pour 1 000 réponses", "Par mois"]}
+            rows={costs.options.map((o) => [
+              `${o.label} (${o.model})`,
+              o.billing,
+              fmt.eur(o.per_answer_eur),
+              fmt.eur(o.per_answer_eur * 1000),
+              fmt.eur0(o.monthly_eur),
+            ])}
+            highlightRow={costs.options.findIndex((o) => o.key === "l4")}
+          />
+        </div>
+        <ul className="grid grid-cols-1 gap-2 border-t border-line px-5 py-4 text-[13px] text-ink-2">
+          {costs.options.map((o) => (
+            <li key={o.key}>
+              <span className="font-medium text-ink">
+                {o.label} · {o.model}.
+              </span>{" "}
+              {fr(o.note)}
+            </li>
+          ))}
+          <li>
+            <span className="font-medium text-ink">Hors LLM.</span> {costs.infrastructure.label} : environ{" "}
+            {fmt.eur0(costs.infrastructure.monthly_eur)} par mois, à ajouter à chaque option.
+          </li>
+        </ul>
+      </Card>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader title="Ce que coûtent nos évaluations" description="Les mesures de ce site ont un coût, lui aussi suivi." />
+          <dl className="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] gap-x-6 gap-y-2.5 px-5 pt-4 pb-5 text-sm">
+            <dt className="text-ink-3">Génération des {ev.questions} réponses</dt>
+            <dd className="text-ink">
+              {fmt.int(ev.gpu_seconds)} s de GPU, soit {fmt.eur(ev.gpu_eur_equivalent)} au tarif ZeroGPU ; gratuit ici, dans le
+              quota quotidien
+            </dd>
+            <dt className="text-ink-3">Relecture par le juge</dt>
+            <dd className="text-ink">
+              {ev.judge_eur != null
+                ? `${fmt.eur(ev.judge_eur)} pour ${fmt.int(ev.judge_tokens)} tokens (${modelName(ev.judge_model ?? "")})`
+                : "Pas encore lancée"}
+            </dd>
+          </dl>
+        </Card>
+        <Card>
+          <CardHeader title="Tarifs utilisés" description={fr(`Prix relevés le 15/10/2026 ; prix en dollars convertis au ${costs.rate_source}.`)} />
+          <div className="p-5">
+            <DataTable
+              caption="Tarifs des modèles facturés au token"
+              head={["Modèle", "Entrée (€/M)", "Sortie (€/M)"]}
+              rows={costs.prices.map((p) => [p.label, fmt.eurPrice(p.eur_per_m_input), fmt.eurPrice(p.eur_per_m_output)])}
+            />
+            <p className="mt-3 text-[13px] text-ink-3">
+              Temps GPU : ZeroGPU 1 $ les 10 minutes au-delà du quota ; L4 0,80 $ l'heure ; T4 0,40 $ l'heure (Hugging
+              Face). Détail des hypothèses : docs/estimation_budget.md.
+            </p>
+          </div>
+        </Card>
       </div>
     </div>
   );

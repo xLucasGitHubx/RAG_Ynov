@@ -82,8 +82,8 @@ Même chaîne, même prompt v3, mêmes critères ; seul le LLM change : `LLM_PRO
 
 | Métrique | 3B Q4 local (v3) | **8B bf16 ZeroGPU** |
 | --- | --- | --- |
-| Réponses correctes (68 questions) | 63 / 68 (92,6 %) | **66 / 68 (97,1 %)** |
-| Questions avec réponse | 53 / 58 | **56 / 58** |
+| Réponses correctes (68 questions) | 63 / 68 (92,6 %) | **65 / 68 (95,6 %)**, après correction du critère de tt-09 le 15/10 (66 / 68 annoncé le 14/10) |
+| Questions avec réponse | 53 / 58 | **55 / 58** |
 | Hors périmètre refusés | 10 / 10 | 10 / 10 |
 | Bon document cité | 100 % | 100 % |
 | Temps de génération (médiane, mesuré dans le Space) | 14 s (portable) | **1,5 s** |
@@ -97,10 +97,51 @@ Le 8B corrige les trois erreurs de lecture du 3B (mu-01, mu-02, la-01) et donne 
 | --- | --- | --- |
 | it-05 clé USB personnelle | « Non… les supports amovibles personnels sont interdits » | **verdict juste**, sans l'alternative (clés chiffrées) : même échec que le 3B |
 | sy-01 préavis de démission d'un cadre | « 1 mois… 2 mois après 2 ans » | **erreur** : le modèle applique la ligne ETAM du tableau Syntec au lieu de celle des cadres (3 mois) |
+| tt-09 CDD de 8 mois éligible au télétravail ? | « Non, vous n'êtes pas éligible » | **erreur** révélée le 15/10 par le LLM juge : la réponse contenait le mot-clé « six mois », le critère la validait à tort |
 
 sy-01 est une vraie erreur, et instructive : le bon article était bien dans les extraits, mais le tableau mélange plusieurs catégories de salariés. Piste : découper les tableaux de la convention par catégorie, ou ajouter au prompt une consigne de vérifier la ligne du tableau qui correspond à la catégorie demandée.
 
 Le temps GPU mesuré (1,5 s) remplace l'hypothèse de 8 s du plan dans `docs/estimation_budget.md`.
+
+## Corpus étendu : 11 fiches Syntec (15/10/2026)
+
+Le corpus passe de 10 à 21 documents avec 11 fiches de la convention Syntec à jour d'octobre 2026, rédigées à partir des textes en vigueur sur Légifrance (convention modernisée par l'avenant n° 46, accord salaires du 26 juin 2024, avenant n° 49 sur la parentalité, accords sur la durée du travail, le travail hybride et l'égalité professionnelle) et des fiches du Code du travail numérique. Formats : 4 PDF, 1 PDF scanné, 4 Word, 2 Markdown. Indexation incrémentale : 61 chunks de plus (237 au total), les 10 documents existants ne sont pas retraités. 13 questions sont ajoutées au jeu d'évaluation (`cc-01` à `cc-13`, 81 questions au total).
+
+Évaluation complète sur ZeroGPU (Ministral 3 8B bf16, prompt v3), fichier `answers_zerogpu_v3_20261015_1000.jsonl` :
+
+| Métrique | 10 documents (14/10) | **21 documents (15/10)** |
+| --- | --- | --- |
+| Questions avec réponse | 55 / 58 | **68 / 71 (95,8 %)** |
+| dont les 58 questions d'origine | 55 / 58 | 55 / 58 |
+| dont les 13 questions Syntec | — | 13 / 13 |
+| Hors périmètre refusés | 10 / 10 | 10 / 10 |
+| Bon document retrouvé | 100 % | 100 % |
+| Bon document cité | 100 % | 95,8 % |
+
+Les scores tiennent compte de la correction du critère de tt-09 (voir la section suivante) : avec 10 comme avec 21 documents, le 8B répond « Non » à un salarié en CDD de 8 mois, alors que la bonne réponse est « Oui ». L'extension ne dégrade pas les réponses d'origine. **sy-01** (préavis d'un cadre), en échec avec 10 documents, passe désormais : la fiche « période d'essai et préavis » donne la ligne des cadres sans ambiguïté. En revanche **tdt-03** (report des RTT) échoue : le modèle omet l'échéance du 31 mars, alors que tous ses extraits venaient de l'accord Nexalis (erreur du modèle, sans lien avec les nouveaux documents). **it-05** reste l'échec connu (verdict juste, sans l'alternative des clés chiffrées).
+
+Le critère de **cc-12** a été corrigé après coup : la réponse « 5ᵉ mois » est juste, mais l'exposant ᵉ n'était pas reconnu par l'expression régulière.
+
+## Évaluation par un LLM juge (15/10/2026)
+
+Script : `python -m eval.judge FICHIER_ANSWERS --backend …` (MLflow : expérience `judge`). Pour chaque question, le juge reçoit la question, la réponse de référence, les extraits envoyés au modèle (désormais enregistrés par `eval_answers`) et la réponse, puis note l'exactitude (1 à 5), la fidélité aux extraits (1 à 5), la justesse des citations et rend un verdict (correcte, partielle, incorrecte) avec une justification.
+
+**Choix du juge.** Le juge prévu était un modèle plus grand et d'une autre famille : Qwen3 235B via les fournisseurs d'inférence Hugging Face, ou Mistral Large 3. Le compte Hugging Face n'avait plus de crédits, le jeton ne pouvait pas facturer l'organisation, et la clé Mistral était bloquée par le quota de l'offre gratuite. Le juge a donc été le **Ministral 3 8B du Space ZeroGPU**, c'est-à-dire le modèle évalué lui-même. Ses verdicts sont à lire avec ce biais en tête ; le script accepte les autres juges sans modification (`--backend hf --bill-to ynov` ou `--backend mistral`).
+
+Résultats sur les 81 réponses de l'évaluation à 21 documents (`judge_answers_zerogpu_v3_20261015_1000__rag-llm_20261015_1021.jsonl`) :
+
+| Mesure | Valeur |
+| --- | --- |
+| Verdicts | 68 correctes, 11 partielles, 2 incorrectes |
+| Exactitude moyenne (questions avec réponse) | 4,76 / 5 |
+| Fidélité moyenne | 4,83 / 5 |
+| Citations justes | 97 % |
+| Accord avec le critère par mots-clés | 85 % (kappa de Cohen 0,20) |
+| Durée, coût | 277 s ; 0,29 € de temps GPU au tarif hors quota (gratuit ici, dans le quota) |
+
+**Ce que le juge a apporté.** Il est plus sévère que les mots-clés, pas plus complaisant : la plupart des désaccords sont des réponses justes sur le chiffre attendu mais incomplètes (une exception, une condition, une procédure omise), qu'il classe « partielles ». Surtout, il a révélé une **vraie erreur que les mots-clés laissaient passer** : à tt-09, l'assistant répond « Non, vous n'êtes pas éligible » à un salarié en CDD de 8 mois, alors que l'accord 2025 dit l'inverse ; la réponse contenait « six mois », donc le mot-clé passait. Le critère exige désormais le « oui » : c'est un durcissement, et il fait perdre un point aux deux évaluations du 8B (66 / 68 annoncé le 14/10 devient 65 / 68). Il a aussi relevé une citation d'un document hors sujet (cc-07) et un ajout confus sur les véhicules électriques (nf-03).
+
+**Ses erreurs.** À cg-08, il affirme que l'information (un jour pour déménager) n'est pas dans les extraits, alors que le guide des congés y figure : la réponse était juste. À tdt-03, il valide une réponse qui omet l'échéance du 31 mars. Un juge de 8B se relisant lui-même manque de fiabilité sur les détails : il sert à **signaler les réponses à relire**, pas à remplacer le critère par mots-clés. Le kappa faible vient surtout du déséquilibre (presque toutes les réponses sont justes) et des verdicts « partielle » que les mots-clés ne connaissent pas.
 
 ## Quantization (itération 6)
 

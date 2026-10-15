@@ -193,14 +193,14 @@ export function ProjectPage() {
                 {
                   title: "La mémoire",
                   goal: "Retrouver le bon passage.",
-                  done: "Corpus de 10 documents en 4 formats (dont un scan lu par OCR), ingestion Docling idempotente, découpage par titres puis par taille, tableaux jamais coupés, embeddings BGE-M3, base ChromaDB.",
+                  done: "Corpus de 21 documents en 4 formats (dont deux scans lus par OCR) : 10 documents internes et 11 fiches de la convention Syntec à jour de 2026, rédigées à partir de Légifrance. Ingestion Docling idempotente, découpage par titres puis par taille, tableaux jamais coupés, embeddings BGE-M3, base ChromaDB.",
                   result: "16 configurations mesurées sur les 100 questions publiques Syntec : 256 tokens retenu, à moins de 2 points du meilleur score avec 26 % de tokens en moins envoyés au modèle.",
                   link: { to: "/evaluation?tab=retrieval", label: "Évaluation de la recherche" },
                 },
                 {
                   title: "Le cerveau",
                   goal: "Des réponses justes, sourcées, et un refus propre.",
-                  done: "Recherche hybride (BM25 + vecteurs) après avoir constaté que les échecs étaient des mots exacts, seuil de pertinence qui refuse sans appeler le modèle, prompt protégé contre l'injection, réponse en streaming, interface web.",
+                  done: "Recherche hybride (BM25 + vecteurs) après avoir constaté que les échecs étaient des mots exacts, seuil de pertinence qui refuse sans appeler le modèle, prompt protégé contre l'injection, réponse en streaming, interface web. Qualité des réponses notée deux fois : par mots-clés et par un LLM juge.",
                   result: `Bonne source dans le top 5 : ${figures.r5} (MRR ${figures.mrr}, contre ${figures.mrrVector} en vecteurs seuls). Réponses correctes : ${figures.localAccuracy} avec le 3B local, ${figures.accuracy} avec le 8B de production.`,
                   link: { to: "/evaluation?tab=reponses", label: "Évaluation des réponses" },
                 },
@@ -234,7 +234,7 @@ export function ProjectPage() {
                 {
                   title: "FinOps et documentation",
                   goal: "Savoir ce que coûterait le service et le rendre compréhensible.",
-                  done: `Budget pour 1 000 utilisateurs par jour à partir du temps GPU mesuré (${figures.gpuSeconds} par réponse), README, résultats détaillés, note RGPD, guide de déploiement, et cette page.`,
+                  done: `Budget pour 1 000 utilisateurs par jour à partir du temps GPU mesuré (${figures.gpuSeconds} par réponse) et coût d'usage des LLM en euros, par réponse et par mois (onglet Coûts), README, résultats détaillés, note RGPD, guide de déploiement, et cette page.`,
                   result: "Environ 122 $ par mois avec ZeroGPU, 223 $ avec un GPU L4 dédié, qui reste le choix recommandé pour une vraie production.",
                 },
               ].map((step, index) => (

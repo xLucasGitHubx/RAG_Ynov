@@ -139,16 +139,46 @@ def retrieval_section() -> dict:
 # --------------------------------------------------------------------------- réponses
 
 
+# Première évaluation sur ZeroGPU, avant l'ajout des 11 fiches Syntec (10 documents, 68 questions) :
+# gardée pour vérifier que l'extension du corpus ne dégrade pas les réponses d'origine.
+ZEROGPU_10_DOCS = "answers_zerogpu_v3_20261014_1407.jsonl"
+
+
 def answer_runs() -> list[dict]:
-    """Runs fixes (local) + la dernière évaluation complète sur ZeroGPU, si elle existe."""
+    """Runs fixes (local) + les évaluations sur ZeroGPU (avant et après l'extension du corpus)."""
     specs = list(ANSWER_RUNS)
-    zerogpu = sorted(RESULTS_DIR.glob("answers_zerogpu_*.jsonl"))
+    if (RESULTS_DIR / ZEROGPU_10_DOCS).exists():
+        specs.append({
+            "version": "zerogpu-10docs", "label": "8B · ZeroGPU, 10 documents",
+            "files": [ZEROGPU_10_DOCS],
+            "note": "Ministral 3 8B bf16 sur le Space Hugging Face, corpus initial "
+                    "de 10 documents.",
+        })
+    zerogpu = sorted(p for p in RESULTS_DIR.glob("answers_zerogpu_*.jsonl")
+                     if p.name != ZEROGPU_10_DOCS)
     if zerogpu:
         specs.append({
-            "version": "zerogpu", "label": "8B bf16 · ZeroGPU", "files": [zerogpu[-1].name],
-            "note": "Modèle de production : Ministral 3 8B bf16 sur le Space Hugging Face.",
+            "version": "zerogpu", "label": "8B · ZeroGPU, 21 documents",
+            "files": [zerogpu[-1].name],
+            "note": "Modèle de production : Ministral 3 8B bf16 sur le Space Hugging Face, corpus "
+                    "étendu aux 11 fiches Syntec (81 questions).",
         })
     return specs
+
+
+# --------------------------------------------------------------------------- juge LLM
+
+
+def latest_judgements() -> dict[str, dict]:
+    """Dernier jugement par fichier de réponses : {fichier: {"summary", "rows"}}."""
+    found: dict[str, dict] = {}
+    for summary_path in sorted(RESULTS_DIR.glob("judge_*.summary.json")):
+        summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        stem = summary_path.name.removesuffix(".summary.json")
+        rows_path = summary_path.with_name(stem + ".jsonl")
+        rows = {r["id"]: r for r in read_jsonl(rows_path)} if rows_path.exists() else {}
+        found[summary["answers_file"]] = {"summary": summary, "rows": rows}
+    return found
 
 
 def quantization_section() -> list[dict]:
@@ -173,8 +203,10 @@ def quantization_section() -> list[dict]:
 
 def answers_section() -> dict:
     questions = {q["id"]: q for q in read_jsonl(NEXALIS_QUESTIONS)}
+    judgements = latest_judgements()
     runs = []
     for spec in answer_runs():
+        judgement = next((judgements[f] for f in spec["files"] if f in judgements), None)
         rows: dict[str, dict] = {}
         for name in spec["files"]:
             path = RESULTS_DIR / name
@@ -215,9 +247,16 @@ def answers_section() -> dict:
                 ok = keywords_ok(row.get("answer") or "", q.get("keywords", []))
                 item["status"] = "ok" if ok and not row.get("refused") else "ko"
                 item["source_cited"] = q["document"] in (row.get("sources") or [])
+            verdict = (judgement or {}).get("rows", {}).get(qid)
+            if verdict and verdict.get("verdict"):
+                item["judge"] = {k: verdict.get(k) for k in
+                                 ("verdict", "exactitude", "fidelite", "citation", "justification")}
             items.append(item)
-        runs.append({**{k: spec[k] for k in ("version", "label", "note")},
-                     "summary": summarize_answers(items), "items": items})
+        run = {**{k: spec[k] for k in ("version", "label", "note")},
+               "summary": summarize_answers(items), "items": items}
+        if judgement:
+            run["judge"] = judgement["summary"]
+        runs.append(run)
     return {"runs": runs, "type_labels": TYPE_LABELS}
 
 
@@ -249,6 +288,99 @@ def summarize_answers(items: list[dict]) -> dict:
 
 def _ratio(items, predicate) -> float | None:
     return sum(1 for i in items if predicate(i)) / len(items) if items else None
+
+
+# --------------------------------------------------------------------------- coûts
+
+
+# Volume de référence du budget (docs/estimation_budget.md) : 1 000 utilisateurs, 3 questions par
+# jour, 95 % des questions appellent le LLM, 22 jours ouvrés, 10 heures d'activité par jour.
+VOLUME = {"users": 1000, "questions": 3, "llm_share": 0.95, "days": 22, "hours": 10}
+
+
+def costs_section(runs: list[dict]) -> dict | None:
+    """Coût d'usage des LLM en euros, à partir des tokens et du temps GPU mesurés en production."""
+    from eval.costs import (
+        L4_EUR_PER_HOUR,
+        RATE_SOURCE,
+        T4_EUR_PER_HOUR,
+        TOKEN_PRICES,
+        ZEROGPU_EUR_PER_SECOND,
+        from_usd,
+        token_cost_eur,
+    )
+    from scripts.finops import estimate
+
+    all_runs = sorted(RESULTS_DIR.glob("answers_zerogpu_*.jsonl"))
+    paths = [p for p in all_runs if p.name != ZEROGPU_10_DOCS] or all_runs
+    if not paths:
+        return None
+    rows = [r for r in read_jsonl(paths[-1]) if r.get("llm_called") and r.get("prompt_tokens")]
+    if not rows:
+        return None
+    prompt = sum(r["prompt_tokens"] for r in rows) / len(rows)
+    completion = sum(r.get("completion_tokens") or 0 for r in rows) / len(rows)
+    gpu = sorted((r.get("llm_meta") or {}).get("generation_seconds") or 0 for r in rows)
+    gpu_p50 = gpu[len(gpu) // 2]
+    v = VOLUME
+    answers_month = v["users"] * v["questions"] * v["llm_share"] * v["days"]
+    est = estimate(v["users"], v["questions"], gpu_p50, v["llm_share"], v["days"], v["hours"], 2, 4)
+
+    def per_token(model: str) -> float:
+        return token_cost_eur(model, prompt, completion)
+
+    options = [
+        {"key": "zerogpu", "label": "ZeroGPU (Space Hugging Face)", "model": "Ministral 3 8B bf16",
+         "billing": "temps GPU", "self_hosted": True,
+         "per_answer_eur": gpu_p50 * ZEROGPU_EUR_PER_SECOND,
+         "monthly_eur": from_usd(est["zerogpu_month"]),
+         "note": "40 min de GPU incluses par jour (compte PRO), puis 1 $ les 10 minutes. Aucune "
+                 "garantie de disponibilité : outil de démonstration."},
+        {"key": "l4", "label": "GPU dédié L4 24 Go, 10 h par jour", "model": "Ministral 3 8B bf16",
+         "billing": "heure de GPU", "self_hosted": True,
+         "per_answer_eur": L4_EUR_PER_HOUR * v["hours"] * v["days"] / answers_month,
+         "monthly_eur": L4_EUR_PER_HOUR * v["hours"] * v["days"],
+         "note": "Coût fixe, quel que soit le volume : recommandé pour la production."},
+        {"key": "t4", "label": "GPU dédié T4 16 Go, 10 h par jour", "model": "Ministral 3 8B nf4",
+         "billing": "heure de GPU", "self_hosted": True,
+         "per_answer_eur": T4_EUR_PER_HOUR * v["hours"] * v["days"] / answers_month,
+         "monthly_eur": T4_EUR_PER_HOUR * v["hours"] * v["days"],
+         "note": "Possible grâce au nf4 (6,7 Go, sans perte mesurée) ; débit de la T4 à mesurer."},
+    ]
+    for model in ("ministral-8b-2512", "mistral-small-2603", "mistral-large-2512"):
+        price = TOKEN_PRICES[model]
+        options.append({
+            "key": model, "label": price.label.split(" · ")[0],
+            "model": price.label.split(" · ")[1],
+            "billing": "tokens", "self_hosted": False,
+            "per_answer_eur": per_token(model), "monthly_eur": per_token(model) * answers_month,
+            "note": ("Même modèle que la production, servi par Mistral (France) : bien moins "
+                     "cher à ce volume, mais contraire à la contrainte d'auto-hébergement."
+                     if model == "ministral-8b-2512" else
+                     "Modèle plus grand, pour comparaison."),
+        })
+    judge = next((r["judge"] for r in reversed(runs) if r.get("judge")), None)
+    eval_rows = read_jsonl(paths[-1])
+    eval_gpu = sum((r.get("llm_meta") or {}).get("generation_seconds") or 0 for r in eval_rows)
+    return {
+        "volume": {**v, "answers_per_month": answers_month},
+        "measured": {"prompt_tokens_mean": prompt, "completion_tokens_mean": completion,
+                     "gpu_seconds_p50": gpu_p50, "answers": len(rows), "file": paths[-1].name},
+        "options": options,
+        "infrastructure": {"label": "API sur Azure Container Apps et registre",
+                           "monthly_eur": from_usd(est["api_month"])},
+        "prices": [{"model": m, **vars(p)} for m, p in TOKEN_PRICES.items()],
+        "evaluation": {
+            "questions": len(eval_rows),
+            "gpu_seconds": eval_gpu,
+            "gpu_eur_equivalent": eval_gpu * ZEROGPU_EUR_PER_SECOND,
+            "judge_model": judge.get("judge_model") if judge else None,
+            "judge_eur": judge.get("cost_eur") if judge else None,
+            "judge_tokens": ((judge.get("tokens_in", 0) + judge.get("tokens_out", 0))
+                             if judge else None),
+        },
+        "rate_source": RATE_SOURCE,
+    }
 
 
 # --------------------------------------------------------------------------- sécurité
@@ -322,6 +454,7 @@ def main() -> None:
         run_pytest()
 
     settings = get_settings()
+    answers = answers_section()
     report = {
         "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
         "prompt_version": PROMPT_VERSION,
@@ -342,7 +475,8 @@ def main() -> None:
             "llm_model": settings.ollama_model,
         },
         "retrieval": retrieval_section(),
-        "answers": answers_section(),
+        "answers": answers,
+        "costs": costs_section(answers["runs"]),
         "quantization": quantization_section(),
         "security": security_section(),
         "tests": tests_section(),

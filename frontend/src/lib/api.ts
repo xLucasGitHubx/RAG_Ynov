@@ -278,6 +278,63 @@ export interface AnswerItem {
   completion_tokens: number | null;
   status: "ok" | "ko" | "erreur";
   source_cited?: boolean;
+  judge?: JudgeVerdict;
+}
+
+export interface JudgeVerdict {
+  verdict: "correcte" | "partielle" | "incorrecte";
+  exactitude: number;
+  fidelite: number;
+  citation: boolean;
+  justification: string;
+}
+
+export interface JudgeSummary {
+  judged: number;
+  failed: number;
+  verdicts: Record<"correcte" | "partielle" | "incorrecte", number>;
+  correct_rate: number | null;
+  exactitude_mean: number | null;
+  fidelite_mean: number | null;
+  citation_rate: number | null;
+  agreement_keywords: number | null;
+  kappa_keywords: number | null;
+  disagreements: string[];
+  tokens_in: number;
+  tokens_out: number;
+  cost_eur: number | null;
+  judge_backend: string;
+  judge_model: string;
+  seconds: number;
+  date: string;
+}
+
+export interface CostOption {
+  key: string;
+  label: string;
+  model: string;
+  billing: string;
+  self_hosted: boolean;
+  per_answer_eur: number;
+  monthly_eur: number;
+  note: string;
+}
+
+export interface Costs {
+  volume: { users: number; questions: number; llm_share: number; days: number; hours: number; answers_per_month: number };
+  measured: { prompt_tokens_mean: number; completion_tokens_mean: number; gpu_seconds_p50: number; answers: number; file: string };
+  options: CostOption[];
+  infrastructure: { label: string; monthly_eur: number };
+  prices: { model: string; label: string; eur_per_m_input: number; eur_per_m_output: number; source: string }[];
+  evaluation: {
+    questions: number;
+    gpu_seconds: number;
+    gpu_eur_equivalent: number;
+    judge_model: string | null;
+    judge_eur: number | null;
+    judge_tokens: number | null;
+  };
+  rate_source: string;
 }
 
 export interface AnswerSummary {
@@ -301,6 +358,7 @@ export interface AnswerRun {
   note: string;
   summary: AnswerSummary;
   items: AnswerItem[];
+  judge?: JudgeSummary;
 }
 
 export interface QuantizationRow {
@@ -347,6 +405,7 @@ export interface Report {
     } | null;
   };
   answers: { runs: AnswerRun[]; type_labels: Record<string, string> };
+  costs: Costs | null;
   quantization: QuantizationRow[];
   security: {
     messages: { id: string; type: string; label: string; detected: string[]; blocked: boolean; masked?: string }[];

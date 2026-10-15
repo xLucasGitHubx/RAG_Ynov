@@ -51,7 +51,7 @@ La première version de ce document supposait 8 s de GPU par réponse (hypothès
 - **Une L4 dédiée suffit largement en charge.** Même à 5 s par réponse, le GPU est occupé 40 % des heures ouvrées. Les pics (arrivée au bureau, veille de congés) se lissent avec une file d'attente ou un serveur d'inférence avec batching (vLLM, TGI). Coût fixe et prévisible, données traitées sur une machine dédiée : c'est le choix recommandé pour la production.
 - **Le modèle 8B tient sur 24 Go en bf16** : 17,2 Go de VRAM au pic, mesurés sur ZeroGPU. **En nf4, 6,7 Go seulement, sans perte de qualité mesurée** (20 / 20 sur l'échantillon, 2,4 s au lieu de 1,6 s ; voir `docs/resultats_reponses.md`) : une T4 16 Go à 0,40 $/h suffirait, soit ≈ 88 $/mois au lieu de 176 $ (la T4 est plus lente : débit à mesurer avant de trancher). int8 est à écarter (5 fois plus lent).
 - **L'API CPU pèse peu** (~20 % du total en scénario B) : la recherche hybride sans reranker évite d'ajouter un GPU ou des CPU supplémentaires pour un cross-encoder (12 s par question sur CPU, voir `docs/resultats_retrieval.md`).
-- **Qualité au rendez-vous** : le 8B bf16 répond correctement à 66 questions sur 68 (97 %) sur ZeroGPU, contre 91 % pour le 3B quantifié en local (voir `docs/resultats_reponses.md`).
+- **Qualité au rendez-vous** : le 8B bf16 répond correctement à 65 questions sur 68 (96 %) sur ZeroGPU (78 sur 81 avec le corpus étendu), contre 91 % pour le 3B quantifié en local (voir `docs/resultats_reponses.md`).
 
 ## Sensibilité
 
@@ -63,3 +63,24 @@ La première version de ce document supposait 8 s de GPU par réponse (hypothès
 | Activité 24 h/24 | inchangé (facturation à l'usage) | GPU ≈ 422 $, API ≈ 114 $ |
 
 Commandes : `python -m scripts.finops --gpu-seconds 5`, `--questions 5`, `--hours 24`.
+
+## Coût d'usage des LLM en euros (15/10/2026)
+
+Mis à jour avec l'évaluation sur le corpus étendu (78 réponses générées, en moyenne 1 821 tokens en entrée et 62 en sortie, 1,7 s de GPU en médiane). Prix en dollars convertis au taux de référence de la BCE du 14/10/2026 (1 € = 1,1195 $) ; tarifs Mistral publiés en euros. Le calcul est fait par `scripts/export_reports.py` (module `eval/costs.py`) et affiché dans l'onglet **Évaluation > Coûts** de l'interface.
+
+Volume : 1 000 utilisateurs × 3 questions × 22 jours × 95 % d'appels au LLM = **62 700 réponses par mois**.
+
+| Option | Facturation | Par réponse | Par mois |
+| --- | --- | --- | --- |
+| ZeroGPU, Ministral 3 8B bf16 | temps GPU | 0,0025 € | ≈ 88 € |
+| GPU dédié L4, 8B bf16, 10 h par jour | heure de GPU | 0,0025 € | ≈ 157 € |
+| GPU dédié T4, 8B nf4, 10 h par jour | heure de GPU | 0,0013 € | ≈ 79 € |
+| API Mistral, Ministral 3 8B (même modèle) | tokens (0,1275 €/M) | 0,00024 € | ≈ 15 € |
+| API Mistral, Mistral Small 4 | tokens | 0,00026 € | ≈ 17 € |
+| API Mistral, Mistral Large 3 | tokens | 0,00085 € | ≈ 53 € |
+
+À ajouter : l'API sur Azure Container Apps et son registre, ≈ 42 € par mois.
+
+**Lecture.** À ce volume, l'API Mistral serait 5 à 10 fois moins chère qu'un GPU auto-hébergé, avec le même modèle, hébergé en France. Elle est écartée parce que le projet impose un modèle **auto-hébergé** : maîtrise des données et du modèle, pas de dépendance à un fournisseur. Le calcul montre le prix de cette contrainte : environ 140 € par mois avec une L4, 65 € avec une T4 en nf4. L'écart se resserre avec le volume, puisque le GPU dédié est un coût fixe.
+
+**Coût des évaluations elles-mêmes.** Générer les 81 réponses de l'évaluation a demandé 153 s de GPU, soit 0,23 € au tarif ZeroGPU (gratuit ici, dans le quota quotidien). La relecture par un LLM juge (`eval/judge.py`) coûte quelques centimes par évaluation complète ; son coût exact est mesuré à chaque passage et affiché dans l'interface.
