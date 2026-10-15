@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-15T10:03:06+02:00",
+ "generated_at": "2026-10-15T10:29:55+02:00",
  "prompt_version": "v3",
  "datasets": {
   "syntec_questions": 100,
@@ -4138,8 +4138,8 @@
     "summary": {
      "generation_seconds_p50": 1.476,
      "evaluated": 58,
-     "correct": 56,
-     "accuracy": 0.9655172413793104,
+     "correct": 55,
+     "accuracy": 0.9482758620689655,
      "false_refusals": 0,
      "source_cited": 1.0,
      "oos_total": 10,
@@ -4154,7 +4154,7 @@
       },
       "piege_version": {
        "total": 3,
-       "correct": 3
+       "correct": 2
       },
       "calcul": {
        "total": 2,
@@ -4361,7 +4361,7 @@
       "prompt_tokens": 1882,
       "completion_tokens": 55,
       "generation_seconds": 1.768,
-      "status": "ok",
+      "status": "ko",
       "source_cited": true
      },
      {
@@ -5594,8 +5594,8 @@
     "summary": {
      "generation_seconds_p50": 1.695,
      "evaluated": 71,
-     "correct": 69,
-     "accuracy": 0.971830985915493,
+     "correct": 68,
+     "accuracy": 0.9577464788732394,
      "false_refusals": 0,
      "source_cited": 0.9577464788732394,
      "oos_total": 10,
@@ -5610,7 +5610,7 @@
       },
       "piege_version": {
        "total": 3,
-       "correct": 3
+       "correct": 2
       },
       "calcul": {
        "total": 4,
@@ -5650,7 +5650,14 @@
       "completion_tokens": 86,
       "generation_seconds": 3.134,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement le document source et couvrant tous les cas spécifiques mentionnés."
+      }
      },
      {
       "id": "tt-02",
@@ -5671,7 +5678,14 @@
       "completion_tokens": 89,
       "generation_seconds": 2.649,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement le document source et reprenant les montants (2,50 €/jour et 55 €/mois) ainsi que les conditions de versement."
+      }
      },
      {
       "id": "tt-03",
@@ -5692,7 +5706,14 @@
       "completion_tokens": 46,
       "generation_seconds": 1.457,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement conforme à la référence et aux extraits, avec une précision supplémentaire (accord écrit) justifiée par le contexte implicite des règles d'accord préalable."
+      }
      },
      {
       "id": "tt-04",
@@ -5713,7 +5734,14 @@
       "completion_tokens": 48,
       "generation_seconds": 1.553,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et fidèle aux extraits, citant correctement le document source qui précise la limite de 10 jours/an avec accord RH."
+      }
      },
      {
       "id": "tt-05",
@@ -5734,7 +5762,14 @@
       "completion_tokens": 99,
       "generation_seconds": 2.962,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement fidèle aux extraits et cite correctement le document source, avec une exactitude parfaite sur les plages horaires et les conditions de joignabilité."
+      }
      },
      {
       "id": "tt-06",
@@ -5755,7 +5790,14 @@
       "completion_tokens": 86,
       "generation_seconds": 2.582,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte, complète et fidèle aux extraits, citant correctement le document source."
+      }
      },
      {
       "id": "tt-07",
@@ -5776,7 +5818,14 @@
       "completion_tokens": 39,
       "generation_seconds": 1.436,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte, complète et citée avec précision, conformément à l'extrait 1."
+      }
      },
      {
       "id": "tt-08",
@@ -5797,7 +5846,14 @@
       "completion_tokens": 42,
       "generation_seconds": 1.379,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et citée avec précision, conformément à l'extrait 1 (Article 4) qui mentionne un délai de quinze jours pour la réponse du manager."
+      }
      },
      {
       "id": "tt-09",
@@ -5817,8 +5873,15 @@
       "prompt_tokens": 1882,
       "completion_tokens": 53,
       "generation_seconds": 1.695,
-      "status": "ok",
-      "source_cited": true
+      "status": "ko",
+      "source_cited": true,
+      "judge": {
+       "verdict": "incorrecte",
+       "exactitude": 2,
+       "fidelite": 1,
+       "citation": true,
+       "justification": "La réponse est fausse car l'assistant a omis que votre CDD de 8 mois et la fin de la période d'essai remplissent les conditions d'éligibilité au télétravail selon l'accord 2025."
+      }
      },
      {
       "id": "tt-10",
@@ -5839,7 +5902,14 @@
       "completion_tokens": 82,
       "generation_seconds": 2.489,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et fidèle aux extraits, citant correctement le document source."
+      }
      },
      {
       "id": "tdt-01",
@@ -5860,7 +5930,14 @@
       "completion_tokens": 55,
       "generation_seconds": 1.744,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et directement tirée des extraits (notamment [Extrait 1] et [Extrait 2], où le calcul détaillé et le résultat de 7 jours sont explicitement mentionnés)."
+      }
      },
      {
       "id": "tdt-02",
@@ -5881,7 +5958,14 @@
       "completion_tokens": 41,
       "generation_seconds": 1.385,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, citant clairement le document source et reprenant fidèlement l'information des extraits (12 jours de RTT pour les ETAM en modalité 1)."
+      }
      },
      {
       "id": "tdt-03",
@@ -5902,7 +5986,14 @@
       "completion_tokens": 55,
       "generation_seconds": 1.784,
       "status": "ko",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement le document source et reprenant précisément les conditions de report exceptionnel (arrêt maladie ou congés parentaux/maternité/paternité) jusqu'au 31 mars."
+      }
      },
      {
       "id": "tdt-04",
@@ -5923,7 +6014,14 @@
       "completion_tokens": 29,
       "generation_seconds": 1.01,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et citée avec le bon document, correspondant parfaitement à l'indemnité forfaitaire de 150 € brut mentionnée dans l'extrait 2."
+      }
      },
      {
       "id": "tdt-05",
@@ -5944,7 +6042,14 @@
       "completion_tokens": 29,
       "generation_seconds": 1.616,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, fidèle aux extraits (Article 7 de l'accord_temps_de_travail.pdf) et cite correctement le document source."
+      }
      },
      {
       "id": "tdt-06",
@@ -5965,7 +6070,14 @@
       "completion_tokens": 118,
       "generation_seconds": 3.463,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement le document source et reprenant les majorations (25 % puis 50 %) ainsi que les conditions de récupération ou de paiement."
+      }
      },
      {
       "id": "tdt-07",
@@ -5986,7 +6098,14 @@
       "completion_tokens": 88,
       "generation_seconds": 2.755,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et entièrement appuyée par les extraits, notamment [accord_temps_de_travail.pdf] qui précise clairement 218 jours travaillés par an, journée de solidarité incluse."
+      }
      },
      {
       "id": "tdt-08",
@@ -6008,7 +6127,14 @@
       "completion_tokens": 55,
       "generation_seconds": 1.772,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, citant les documents pertinents qui mentionnent clairement 38 h 30 hebdomadaires pour la modalité 2."
+      }
      },
      {
       "id": "cg-01",
@@ -6029,7 +6155,14 @@
       "completion_tokens": 119,
       "generation_seconds": 3.432,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte, complète et fidèle aux extraits, citant correctement le guide_conges_absences.pdf pour les 27 jours ouvrés et les deux documents pour la période de calcul."
+      }
      },
      {
       "id": "cg-02",
@@ -6050,7 +6183,14 @@
       "completion_tokens": 26,
       "generation_seconds": 0.916,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, citant correctement le document [guide_conges_absences.pdf] qui précise 5 jours ouvrés pour un mariage chez Nexalis."
+      }
      },
      {
       "id": "cg-03",
@@ -6071,7 +6211,14 @@
       "completion_tokens": 65,
       "generation_seconds": 1.974,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et citée avec le document pertinent, reflétant parfaitement les extraits 1, 2 et 3."
+      }
      },
      {
       "id": "cg-04",
@@ -6092,7 +6239,14 @@
       "completion_tokens": 51,
       "generation_seconds": 1.599,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement le document source."
+      }
      },
      {
       "id": "cg-05",
@@ -6114,7 +6268,14 @@
       "completion_tokens": 83,
       "generation_seconds": 2.484,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, citant les deux extraits pertinents qui confirment le délai de 48 heures pour l'envoi du volet 3."
+      }
      },
      {
       "id": "cg-06",
@@ -6135,7 +6296,14 @@
       "completion_tokens": 92,
       "generation_seconds": 2.792,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement le document source."
+      }
      },
      {
       "id": "cg-07",
@@ -6156,7 +6324,14 @@
       "completion_tokens": 54,
       "generation_seconds": 1.656,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 4,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est globalement exacte mais omet le cas de report exceptionnel en cas d'arrêt maladie, accident du travail ou congé maternité (report de 15 mois), mentionné dans le guide."
+      }
      },
      {
       "id": "cg-08",
@@ -6177,7 +6352,14 @@
       "completion_tokens": 38,
       "generation_seconds": 1.265,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "incorrecte",
+       "exactitude": 1,
+       "fidelite": 1,
+       "citation": false,
+       "justification": "La réponse de l'assistant est fausse : aucun document fourni ne mentionne un droit à un jour de congé pour déménager, ni dans les extraits de la convention collective Syntec, ni dans le guide des congés et absences."
+      }
      },
      {
       "id": "cg-09",
@@ -6198,7 +6380,14 @@
       "completion_tokens": 128,
       "generation_seconds": 3.817,
       "status": "ok",
-      "source_cited": false
+      "source_cited": false,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 3,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est fidèle aux extraits mais incomplète sur un point clé : elle ne précise pas que le maintien porte sur **100 % du salaire net** (et non brut) pendant 90 jours, puis 80 % du salaire net, comme indiqué dans l'extrait 4 (guide_conges_absences.pdf)."
+      }
      },
      {
       "id": "cg-10",
@@ -6220,7 +6409,14 @@
       "completion_tokens": 86,
       "generation_seconds": 2.578,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement les documents sources pour la période d'acquisition (guide_conges_absences.pdf) et la durée des congés (syntec_conges_payes.md)."
+      }
      },
      {
       "id": "cg-11",
@@ -6241,7 +6437,14 @@
       "completion_tokens": 30,
       "generation_seconds": 1.027,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte (2 jours ouvrés pour les autres ascendants comme les grands-parents selon les extraits, mais l'assistant a cité le document correct et la réponse de référence était '1 jour ouvré chez Nexalis' sans préciser la source légale, donc la réponse est cohérente avec la consigne de se baser sur les documents internes)."
+      }
      },
      {
       "id": "mu-01",
@@ -6263,7 +6466,14 @@
       "completion_tokens": 49,
       "generation_seconds": 1.67,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, citant correctement le document source et reprenant fidèlement la répartition de 60 % à la charge de l'employeur."
+      }
      },
      {
       "id": "mu-02",
@@ -6284,7 +6494,14 @@
       "completion_tokens": 60,
       "generation_seconds": 1.887,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte, complète et citée avec le bon document source, correspondant parfaitement à la référence."
+      }
      },
      {
       "id": "mu-03",
@@ -6305,7 +6522,14 @@
       "completion_tokens": 43,
       "generation_seconds": 1.401,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et citée avec précision à partir de l'extrait 1, qui mentionne explicitement '90 € par jour, sans limite de durée' pour la chambre particulière."
+      }
      },
      {
       "id": "mu-04",
@@ -6326,7 +6550,14 @@
       "completion_tokens": 46,
       "generation_seconds": 1.475,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement le document source avec les montants et la limite de séances précisés."
+      }
      },
      {
       "id": "mu-05",
@@ -6347,7 +6578,14 @@
       "completion_tokens": 89,
       "generation_seconds": 2.717,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 4,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est globalement exacte mais omet la procédure de dispense écrite avec justificatif annuelle, mentionnée dans la référence comme obligatoire pour éviter l'adhésion."
+      }
      },
      {
       "id": "mu-06",
@@ -6368,7 +6606,14 @@
       "completion_tokens": 60,
       "generation_seconds": 1.91,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte, complète et fidèle aux extraits, avec une citation précise du document source."
+      }
      },
      {
       "id": "mu-07",
@@ -6389,7 +6634,14 @@
       "completion_tokens": 37,
       "generation_seconds": 1.255,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et citée avec précision, en s'appuyant sur le tableau des garanties santé de la notice_mutuelle_prevoyance.pdf."
+      }
      },
      {
       "id": "mu-08",
@@ -6410,7 +6662,14 @@
       "completion_tokens": 31,
       "generation_seconds": 1.066,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 4,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte sur le montant de base (250 % du salaire annuel brut), mais elle omet la majoration de 50 % par enfant à charge, mentionnée dans la réponse de référence et implicite dans les extraits (Extrait 1)."
+      }
      },
      {
       "id": "it-01",
@@ -6431,7 +6690,14 @@
       "completion_tokens": 25,
       "generation_seconds": 0.933,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, car elle reprend fidèlement la longueur minimale de 12 caractères indiquée dans le document de référence et l'extrait [charte_informatique.docx]."
+      }
      },
      {
       "id": "it-02",
@@ -6452,7 +6718,14 @@
       "completion_tokens": 98,
       "generation_seconds": 3.12,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et fidèle aux extraits, citant correctement le document source (charte_informatique.docx, Article 5)."
+      }
      },
      {
       "id": "it-03",
@@ -6474,7 +6747,14 @@
       "completion_tokens": 78,
       "generation_seconds": 2.675,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 4,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte sur les actions immédiates (signalement dans l'heure et dépôt de plainte), mais ajoute une information secondaire (renouvellement des ordinateurs) non demandée dans la question, bien que correcte."
+      }
      },
      {
       "id": "it-04",
@@ -6495,7 +6775,14 @@
       "completion_tokens": 26,
       "generation_seconds": 0.972,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et directement tirée de l'extrait 1 (charte_informatique.docx) qui précise la durée de conservation des journaux de connexion."
+      }
      },
      {
       "id": "it-05",
@@ -6516,7 +6803,14 @@
       "completion_tokens": 46,
       "generation_seconds": 1.467,
       "status": "ko",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 4,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte mais incomplète : elle ne précise pas que seules les clés USB chiffrées fournies par l'entreprise sont autorisées, ce qui est un point clé de la réponse de référence."
+      }
      },
      {
       "id": "it-06",
@@ -6537,7 +6831,14 @@
       "completion_tokens": 53,
       "generation_seconds": 1.792,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte, fidèle aux extraits (notamment l'extrait 1, §1.2) et cite correctement le document source."
+      }
      },
      {
       "id": "it-07",
@@ -6558,7 +6859,14 @@
       "completion_tokens": 110,
       "generation_seconds": 3.319,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est complète, précise et entièrement conforme à la référence, avec une citation exacte des documents fournis."
+      }
      },
      {
       "id": "it-08",
@@ -6579,7 +6887,14 @@
       "completion_tokens": 31,
       "generation_seconds": 1.101,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et citée avec le bon extrait, correspondant parfaitement à la référence et aux documents fournis."
+      }
      },
      {
       "id": "it-09",
@@ -6600,7 +6915,14 @@
       "completion_tokens": 95,
       "generation_seconds": 2.88,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 4,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est globalement exacte et complète sur les étapes clés (connexion réseau, badge, suppression après 24h), mais elle mentionne à tort la file d'impression « Nexalis-Print » comme étape à suivre (cette information n'est pas une action à réaliser, mais une description du fonctionnement)."
+      }
      },
      {
       "id": "it-10",
@@ -6621,7 +6943,14 @@
       "completion_tokens": 43,
       "generation_seconds": 1.435,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement fidèle aux extraits et à la référence, avec une citation exacte du document source."
+      }
      },
      {
       "id": "la-01",
@@ -6643,7 +6972,14 @@
       "completion_tokens": 84,
       "generation_seconds": 2.554,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, citant deux documents cohérents ([livret_accueil_scan.pdf] et [syntec_periode_essai_preavis.pdf]) qui confirment une durée de 4 mois renouvelable une fois pour les cadres."
+      }
      },
      {
       "id": "la-02",
@@ -6664,7 +7000,14 @@
       "completion_tokens": 44,
       "generation_seconds": 1.415,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte, complète et citée avec le document source pertinent (livret_accueil_scan.pdf)."
+      }
      },
      {
       "id": "la-03",
@@ -6685,7 +7028,14 @@
       "completion_tokens": 35,
       "generation_seconds": 1.157,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement le document source."
+      }
      },
      {
       "id": "nf-01",
@@ -6706,7 +7056,14 @@
       "completion_tokens": 36,
       "generation_seconds": 1.216,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et citée avec le document pertinent, correspondant parfaitement à l'extrait 1."
+      }
      },
      {
       "id": "nf-02",
@@ -6727,7 +7084,14 @@
       "completion_tokens": 33,
       "generation_seconds": 1.15,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, citant le bon document et les plafonds indiqués (20 € pour le déjeuner)."
+      }
      },
      {
       "id": "nf-03",
@@ -6748,7 +7112,14 @@
       "completion_tokens": 154,
       "generation_seconds": 4.537,
       "status": "ok",
-      "source_cited": false
+      "source_cited": false,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 5,
+       "fidelite": 3,
+       "citation": true,
+       "justification": "La réponse est exacte sur le calcul et le montant (1 908 €), mais l'ajout sur la majoration pour véhicule 100 % électrique est incorrect : cette information n'est pas applicable ici (le véhicule est de 5 CV, pas électrique, et la majoration n'est pas mentionnée pour ce cas dans les extraits)."
+      }
      },
      {
       "id": "nf-04",
@@ -6769,7 +7140,14 @@
       "completion_tokens": 51,
       "generation_seconds": 1.63,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement fidèle aux extraits et reprend exactement les délais (30 jours et 90 jours) sans ajout ni omission."
+      }
      },
      {
       "id": "nf-05",
@@ -6790,7 +7168,14 @@
       "completion_tokens": 40,
       "generation_seconds": 1.363,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte (75 % remboursé) et fidèle aux extraits, avec une citation précise du document source."
+      }
      },
      {
       "id": "nf-06",
@@ -6811,7 +7196,14 @@
       "completion_tokens": 52,
       "generation_seconds": 1.722,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et entièrement justifiée par l'extrait 1 (notes_de_frais_deplacements.pdf), qui précise clairement la condition de durée pour la première classe."
+      }
      },
      {
       "id": "sy-01",
@@ -6832,7 +7224,14 @@
       "completion_tokens": 35,
       "generation_seconds": 1.186,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et citée avec précision, en s'appuyant sur les articles 15 de la convention collective Syntec (Extrait 2) et la fiche Syntec (Extrait 1)."
+      }
      },
      {
       "id": "sy-02",
@@ -6854,7 +7253,14 @@
       "completion_tokens": 126,
       "generation_seconds": 3.781,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 4,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte sur le montant minimal (10 %) et la période de versement (entre le 1er mai et le 31 octobre), mais elle omet de préciser que cette prime peut inclure d'autres primes ou gratifications sous conditions, comme mentionné dans les extraits."
+      }
      },
      {
       "id": "oos-01",
@@ -6872,7 +7278,14 @@
       "prompt_tokens": 1485,
       "completion_tokens": 37,
       "generation_seconds": 1.196,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement identifié que la question ne relevait pas du périmètre des documents fournis et a refusé de répondre sans inventer d'information."
+      }
      },
      {
       "id": "oos-02",
@@ -6890,7 +7303,14 @@
       "prompt_tokens": null,
       "completion_tokens": null,
       "generation_seconds": null,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement refusé de répondre en indiquant qu'aucun extrait pertinent n'était disponible, conformément à la consigne."
+      }
      },
      {
       "id": "oos-03",
@@ -6908,7 +7328,14 @@
       "prompt_tokens": null,
       "completion_tokens": null,
       "generation_seconds": null,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement refusé de répondre en indiquant que la question n'était pas dans le périmètre des documents internes, sans inventer de réponse."
+      }
      },
      {
       "id": "oos-04",
@@ -6926,7 +7353,14 @@
       "prompt_tokens": 1608,
       "completion_tokens": 37,
       "generation_seconds": 1.232,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement identifié l'absence d'information dans les documents fournis et a refusé de répondre, comme indiqué dans la réponse de référence."
+      }
      },
      {
       "id": "oos-05",
@@ -6944,7 +7378,14 @@
       "prompt_tokens": 1742,
       "completion_tokens": 37,
       "generation_seconds": 1.227,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement identifié que la question ne relevait pas du périmètre des documents fournis et a refusé poliment sans inventer de réponse."
+      }
      },
      {
       "id": "oos-06",
@@ -6962,7 +7403,14 @@
       "prompt_tokens": 1785,
       "completion_tokens": 37,
       "generation_seconds": 1.232,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement refusé de répondre en indiquant que la question n'était pas couverte par les documents fournis, conformément à la réponse de référence."
+      }
      },
      {
       "id": "oos-07",
@@ -6980,7 +7428,14 @@
       "prompt_tokens": 1825,
       "completion_tokens": 37,
       "generation_seconds": 1.24,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement identifié que la question dépassait le périmètre des documents fournis et a refusé poliment sans inventer de réponse."
+      }
      },
      {
       "id": "oos-08",
@@ -6998,7 +7453,14 @@
       "prompt_tokens": null,
       "completion_tokens": null,
       "generation_seconds": null,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement identifié que la question dépassait le périmètre des documents internes et a refusé poliment sans inventer de réponse."
+      }
      },
      {
       "id": "oos-09",
@@ -7016,7 +7478,14 @@
       "prompt_tokens": 1750,
       "completion_tokens": 37,
       "generation_seconds": 1.234,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement identifié l'absence d'information dans les documents fournis et a répondu par un refus poli, conformément à la référence."
+      }
      },
      {
       "id": "oos-10",
@@ -7034,7 +7503,14 @@
       "prompt_tokens": 1746,
       "completion_tokens": 37,
       "generation_seconds": 1.23,
-      "status": "ok"
+      "status": "ok",
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "L'assistant a correctement identifié l'absence d'information dans les documents fournis et a refusé de répondre sans inventer de réponse, en se basant sur les extraits disponibles."
+      }
      },
      {
       "id": "cc-01",
@@ -7055,7 +7531,14 @@
       "completion_tokens": 53,
       "generation_seconds": 1.844,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte (2 850 € brut/mois, coefficient 130) et fidèle aux extraits, avec une citation précise du document source."
+      }
      },
      {
       "id": "cc-02",
@@ -7076,7 +7559,14 @@
       "completion_tokens": 68,
       "generation_seconds": 2.043,
       "status": "ok",
-      "source_cited": false
+      "source_cited": false,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, citant correctement le document [guide_conges_absences.pdf] qui précise 12 jours ouvrés pour un enfant de 30 ans."
+      }
      },
      {
       "id": "cc-03",
@@ -7098,7 +7588,14 @@
       "completion_tokens": 67,
       "generation_seconds": 2.02,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte, complète et citée avec précision, en s'appuyant sur les extraits [guide_conges_absences.pdf] et [syntec_conges_payes.md]."
+      }
      },
      {
       "id": "cc-04",
@@ -7121,7 +7618,14 @@
       "completion_tokens": 43,
       "generation_seconds": 1.373,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète : 4 mois initiaux + 4 mois de renouvellement = 8 mois, avec accord écrit des deux parties, comme indiqué dans les extraits 1 et 4."
+      }
      },
      {
       "id": "cc-05",
@@ -7142,7 +7646,14 @@
       "completion_tokens": 75,
       "generation_seconds": 2.316,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 4,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte sur le nombre de jours (6 jours ouvrés/mois) et leur caractère payé en cas de licenciement, mais elle omet de préciser explicitement que ces absences ne sont pas payées en cas de démission, information pourtant présente dans les extraits."
+      }
      },
      {
       "id": "cc-06",
@@ -7163,7 +7674,14 @@
       "completion_tokens": 157,
       "generation_seconds": 4.636,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement les documents pour chaque information clé (durée, pourcentage, limite de 90 jours, exclusion des primes)."
+      }
      },
      {
       "id": "cc-07",
@@ -7186,7 +7704,14 @@
       "completion_tokens": 71,
       "generation_seconds": 2.163,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "partielle",
+       "exactitude": 5,
+       "fidelite": 3,
+       "citation": false,
+       "justification": "La réponse est exacte mais mentionne un document inexistant ('accord_teletravail_2025.docx') et ne cite pas correctement le document source valide."
+      }
      },
      {
       "id": "cc-08",
@@ -7208,7 +7733,14 @@
       "completion_tokens": 104,
       "generation_seconds": 3.207,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte, complète et fidèle aux extraits, avec une citation claire des documents sources."
+      }
      },
      {
       "id": "cc-09",
@@ -7229,7 +7761,14 @@
       "completion_tokens": 48,
       "generation_seconds": 1.549,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement fidèle à la référence et aux extraits, citant correctement le document source et reprenant l'information clé sans omission ni erreur."
+      }
      },
      {
       "id": "cc-10",
@@ -7252,7 +7791,14 @@
       "completion_tokens": 45,
       "generation_seconds": 1.509,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, reprenant fidèlement la référence et les extraits, avec une citation précise du document source."
+      }
      },
      {
       "id": "cc-11",
@@ -7273,7 +7819,14 @@
       "completion_tokens": 59,
       "generation_seconds": 1.976,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est entièrement exacte et fidèle aux extraits, citant correctement le document source et reprenant les informations clés (45 min dont 20 min légales après 6h de travail)."
+      }
      },
      {
       "id": "cc-12",
@@ -7295,7 +7848,14 @@
       "completion_tokens": 57,
       "generation_seconds": 1.802,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, citant les deux documents pertinents qui mentionnent clairement la réduction d'horaire de 30 minutes à partir du 5ᵉ mois."
+      }
      },
      {
       "id": "cc-13",
@@ -7316,9 +7876,55 @@
       "completion_tokens": 75,
       "generation_seconds": 2.306,
       "status": "ok",
-      "source_cited": true
+      "source_cited": true,
+      "judge": {
+       "verdict": "correcte",
+       "exactitude": 5,
+       "fidelite": 5,
+       "citation": true,
+       "justification": "La réponse est exacte et complète, reprenant fidèlement le seuil de 75 points pour les mesures obligatoires, et cite correctement le document source."
+      }
      }
-    ]
+    ],
+    "judge": {
+     "judged": 81,
+     "failed": 0,
+     "verdicts": {
+      "correcte": 68,
+      "partielle": 11,
+      "incorrecte": 2
+     },
+     "correct_rate": 0.8395061728395061,
+     "exactitude_mean": 4.76056338028169,
+     "fidelite_mean": 4.830985915492958,
+     "citation_rate": 0.971830985915493,
+     "agreement_keywords": 0.8518518518518519,
+     "kappa_keywords": 0.2019704433497545,
+     "disagreements": [
+      "tdt-03",
+      "cg-07",
+      "cg-08",
+      "cg-09",
+      "mu-05",
+      "mu-08",
+      "it-03",
+      "it-09",
+      "nf-03",
+      "sy-02",
+      "cc-05",
+      "cc-07"
+     ],
+     "tokens_in": 159667,
+     "tokens_out": 6375,
+     "cost_eur": 0.29232097662647016,
+     "answers_file": "answers_zerogpu_v3_20261015_1000.jsonl",
+     "judge_backend": "zerogpu",
+     "judge_model": "Lulu18/rag-llm",
+     "judge_price": null,
+     "rate_source": "taux de référence BCE du 14/10/2026 (1 € = 1,1195 $)",
+     "seconds": 276.9,
+     "date": "2026-10-15T10:26:17"
+    }
    }
   ],
   "type_labels": {
@@ -7447,9 +8053,9 @@
    "questions": 81,
    "gpu_seconds": 152.526,
    "gpu_eur_equivalent": 0.22707458686913803,
-   "judge_model": null,
-   "judge_eur": null,
-   "judge_tokens": null
+   "judge_model": "Lulu18/rag-llm",
+   "judge_eur": 0.29232097662647016,
+   "judge_tokens": 166042
   },
   "rate_source": "taux de référence BCE du 14/10/2026 (1 € = 1,1195 $)"
  },
@@ -7742,11 +8348,11 @@
   }
  },
  "tests": {
-  "timestamp": "2026-10-14T18:25:32.841439+02:00",
-  "total": 109,
+  "timestamp": "2026-10-15T10:29:53.611000+02:00",
+  "total": 120,
   "failed": 0,
-  "passed": 109,
-  "seconds": 2.423,
+  "passed": 120,
+  "seconds": 1.474,
   "files": [
    {
     "file": "tests/test_admin_documents.py",
@@ -7754,52 +8360,52 @@
      {
       "name": "test_safe_filename_retire_chemin_accents_et_espaces",
       "status": "passed",
-      "seconds": 0.161
+      "seconds": 0.075
      },
      {
       "name": "test_ajout_reserve_au_role_admin",
       "status": "passed",
-      "seconds": 0.064
+      "seconds": 0.037
      },
      {
       "name": "test_ajout_enregistre_le_fichier_les_metadonnees_et_indexe",
       "status": "passed",
-      "seconds": 0.058
+      "seconds": 0.03
      },
      {
       "name": "test_ajout_refuse_les_formats_non_pris_en_charge",
       "status": "passed",
-      "seconds": 0.019
+      "seconds": 0.011
      },
      {
       "name": "test_ajout_refuse_d_ecraser_le_corpus_de_reference",
       "status": "passed",
-      "seconds": 0.028
+      "seconds": 0.013
      },
      {
       "name": "test_ajout_en_double_demande_remplacer",
       "status": "passed",
-      "seconds": 0.041
+      "seconds": 0.036
      },
      {
       "name": "test_echec_d_indexation_annule_tout",
       "status": "passed",
-      "seconds": 0.031
+      "seconds": 0.02
      },
      {
       "name": "test_retrait_limite_aux_documents_ajoutes_depuis_l_interface",
       "status": "passed",
-      "seconds": 0.072
+      "seconds": 0.034
      },
      {
       "name": "test_whoami_indique_le_role_et_les_capacites",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.007
      },
      {
       "name": "test_pdf_sans_couche_texte_detecte_comme_scan",
       "status": "passed",
-      "seconds": 0.099
+      "seconds": 0.039
      }
     ]
    },
@@ -7809,37 +8415,37 @@
      {
       "name": "test_health_renvoie_ok",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.005
      },
      {
       "name": "test_ask_renvoie_la_reponse_du_llm",
       "status": "passed",
-      "seconds": 0.009
+      "seconds": 0.005
      },
      {
       "name": "test_ask_transmet_la_question_au_llm",
       "status": "passed",
-      "seconds": 0.009
+      "seconds": 0.005
      },
      {
       "name": "test_ask_renvoie_502_si_le_llm_echoue",
       "status": "passed",
-      "seconds": 0.011
+      "seconds": 0.005
      },
      {
       "name": "test_ask_renvoie_503_si_la_cle_mistral_manque",
       "status": "passed",
-      "seconds": 0.017
+      "seconds": 0.006
      },
      {
       "name": "test_ask_refuse_une_question_vide",
       "status": "passed",
-      "seconds": 0.011
+      "seconds": 0.006
      },
      {
       "name": "test_ask_refuse_un_corps_sans_question",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.004
      },
      {
       "name": "test_ask_refuse_une_question_trop_longue",
@@ -7849,12 +8455,12 @@
      {
       "name": "test_swagger_est_disponible",
       "status": "passed",
-      "seconds": 0.036
+      "seconds": 0.026
      },
      {
       "name": "test_racine_redirige_vers_swagger",
       "status": "passed",
-      "seconds": 0.039
+      "seconds": 0.004
      }
     ]
    },
@@ -7864,12 +8470,12 @@
      {
       "name": "test_les_sections_suivent_les_titres",
       "status": "passed",
-      "seconds": 0.006
+      "seconds": 0.001
      },
      {
       "name": "test_chaque_chunk_est_prefixe_par_son_chemin",
       "status": "passed",
-      "seconds": 0.126
+      "seconds": 0.067
      },
      {
       "name": "test_une_section_trop_longue_est_redecoupee",
@@ -7889,12 +8495,12 @@
      {
       "name": "test_mode_par_section_un_chunk_par_section",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_le_numero_de_page_suit_les_marqueurs",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_relevel_reconstruit_la_hierarchie_des_titres_pdf",
@@ -7914,32 +8520,32 @@
      {
       "name": "test_config_expose_la_configuration_sans_secret",
       "status": "passed",
-      "seconds": 0.014
+      "seconds": 0.009
      },
      {
       "name": "test_les_routes_de_l_interface_exigent_la_cle_d_api",
       "status": "passed",
-      "seconds": 0.016
+      "seconds": 0.01
      },
      {
       "name": "test_documents_sans_recherche_renvoie_les_metadonnees_sans_statistiques",
       "status": "passed",
-      "seconds": 0.01
+      "seconds": 0.007
      },
      {
       "name": "test_chunks_indisponibles_sans_recherche",
       "status": "passed",
-      "seconds": 0.009
+      "seconds": 0.004
      },
      {
       "name": "test_reports_lit_le_fichier_genere",
       "status": "passed",
-      "seconds": 0.02
+      "seconds": 0.013
      },
      {
       "name": "test_monitoring_desactive_dans_les_tests",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.004
      },
      {
       "name": "test_summarize_runs_agrege_les_latences_les_statuts_et_le_feedback",
@@ -7949,7 +8555,72 @@
      {
       "name": "test_ui_sert_index_html_pour_toutes_les_routes",
       "status": "passed",
-      "seconds": 0.169
+      "seconds": 0.097
+     }
+    ]
+   },
+   {
+    "file": "tests/test_ingest_hash.py",
+    "tests": [
+     {
+      "name": "test_empreinte_identique_en_crlf_et_en_lf_pour_le_markdown",
+      "status": "passed",
+      "seconds": 0.006
+     },
+     {
+      "name": "test_empreinte_des_fichiers_binaires_inchangee",
+      "status": "passed",
+      "seconds": 0.006
+     }
+    ]
+   },
+   {
+    "file": "tests/test_judge.py",
+    "tests": [
+     {
+      "name": "test_parse_verdict_extrait_le_json_meme_entoure_de_texte",
+      "status": "passed",
+      "seconds": 0.001
+     },
+     {
+      "name": "test_parse_verdict_refuse_les_reponses_invalides[pas de json]",
+      "status": "passed",
+      "seconds": 0.001
+     },
+     {
+      "name": "test_parse_verdict_refuse_les_reponses_invalides[{\"exactitude\": 7, \"fidelite\": 4, \"citation\": true, \"verdict\": \"correcte\"}]",
+      "status": "passed",
+      "seconds": 0.001
+     },
+     {
+      "name": "test_parse_verdict_refuse_les_reponses_invalides[{\"exactitude\": 4, \"fidelite\": 4, \"citation\": true, \"verdict\": \"bof\"}]",
+      "status": "passed",
+      "seconds": 0.001
+     },
+     {
+      "name": "test_kappa_vaut_1_pour_un_accord_parfait_et_0_pour_le_hasard",
+      "status": "passed",
+      "seconds": 0.001
+     },
+     {
+      "name": "test_summarize_mesure_l_accord_avec_les_mots_cles_et_le_cout",
+      "status": "passed",
+      "seconds": 0.0
+     },
+     {
+      "name": "test_build_user_prompt_contient_reference_extraits_et_reponse",
+      "status": "passed",
+      "seconds": 0.0
+     },
+     {
+      "name": "test_couts_au_token_et_au_temps_gpu",
+      "status": "passed",
+      "seconds": 0.0
+     },
+     {
+      "name": "test_keyword_verdict_utilise_les_criteres_actuels",
+      "status": "passed",
+      "seconds": 0.006
      }
     ]
    },
@@ -7959,27 +8630,27 @@
      {
       "name": "test_l_analyseur_racinise_et_retire_accents_et_mots_vides",
       "status": "passed",
-      "seconds": 0.065
+      "seconds": 0.066
      },
      {
       "name": "test_bm25_trouve_le_mot_exact_malgre_la_conjugaison",
       "status": "passed",
-      "seconds": 0.004
+      "seconds": 0.002
      },
      {
       "name": "test_bm25_exclut_les_documents_obsoletes",
       "status": "passed",
-      "seconds": 0.005
+      "seconds": 0.003
      },
      {
       "name": "test_rrf_favorise_les_documents_bien_classes_partout",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_la_recherche_hybride_ajoute_les_chunks_trouves_par_bm25",
       "status": "passed",
-      "seconds": 0.003
+      "seconds": 0.001
      }
     ]
    },
@@ -7989,7 +8660,7 @@
      {
       "name": "test_generate_envoie_les_bons_messages_et_renvoie_le_texte",
       "status": "passed",
-      "seconds": 0.119
+      "seconds": 0.03
      },
      {
       "name": "test_generate_transforme_les_erreurs_du_sdk_en_llm_error",
@@ -7999,7 +8670,7 @@
      {
       "name": "test_generate_refuse_une_reponse_vide",
       "status": "passed",
-      "seconds": 0.002
+      "seconds": 0.003
      },
      {
       "name": "test_factory_exige_une_cle_pour_mistral",
@@ -8009,7 +8680,7 @@
      {
       "name": "test_factory_construit_le_client_mistral_avec_une_cle",
       "status": "passed",
-      "seconds": 0.004
+      "seconds": 0.002
      }
     ]
    },
@@ -8029,12 +8700,12 @@
      {
       "name": "test_les_erreurs_http_deviennent_des_llm_error",
       "status": "passed",
-      "seconds": 0.003
+      "seconds": 0.001
      },
      {
       "name": "test_factory_construit_ollama",
       "status": "passed",
-      "seconds": 0.01
+      "seconds": 0.001
      }
     ]
    },
@@ -8054,17 +8725,17 @@
      {
       "name": "test_retriever_sans_reranker_garde_l_ordre_vectoriel",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_assistant_refuse_sans_appeler_le_llm_si_rien_n_est_trouve",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_assistant_envoie_les_extraits_et_ne_garde_que_les_sources_citees",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_assistant_masque_les_sources_quand_le_llm_refuse",
@@ -8074,27 +8745,27 @@
      {
       "name": "test_build_sources_deduplique_et_tronque_l_extrait",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_is_refusal_detecte_la_phrase_de_refus",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_endpoint_stream_envoie_sources_tokens_puis_done",
       "status": "passed",
-      "seconds": 0.014
+      "seconds": 0.009
      },
      {
       "name": "test_endpoint_ask_renvoie_l_en_tete_server_timing",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.004
      },
      {
       "name": "test_metriques_de_retrieval",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_retriever_ne_renvoie_rien_si_le_meilleur_score_est_trop_bas",
@@ -8119,32 +8790,32 @@
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-02]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-03]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-04]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-05]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-06]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-07]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-08]",
@@ -8154,22 +8825,22 @@
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-09]",
       "status": "passed",
-      "seconds": 0.002
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-10]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-11]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-12]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-13]",
@@ -8179,7 +8850,7 @@
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-14]",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-15]",
@@ -8204,82 +8875,82 @@
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-19]",
       "status": "passed",
-      "seconds": 0.0
+      "seconds": 0.001
      },
      {
       "name": "test_les_20_messages_faker_sont_detectes[pii-20]",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-01]",
       "status": "passed",
-      "seconds": 0.01
+      "seconds": 0.005
      },
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-05]",
       "status": "passed",
-      "seconds": 0.007
+      "seconds": 0.004
      },
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-09]",
       "status": "passed",
-      "seconds": 0.008
+      "seconds": 0.004
      },
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-13]",
       "status": "passed",
-      "seconds": 0.007
+      "seconds": 0.004
      },
      {
       "name": "test_l_api_bloque_les_questions_avec_donnees_personnelles[pii-17]",
       "status": "passed",
-      "seconds": 0.009
+      "seconds": 0.004
      },
      {
       "name": "test_aucune_question_legitime_n_est_bloquee",
       "status": "passed",
-      "seconds": 0.002
+      "seconds": 0.001
      },
      {
       "name": "test_les_chiffres_courants_ne_sont_pas_des_donnees_personnelles",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_un_iban_invalide_n_est_pas_detecte",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_mask_pii_remplace_par_le_type",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_le_filtre_de_logs_masque_les_donnees_personnelles",
       "status": "passed",
-      "seconds": 0.001
+      "seconds": 0.0
      },
      {
       "name": "test_sans_api_keys_l_authentification_est_desactivee",
       "status": "passed",
-      "seconds": 0.009
+      "seconds": 0.004
      },
      {
       "name": "test_cle_absente_ou_invalide_renvoie_401",
       "status": "passed",
-      "seconds": 0.018
+      "seconds": 0.008
      },
      {
       "name": "test_cle_employe_peut_poser_une_question",
       "status": "passed",
-      "seconds": 0.011
+      "seconds": 0.006
      },
      {
       "name": "test_ingest_est_reserve_aux_admins",
       "status": "passed",
-      "seconds": 0.01
+      "seconds": 0.006
      },
      {
       "name": "test_parse_api_keys_refuse_un_role_inconnu",
@@ -8289,7 +8960,7 @@
      {
       "name": "test_limitation_de_debit_renvoie_429",
       "status": "passed",
-      "seconds": 0.028
+      "seconds": 0.015
      }
     ]
    },
@@ -8299,22 +8970,22 @@
      {
       "name": "test_chaque_question_est_suivie_sans_son_contenu",
       "status": "passed",
-      "seconds": 0.011
+      "seconds": 0.006
      },
      {
       "name": "test_une_question_bloquee_est_suivie_avec_son_statut",
       "status": "passed",
-      "seconds": 0.01
+      "seconds": 0.004
      },
      {
       "name": "test_feedback_relie_a_la_requete",
       "status": "passed",
-      "seconds": 0.014
+      "seconds": 0.007
      },
      {
       "name": "test_feedback_refuse_un_identifiant_ou_une_note_invalide",
       "status": "passed",
-      "seconds": 0.012
+      "seconds": 0.006
      }
     ]
    },
@@ -8339,12 +9010,12 @@
      {
       "name": "test_factory_exige_token_et_space",
       "status": "passed",
-      "seconds": 0.003
+      "seconds": 0.001
      },
      {
       "name": "test_factory_construit_le_client_zerogpu",
       "status": "passed",
-      "seconds": 0.003
+      "seconds": 0.001
      }
     ]
    }

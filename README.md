@@ -18,7 +18,7 @@ Un assistant virtuel qui répond aux questions RH et IT des employés (congés, 
 | 8 | MLOps avec MLflow : runs d'évaluation, suivi par requête, feedback, registre de modèles | Fait |
 | 9 | FinOps et documentation | Fait |
 
-Chiffres clés : bonne source dans le top 5 pour 98 % des questions (recherche hybride), **97 % de réponses correctes** (66 / 68) avec Ministral 3 8B bf16 sur ZeroGPU, 10 / 10 questions hors périmètre refusées, 1,5 s de GPU par réponse, ≈ 122 $/mois pour 1 000 utilisateurs par jour (ZeroGPU) ou ≈ 223 $ avec une L4 dédiée.
+Chiffres clés : bonne source dans le top 5 pour 98 % des questions (recherche hybride), **96 % de réponses correctes** (78 / 81, corpus de 21 documents) avec Ministral 3 8B bf16 sur ZeroGPU, notées par mots-clés et relues par un LLM juge, 10 / 10 questions hors périmètre refusées, 1,5 s de GPU par réponse, ≈ 122 $/mois pour 1 000 utilisateurs par jour (ZeroGPU) ou ≈ 223 $ avec une L4 dédiée.
 
 **En ligne** : https://rag-api.wittysea-7248563d.germanywestcentral.azurecontainerapps.io/ui/ (clé d'API demandée). La page **Le projet** du site raconte la démarche dans l'ordre, pour un lecteur qui découvre le projet.
 

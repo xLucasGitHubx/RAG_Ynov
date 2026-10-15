@@ -3,7 +3,13 @@
 import pytest
 
 from eval.costs import TOKEN_PRICES, from_usd, gpu_cost_eur, token_cost_eur
-from eval.judge import build_user_prompt, cohen_kappa, parse_verdict, summarize
+from eval.judge import (
+    build_user_prompt,
+    cohen_kappa,
+    keyword_verdict,
+    parse_verdict,
+    summarize,
+)
 
 
 def test_parse_verdict_extrait_le_json_meme_entoure_de_texte():
@@ -110,3 +116,13 @@ def test_couts_au_token_et_au_temps_gpu():
     # ZeroGPU : 1 $ les 10 minutes, soit 0,10 $ la minute.
     assert gpu_cost_eur(60) == pytest.approx(from_usd(0.10))
     assert all(p.eur_per_m_input > 0 for p in TOKEN_PRICES.values())
+
+
+def test_keyword_verdict_utilise_les_criteres_actuels():
+    q = {"type": "factuelle", "keywords": ["^\\W*oui\\b", "six mois"]}
+    assert keyword_verdict({"answer": "Oui, dès six mois.", "refused": False}, q) is True
+    # Le mot-clé « six mois » seul ne suffit plus : la réponse « Non » est fausse.
+    assert keyword_verdict({"answer": "Non, il faut six mois.", "refused": False}, q) is False
+    assert keyword_verdict({"answer": None}, q) is False
+    oos = {"type": "hors_perimetre"}
+    assert keyword_verdict({"answer": "Je ne sais pas.", "refused": True}, oos) is True

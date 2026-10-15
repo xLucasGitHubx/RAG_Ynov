@@ -36,7 +36,7 @@ from datetime import datetime
 from pathlib import Path
 
 from eval.common import MLFLOW_URI, RESULTS_DIR, read_jsonl
-from eval.costs import RATE_SOURCE, TOKEN_PRICES, token_cost_eur
+from eval.costs import RATE_SOURCE, TOKEN_PRICES, gpu_cost_eur, token_cost_eur
 
 DEFAULT_MODELS = {
     "hf": "Qwen/Qwen3-235B-A22B-Instruct-2507:deepinfra",
@@ -202,10 +202,19 @@ class LocalJudge:
         self._llm = build_llm_client(settings)
         self.name = provider
         self.model = getattr(self._llm, "model", provider)
+        self.gpu_seconds = 0.0  # temps de GPU de la question en cours (ZeroGPU)
 
     def complete(self, system: str, user: str) -> tuple[str, int, int]:
         generation = self._llm.generate(system, user)
+        self.gpu_seconds += (generation.meta or {}).get("generation_seconds") or 0.0
         return generation.text, generation.prompt_tokens or 0, generation.completion_tokens or 0
+
+    def row_cost(self, tokens_in: int, tokens_out: int) -> float | None:
+        """Sur ZeroGPU, le coût se compte en temps de GPU (au tarif hors quota)."""
+        if self.name != "zerogpu":
+            return None
+        cost, self.gpu_seconds = gpu_cost_eur(self.gpu_seconds), 0.0
+        return cost
 
 
 def build_judge(backend: str, model: str | None, bill_to: str | None):
@@ -276,9 +285,44 @@ def summarize(rows: list[dict]) -> dict:
     }
 
 
+def keyword_verdict(answer: dict, question: dict) -> bool:
+    """Verdict du critère par mots-clés, avec les critères actuels de eval/questions.jsonl
+    (et non ceux en vigueur au moment de l'évaluation) : les deux jugements restent comparables."""
+    from eval.eval_answers import keywords_ok
+
+    if answer.get("answer") is None:
+        return False
+    if question["type"] == "hors_perimetre":
+        return bool(answer.get("refused"))
+    return keywords_ok(answer["answer"], question.get("keywords", [])) and not answer.get("refused")
+
+
+def resummarize(judge_file: Path) -> None:
+    """Recalcule l'accord avec les mots-clés et la synthèse d'un jugement existant, sans relancer
+    le juge (utile après la correction d'un critère par mots-clés)."""
+    from eval.eval_retrieval import NEXALIS_QUESTIONS
+
+    summary_path = judge_file.with_suffix(".summary.json")
+    previous = json.loads(summary_path.read_text(encoding="utf-8"))
+    questions = {q["id"]: q for q in read_jsonl(NEXALIS_QUESTIONS)}
+    answers = {r["id"]: r for r in read_jsonl(RESULTS_DIR / previous["answers_file"])}
+    rows = read_jsonl(judge_file)
+    for row in rows:
+        row["keyword_correct"] = keyword_verdict(answers[row["id"]], questions[row["id"]])
+    judge_file.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows),
+                          encoding="utf-8")
+    summary = previous | summarize(rows)
+    summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    for key in ("agreement_keywords", "kappa_keywords", "disagreements"):
+        print(f"  {key:<20} {summary[key]}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("answers", type=Path, help="fichier answers_*.jsonl à juger")
+    parser.add_argument("answers", type=Path, help="fichier answers_*.jsonl à juger "
+                        "(ou judge_*.jsonl avec --resummarize)")
+    parser.add_argument("--resummarize", action="store_true",
+                        help="recalcule la synthèse d'un jugement existant, sans appel au juge")
     parser.add_argument("--backend", choices=["hf", "mistral", "zerogpu", "ollama"], default="hf")
     parser.add_argument("--model", help="modèle du juge (défaut selon le fournisseur)")
     parser.add_argument("--bill-to", help="organisation Hugging Face à facturer (ex. ynov)")
@@ -286,6 +330,9 @@ def main() -> None:
     parser.add_argument("--limit", type=int)
     parser.add_argument("--no-mlflow", action="store_true")
     args = parser.parse_args()
+    if args.resummarize:
+        resummarize(args.answers)
+        return
 
     from eval.eval_retrieval import NEXALIS_QUESTIONS
 
@@ -314,7 +361,7 @@ def main() -> None:
             row = {
                 "id": answer["id"],
                 "type": answer["type"],
-                "keyword_correct": bool(answer.get("correct")),
+                "keyword_correct": keyword_verdict(answer, q),
             }
             if answer.get("answer") is None:
                 row["error"] = "réponse non générée"
@@ -332,9 +379,9 @@ def main() -> None:
                         row["error"] = str(exc)[:200]
                         if "HTTP 402" in row["error"] or "HTTP 403" in row["error"]:
                             raise SystemExit(f"Juge indisponible : {row['error']}") from exc
-                row["cost_eur"] = token_cost_eur(
-                    judge.model, row.get("tokens_in", 0), row.get("tokens_out", 0)
-                )
+                tokens = (row.get("tokens_in", 0), row.get("tokens_out", 0))
+                row["cost_eur"] = (judge.row_cost(*tokens) if hasattr(judge, "row_cost")
+                                   else token_cost_eur(judge.model, *tokens))
             rows.append(row)
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
             mark = {"correcte": "OK ", "partielle": "~  ", "incorrecte": "KO "}.get(

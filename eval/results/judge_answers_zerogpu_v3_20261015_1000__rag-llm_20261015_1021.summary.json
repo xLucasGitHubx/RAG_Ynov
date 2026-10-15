@@ -1,0 +1,39 @@
+{
+  "judged": 81,
+  "failed": 0,
+  "verdicts": {
+    "correcte": 68,
+    "partielle": 11,
+    "incorrecte": 2
+  },
+  "correct_rate": 0.8395061728395061,
+  "exactitude_mean": 4.76056338028169,
+  "fidelite_mean": 4.830985915492958,
+  "citation_rate": 0.971830985915493,
+  "agreement_keywords": 0.8518518518518519,
+  "kappa_keywords": 0.2019704433497545,
+  "disagreements": [
+    "tdt-03",
+    "cg-07",
+    "cg-08",
+    "cg-09",
+    "mu-05",
+    "mu-08",
+    "it-03",
+    "it-09",
+    "nf-03",
+    "sy-02",
+    "cc-05",
+    "cc-07"
+  ],
+  "tokens_in": 159667,
+  "tokens_out": 6375,
+  "cost_eur": 0.29232097662647016,
+  "answers_file": "answers_zerogpu_v3_20261015_1000.jsonl",
+  "judge_backend": "zerogpu",
+  "judge_model": "Lulu18/rag-llm",
+  "judge_price": null,
+  "rate_source": "taux de référence BCE du 14/10/2026 (1 € = 1,1195 $)",
+  "seconds": 276.9,
+  "date": "2026-10-15T10:26:17"
+}

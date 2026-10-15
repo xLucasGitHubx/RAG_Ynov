@@ -705,16 +705,28 @@ function modelName(model: string): string {
 function JudgeCard({ judge }: { judge: JudgeSummary }) {
   const total = judge.judged || 1;
   const kappa = judge.kappa_keywords;
+  // Juge = modèle évalué : faute de crédits pour un modèle plus grand (voir docs/resultats_reponses.md).
+  const selfJudge = judge.judge_backend === "zerogpu";
   return (
     <Card>
       <CardHeader
         title="Évaluation automatique par un LLM juge"
         description={
           <>
-            Chaque réponse est relue par <Mono>{modelName(judge.judge_model)}</Mono>, un modèle plus grand et d'une autre
-            famille que celui évalué. Il compare la réponse à la référence (exactitude) et vérifie que chaque affirmation
-            vient des extraits fournis (fidélité, c'est-à-dire aucune invention). Son accord avec le critère par
-            mots-clés dit jusqu'où on peut lui faire confiance.
+            {selfJudge ? (
+              <>
+                Chaque réponse est relue par le modèle de production lui-même (Ministral 3 8B, sur le Space ZeroGPU), avec
+                une consigne de correcteur.
+              </>
+            ) : (
+              <>
+                Chaque réponse est relue par <Mono>{modelName(judge.judge_model)}</Mono>, un modèle plus grand et d'une
+                autre famille que celui évalué.
+              </>
+            )}{" "}
+            Il compare la réponse à la référence (exactitude) et vérifie que chaque affirmation vient des extraits fournis
+            (fidélité, c'est-à-dire aucune invention). Son accord avec le critère par mots-clés dit jusqu'où on peut lui
+            faire confiance.
           </>
         }
       />
@@ -752,6 +764,15 @@ function JudgeCard({ judge }: { judge: JudgeSummary }) {
           ))}
         </dl>
       </div>
+      {selfJudge && (
+        <p className="border-t border-line px-5 py-3 text-[13px] text-ink-2">
+          <span className="font-medium text-ink">Limite : le modèle se note lui-même.</span> Faute de crédits pour un
+          modèle plus grand, le juge est le Ministral 8B évalué. Il s'est montré plus sévère que les mots-clés et a révélé une
+          vraie erreur (tt-09), mais il se trompe aussi (cg-08, tdt-03) : il sert à signaler les réponses à relire. Le script{" "}
+          <Mono>eval/judge.py</Mono> sait déjà utiliser un juge plus grand (Qwen3 235B via Hugging Face, ou Mistral Large 3)
+          dès que des crédits sont disponibles.
+        </p>
+      )}
       {judge.disagreements.length > 0 && (
         <p className="border-t border-line px-5 py-3 text-[13px] text-ink-3">
           Désaccords avec les mots-clés : <Mono>{judge.disagreements.join(", ")}</Mono>. Le filtre « Désaccords avec le

@@ -51,7 +51,7 @@ La première version de ce document supposait 8 s de GPU par réponse (hypothès
 - **Une L4 dédiée suffit largement en charge.** Même à 5 s par réponse, le GPU est occupé 40 % des heures ouvrées. Les pics (arrivée au bureau, veille de congés) se lissent avec une file d'attente ou un serveur d'inférence avec batching (vLLM, TGI). Coût fixe et prévisible, données traitées sur une machine dédiée : c'est le choix recommandé pour la production.
 - **Le modèle 8B tient sur 24 Go en bf16** : 17,2 Go de VRAM au pic, mesurés sur ZeroGPU. **En nf4, 6,7 Go seulement, sans perte de qualité mesurée** (20 / 20 sur l'échantillon, 2,4 s au lieu de 1,6 s ; voir `docs/resultats_reponses.md`) : une T4 16 Go à 0,40 $/h suffirait, soit ≈ 88 $/mois au lieu de 176 $ (la T4 est plus lente : débit à mesurer avant de trancher). int8 est à écarter (5 fois plus lent).
 - **L'API CPU pèse peu** (~20 % du total en scénario B) : la recherche hybride sans reranker évite d'ajouter un GPU ou des CPU supplémentaires pour un cross-encoder (12 s par question sur CPU, voir `docs/resultats_retrieval.md`).
-- **Qualité au rendez-vous** : le 8B bf16 répond correctement à 66 questions sur 68 (97 %) sur ZeroGPU, contre 91 % pour le 3B quantifié en local (voir `docs/resultats_reponses.md`).
+- **Qualité au rendez-vous** : le 8B bf16 répond correctement à 65 questions sur 68 (96 %) sur ZeroGPU (78 sur 81 avec le corpus étendu), contre 91 % pour le 3B quantifié en local (voir `docs/resultats_reponses.md`).
 
 ## Sensibilité
 
