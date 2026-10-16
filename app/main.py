@@ -69,7 +69,9 @@ def get_retriever():
 
 @lru_cache
 def get_assistant() -> Assistant:
-    return Assistant(build_llm_client(get_settings()), get_retriever())
+    current = get_settings()
+    return Assistant(build_llm_client(current), get_retriever(),
+                     verify=current.faithfulness_check_enabled)
 
 
 @lru_cache
@@ -93,6 +95,7 @@ def track_request(
     llm_called: bool = False,
     n_sources: int = 0,
     status: str = "ok",
+    faithfulness: str = "skipped",
 ) -> None:
     """Envoie au suivi MLflow les mesures d'une requête (jamais son contenu)."""
     current = get_settings()
@@ -107,6 +110,9 @@ def track_request(
         "refused": int(refused),
         "llm_called": int(llm_called),
         "context_tokens": sum(c.metadata.get("n_tokens", 0) for c in chunks),
+        "faithfulness_checked": int(faithfulness in ("ok", "retried", "unreadable")),
+        "faithfulness_retried": int(faithfulness == "retried"),
+        "faithfulness_error": int(faithfulness in ("error", "unreadable")),
     }
     if scores:
         metrics |= {"top_score": max(scores), "mean_score": sum(scores) / len(scores)}
@@ -279,7 +285,7 @@ def ask(
         answer=result.response.answer, chunks=result.chunks, timings_ms=timings,
         prompt_tokens=result.prompt_tokens, completion_tokens=result.completion_tokens,
         refused=result.refused, llm_called=result.llm_called,
-        n_sources=len(result.response.sources),
+        n_sources=len(result.response.sources), faithfulness=result.faithfulness,
     )
     result.response.request_id = request_id
     return result.response
