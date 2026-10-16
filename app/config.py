@@ -62,6 +62,9 @@ class Settings(BaseSettings):
     # Seuil de similarité cosinus du meilleur chunk sous lequel on refuse sans appeler le LLM
     # (choisi par eval/analyze_gating.py : 0 question légitime écartée sur 58).
     retrieval_min_score: float = 0.42
+    # Contrôle de fidélité après génération : un 2e appel au LLM vérifie que la réponse est soutenue
+    # par les extraits, et une nouvelle génération a lieu si ce n'est pas le cas (3 appels au plus).
+    faithfulness_check_enabled: bool = True
     # Exclut les documents marqués "obsolete" dans data/raw/metadata.json.
     exclude_obsolete: bool = True
 

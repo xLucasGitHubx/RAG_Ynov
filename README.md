@@ -33,11 +33,14 @@ Question ──> API FastAPI (CPU)
               ├─ recherche hybride : BGE-M3 (Chroma) + BM25, fusion RRF, versions obsolètes exclues
               ├─ meilleur score < 0,42 ─> « je ne sais pas » sans appeler le LLM
               ├─ prompt : 5 extraits délimités + règles anti-injection
-              └─ LLM : Space ZeroGPU (Ministral 3 8B bf16) ── en développement : Ollama (Ministral 3 3B GGUF)
+              ├─ LLM : Space ZeroGPU (Ministral 3 8B bf16) ── en développement : Ollama (Ministral 3 3B GGUF)
+              └─ contrôle de fidélité : 2e appel au LLM, une nouvelle génération si la réponse n'est pas soutenue
             ─> réponse + sources (document, section, page) + request_id ─> suivi MLflow
 ```
 
 Tout ce qui n'a pas besoin de GPU (parsing, embeddings, recherche, sécurité, suivi) tourne sur CPU. Seule la génération utilise le GPU.
+
+**Contrôle de fidélité** (`app/services/assistant.py`, `_check_and_retry`) : après chaque réponse non refusée, le LLM vérifie que les affirmations et les chiffres figurent dans les extraits. Si ce n'est pas le cas, une seule nouvelle génération a lieu, avec le motif relevé (3 appels au plus par question, la nouvelle réponse n'est pas recontrôlée). Un verdict illisible ou une panne du LLM pendant le contrôle gardent la réponse initiale. Coût : un appel de plus par question sur le quota ZeroGPU. Désactivation sans modifier le code : `FAITHFULNESS_CHECK_ENABLED=false`. Mesures MLflow : `faithfulness_checked`, `faithfulness_retried`, `faithfulness_error`.
 
 ## Prérequis
 
